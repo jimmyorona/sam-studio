@@ -120,8 +120,17 @@ Rules:
 - For each slide provide the on-slide content (concise bullets or short lines,
   shaped how this persona would shape them), then `**Speaker notes:**` —
   the spoken narration in the persona's full voice.
+- If the user message includes a "REVIEW FINDINGS TO APPLY" section, treat it as
+  a required work order: resolve every priority fix, consensus finding, and
+  flagged issue it lists, in addition to your own persona's standards. These
+  findings come from a prior expert review of THIS document and take precedence
+  over your persona's stylistic preferences where they conflict. Where a finding
+  asks for data the source lacks, insert a `[NEEDS: …]` placeholder rather than
+  inventing it.
 - After the last slide, add a `## Rewrite notes` section: 3–6 bullets on the
   structural changes made and why, plus a list of all `[NEEDS: …]` placeholders.
+  When review findings were supplied, briefly note how each priority fix was
+  addressed.
 
 Output only the rewritten presentation in markdown — no preamble.
 """
@@ -191,6 +200,24 @@ def extract_content(path: Path) -> str:
     return f"# Extracted content: {path.name}\n\n{body}"
 
 
+def gather_review_findings(out_dir: Path) -> str:
+    """Collect prior review output for this document so the rewrite can apply it.
+
+    Prefers the consolidated synthesis; falls back to concatenating the
+    individual persona reviews. Rewrite outputs and the raw extract are skipped.
+    Returns "" when no prior review exists.
+    """
+    synth = out_dir / "00-SYNTHESIS.md"
+    if synth.exists():
+        return synth.read_text(encoding="utf-8").strip()
+    parts = []
+    for f in sorted(out_dir.glob("*.md")):
+        if f.name == "_extracted.md" or f.name == "00-SYNTHESIS.md" or f.name.startswith("rewrite-"):
+            continue
+        parts.append(f"=== REVIEW: {f.stem} ===\n\n{f.read_text(encoding='utf-8')[:6000]}")
+    return "\n\n".join(parts).strip()
+
+
 def ollama_chat(ollama_url: str, model: str, system: str, user: str) -> str:
     resp = requests.post(
         f"{ollama_url}/api/chat",
@@ -251,6 +278,22 @@ def run(args) -> int:
     verb = "rewrite" if rewrite else "review"
     log(f"Running {len(personas)} persona {verb}(s), up to {MAX_CONCURRENT_REVIEWS} concurrent …")
 
+    # Carry the prior review's analysis into every rewrite, regardless of the
+    # rewrite persona. Gather once up front so concurrent rewrites don't read
+    # each other's partial output.
+    findings_block = ""
+    if rewrite:
+        findings = gather_review_findings(out_dir)
+        if findings:
+            findings_block = (
+                "REVIEW FINDINGS TO APPLY (from a prior multi-persona review of this "
+                "document — address these regardless of your own persona's lens):\n\n"
+                f"{findings}\n\n---\n\n"
+            )
+            log(f"  Applying prior review findings to the rewrite ({len(findings)} chars).")
+        else:
+            log("  No prior review found for this document — rewriting from the source only.")
+
     def review_one(p: dict) -> dict:
         p["state"] = "running"
         marker(f"@@STATE persona={p['slug']} state=running")
@@ -269,6 +312,7 @@ def run(args) -> int:
                 f"PERSONA BRIEF (referred to as \"{p['name']}\" — use that name "
                 f"where a persona name is needed, not the internal character name):\n\n"
                 f"{brief}\n\n---\n\n"
+                f"{findings_block if rewrite else ''}"
                 f"{task_line}:\n\n{content}"
             )
             report = ollama_chat(args.ollama_url, args.model, system, user_msg)
