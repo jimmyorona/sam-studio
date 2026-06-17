@@ -8,10 +8,12 @@
     <div v-else-if="slot.status === 'idle' || slot.status === 'error'" class="preflight">
       <h3>🎬 Video Production</h3>
       <table class="summary">
-        <tr><td>Document</td><td>{{ store.doc?.name || '—' }}</td></tr>
-        <tr><td>Persona</td><td>{{ personaName }}</td></tr>
-        <tr><td>Voice</td><td>{{ store.voice.voice }} ({{ store.voice.provider }})</td></tr>
-        <tr><td>Script</td><td>✓ {{ store.narrate.slideCount }} slides</td></tr>
+        <tbody>
+          <tr><td>Document</td><td>{{ store.doc?.name || '—' }}</td></tr>
+          <tr><td>Persona</td><td>{{ personaName }}</td></tr>
+          <tr><td>Voice</td><td>{{ store.voice.voice }} ({{ store.voice.provider }})</td></tr>
+          <tr><td>Script</td><td>✓ {{ store.narrate.slideCount }} slides</td></tr>
+        </tbody>
       </table>
       <h4>Settings</h4>
       <label class="field">Pause between slides (s)
