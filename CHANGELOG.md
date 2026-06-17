@@ -7,6 +7,9 @@ this project is pre-1.0 and not yet versioned, so dated entries are used.
 ## [Unreleased]
 
 ### Added
+- **Prompt reference.** `docs/PROMPTS.md` — a table of every LLM prompt the
+  workflows send to Ollama (role, workflow, and the script + line where it
+  lives), with per-prompt notes. Linked from the README.
 - **UI walkthrough.** `docs/UI-WALKTHROUGH.md` — an annotated, screenshot tour of
   the Review and Rewrite workflow stages (empty → configured → running → results
   → compare), captured from real runs, linked from the README. Also

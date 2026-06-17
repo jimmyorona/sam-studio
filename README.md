@@ -87,7 +87,8 @@ See [SCREEN-LAYOUT-PROMPT.md](SCREEN-LAYOUT-PROMPT.md) for the full UI spec,
 component topology and the Review/Rewrite and Narrate/Produce workflows, and
 [docs/UI-WALKTHROUGH.md](docs/UI-WALKTHROUGH.md) for an annotated, screenshot
 tour of the Review and Rewrite stages (with a slideshow at
-[docs/ui-deck.html](docs/ui-deck.html)).
+[docs/ui-deck.html](docs/ui-deck.html)). [docs/PROMPTS.md](docs/PROMPTS.md)
+tables every LLM prompt the workflows use and which script holds it.
 
 ## Quick start
 
