@@ -7,9 +7,9 @@ this project is pre-1.0 and not yet versioned, so dated entries are used.
 ## [Unreleased]
 
 ### Added
-- **Model refresh button.** A `⟳` button on the Model picker re-queries Ollama
-  for the available LLM models (visible on the Review tab and every other tab),
-  with a toast on success/failure.
+- **Model refresh button.** A `⟳` button re-queries Ollama for the available LLM
+  models, with a toast on success/failure — on the Model picker (all tabs) and
+  next to Default Model in the Settings panel.
 - **Rewrite → "Advise" toggle.** A checkbox in the Rewrite panel that asks the
   persona to draft a `[DRAFT: …]` proposal after each `[NEEDS: …]` gap —
   plausible, context/benchmark-based, and explicitly labeled as unverified, with

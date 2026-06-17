@@ -9,11 +9,16 @@
       <label class="field">Ollama URL
         <input type="text" v-model="store.settings.ollamaUrl" /></label>
 
-      <label class="field">Default Model
-        <select v-model="store.settings.model">
-          <option v-for="m in store.models" :key="m" :value="m">{{ m }}</option>
-        </select>
-      </label>
+      <div class="field">Default Model
+        <div class="model-row">
+          <select v-model="store.settings.model">
+            <option v-for="m in store.models" :key="m" :value="m">{{ m }}</option>
+          </select>
+          <button class="refresh" :disabled="refreshingModels" title="Reload models from Ollama"
+                  @click="refreshModels">{{ refreshingModels ? '…' : '⟳' }}</button>
+        </div>
+        <div v-if="store.modelError" class="model-err">{{ store.modelError }}</div>
+      </div>
 
       <div class="field">Theme
         <div class="radios">
@@ -46,9 +51,22 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
 import { store, persistSettings, loadModels, toast } from '../store.js';
 
 const emit = defineEmits(['close']);
+
+const refreshingModels = ref(false);
+async function refreshModels() {
+  refreshingModels.value = true;
+  try {
+    await loadModels();
+    if (!store.modelError) toast(`Loaded ${store.models.length} model${store.models.length === 1 ? '' : 's'}`);
+    else toast(store.modelError, 'error');
+  } finally {
+    refreshingModels.value = false;
+  }
+}
 
 async function save() {
   persistSettings();
@@ -76,6 +94,14 @@ function resetDefaults() {
 .x { background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 16px; }
 .field { display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: var(--space-4); }
 .field input, .field select { display: block; width: 100%; margin-top: 4px; background: var(--bg-panel); color: var(--text-primary); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px; }
+.model-row { display: flex; gap: var(--space-2); margin-top: 4px; }
+.model-row select { flex: 1; margin-top: 0; }
+.refresh {
+  flex: 0 0 auto; background: transparent; border: 1px solid var(--border);
+  color: var(--accent); border-radius: var(--radius-sm); width: 36px; cursor: pointer; font-size: 15px;
+}
+.refresh:disabled { opacity: .5; cursor: progress; }
+.model-err { font-size: 11px; color: var(--danger); margin-top: 4px; }
 .radios { display: flex; gap: var(--space-4); margin-top: 6px; }
 .radios label { color: var(--text-primary); }
 .actions { display: flex; gap: var(--space-3); margin-top: var(--space-5); }
