@@ -16,6 +16,8 @@ const UPLOADS_DIR = path.join(__dirname, '..', 'uploads');
 const OUTPUTS_DIR = path.join(__dirname, '..', 'outputs');
 const PERSONAS_DIR = path.join(__dirname, '..', '..', 'personas');
 const DIST_DIR = path.join(__dirname, '..', 'dist');
+const REVIEWER_SCRIPT_PATH = path.join(__dirname, '..', '..', 'scripts', 'reviewer_synth.py');
+const REVIEWS_DIR = path.join(__dirname, '..', '..', 'reviews');
 
 fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 fs.mkdirSync(OUTPUTS_DIR, { recursive: true });
@@ -1207,6 +1209,219 @@ app.post('/api/jobs/:id/synthesize', async (req, res) => {
   } catch (err) {
     finish('error', err.message);
   }
+});
+
+// ===========================================================================
+// REVIEW / REWRITE — bridged from the retired FastAPI reviewer via
+// scripts/reviewer_synth.py (subprocess), reusing the same jobs Map + SSE infra.
+// ===========================================================================
+
+const REVIEW_EXTS = ['.pptx', '.pdf', '.docx', '.doc', '.odt', '.md', '.markdown', '.txt'];
+
+function reviewFileExtension(filename) {
+  const lower = (filename || '').toLowerCase();
+  return REVIEW_EXTS.find(ext => lower.endsWith(ext)) || null;
+}
+
+const reviewUpload = multer({
+  storage: multer.diskStorage({
+    destination: UPLOADS_DIR,
+    filename(req, file, cb) {
+      const id = makeJobId();
+      req._jobId = id;
+      cb(null, `${id}${reviewFileExtension(file.originalname) || '.bin'}`);
+    },
+  }),
+  limits: { fileSize: 500 * 1024 * 1024 },
+  fileFilter(req, file, cb) {
+    if (reviewFileExtension(file.originalname)) return cb(null, true);
+    cb(new Error(`Unsupported file type. Accepted: ${REVIEW_EXTS.join(', ')}`));
+  },
+});
+
+function personaDisplayName(filename) {
+  const base = filename.replace(/^\d+-/, '').replace(/-PERSONA\.md$/i, '').replace(/\.md$/, '');
+  return base.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+}
+
+function docSlug(name) {
+  const stem = path.basename(name, path.extname(name)).toLowerCase();
+  return stem.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'document';
+}
+
+// Shared handler for POST /api/review and POST /api/rewrite.
+function startReviewJob(mode) {
+  return (req, res) => {
+    const {
+      personas = '',
+      model = 'llama3.2:3b',
+      ollamaUrl = 'http://localhost:11434',
+      text = '',
+      title = '',
+    } = req.body;
+
+    const availablePersonas = new Set(
+      fs.existsSync(PERSONAS_DIR)
+        ? fs.readdirSync(PERSONAS_DIR).filter(f => /-PERSONA\.md$/i.test(f))
+        : []
+    );
+    const selected = personas.split(',').map(s => s.trim()).filter(Boolean);
+    const bad = selected.filter(p => !availablePersonas.has(p));
+    if (!selected.length || bad.length) {
+      if (req.file) fs.unlink(req.file.path, () => {});
+      return res.status(400).json({ error: `Invalid persona selection: ${bad.join(', ') || '(empty)'}` });
+    }
+
+    let inputArgs;
+    let fileName;
+    let slug;
+    if (req.file) {
+      fileName = req.file.originalname;
+      slug = docSlug(fileName);
+      inputArgs = ['--input', req.file.path];
+    } else if (text.trim()) {
+      fileName = title.trim() || 'Pasted text';
+      slug = title.trim() ? docSlug(fileName) : `pasted-${Date.now().toString(36)}`;
+      inputArgs = ['--text', text.trim()];
+    } else {
+      return res.status(400).json({ error: 'Provide a file or pasted text' });
+    }
+
+    const jobId = req._jobId || makeJobId();
+    const job = {
+      id: jobId,
+      status: 'running',
+      logs: [],
+      clients: new Set(),
+      kind: mode,            // 'review' | 'rewrite'
+      docSlug: slug,
+      fileName,
+      error: null,
+      personas: selected.map(f => ({
+        file: f, slug: f.replace(/\.md$/i, '').toLowerCase(),
+        name: personaDisplayName(f), state: 'queued',
+      })),
+      reports: [],
+    };
+    jobs.set(jobId, job);
+    res.json({ jobId, docSlug: slug });
+
+    const broadcast = (payload) => {
+      for (const client of job.clients) client.write(`data: ${JSON.stringify(payload)}\n\n`);
+    };
+    const pushLog = (line) => { job.logs.push(line); broadcast({ type: 'log', line }); };
+    const finish = (status, error = null) => {
+      job.status = status;
+      job.error = error;
+      broadcast({ type: 'done', status, error });
+      for (const client of job.clients) client.end();
+      if (req.file) fs.unlink(req.file.path, () => {});
+    };
+
+    const handleLine = (line) => {
+      let m;
+      if (line.startsWith('@@SLUG ')) {
+        job.docSlug = line.slice(7).trim();
+        broadcast({ type: 'slug', slug: job.docSlug });
+      } else if ((m = line.match(/^@@STATE persona=(\S+) state=(\S+)/))) {
+        const p = job.personas.find(x => x.slug === m[1]);
+        if (p) p.state = m[2];
+        broadcast({ type: 'persona', slug: m[1], state: m[2] });
+      } else if ((m = line.match(/^@@REPORT slug=(\S+) name=(.+)$/))) {
+        if (!job.reports.find(r => r.slug === m[1])) job.reports.push({ slug: m[1], name: m[2].trim() });
+        broadcast({ type: 'report', slug: m[1], name: m[2].trim() });
+      } else if ((m = line.match(/^@@DONE state=(\S+)(?: error=(.*))?$/))) {
+        job._finalState = m[1];
+        job._finalError = m[2] ? m[2].trim() : null;
+      } else {
+        pushLog(line);
+      }
+    };
+
+    const args = [
+      REVIEWER_SCRIPT_PATH, 'run',
+      ...inputArgs,
+      '--file-name', fileName,
+      '--slug', slug,
+      '--personas', selected.join(','),
+      '--model', model,
+      '--mode', mode,
+      '--ollama-url', ollamaUrl,
+    ];
+    const proc = spawn('python3', args);
+    proc.stdout.on('data', chunk => chunk.toString().split('\n').filter(Boolean).forEach(handleLine));
+    proc.stderr.on('data', chunk => chunk.toString().split('\n').filter(Boolean).forEach(pushLog));
+    proc.on('error', err => finish('error', err.message));
+    proc.on('close', code => {
+      if (job._finalState === 'error') return finish('error', job._finalError || 'Review failed');
+      if (code !== 0 && job._finalState !== 'complete') return finish('error', `Process exited with code ${code}`);
+      finish('done');
+    });
+  };
+}
+
+app.post('/api/review', reviewUpload.single('file'), startReviewJob('review'));
+app.post('/api/rewrite', reviewUpload.single('file'), startReviewJob('rewrite'));
+
+// Snapshot of a review job's current state (personas, reports, status).
+app.get('/api/reviews/jobs/:id', (req, res) => {
+  const job = jobs.get(req.params.id);
+  if (!job || !job.kind) return res.status(404).json({ error: 'Review job not found' });
+  res.json({
+    id: job.id, status: job.status, error: job.error, kind: job.kind,
+    docSlug: job.docSlug, fileName: job.fileName,
+    personas: job.personas, reports: job.reports,
+  });
+});
+
+// List finished report markdown for a doc slug (synthesis first).
+app.get('/api/reviews/:slug/reports', (req, res) => {
+  const slug = req.params.slug;
+  if (!/^[a-z0-9-]+$/.test(slug)) return res.status(400).json({ error: 'Invalid slug' });
+  const dir = path.join(REVIEWS_DIR, slug);
+  if (!fs.existsSync(dir)) return res.json({ reports: [] });
+  const files = fs.readdirSync(dir).filter(f => f.endsWith('.md') && f !== '_extracted.md');
+  files.sort((a, b) => (a === '00-SYNTHESIS.md' ? -1 : b === '00-SYNTHESIS.md' ? 1 : a.localeCompare(b)));
+  const reports = files.map(f => {
+    const stem = f.replace(/\.md$/, '');
+    let name;
+    if (f === '00-SYNTHESIS.md') name = 'Synthesis';
+    else if (stem.startsWith('rewrite-')) name = personaDisplayName(stem.replace(/^rewrite-/, '')) + ' Rewrite';
+    else name = personaDisplayName(stem);
+    return { slug: stem, name, content: fs.readFileSync(path.join(dir, f), 'utf8') };
+  });
+  res.json({ reports });
+});
+
+// Export a finished report to DOCX or PPTX via the Python helper.
+app.get('/api/export/:slug/:report.:format(docx|pptx)', (req, res) => {
+  const { slug, report, format } = req.params;
+  if (!/^[a-z0-9-]+$/.test(slug) || !/^[a-z0-9-]+$/i.test(report)) {
+    return res.status(400).json({ error: 'Invalid report reference' });
+  }
+  if (format === 'pptx' && !report.startsWith('rewrite-')) {
+    return res.status(400).json({ error: 'Only rewrite reports can be exported to PPTX' });
+  }
+  const name = report.toLowerCase() === '00-synthesis' ? '00-SYNTHESIS.md' : `${report}.md`;
+  const mdPath = path.join(REVIEWS_DIR, slug, name);
+  if (!fs.existsSync(mdPath)) return res.status(404).json({ error: 'Report not found' });
+
+  const outPath = path.join(UPLOADS_DIR, `export-${makeJobId()}.${format}`);
+  const proc = spawn('python3', [REVIEWER_SCRIPT_PATH, 'export', '--format', format, '--input', mdPath, '--output', outPath]);
+  let stderr = '';
+  proc.stderr.on('data', d => (stderr += d));
+  proc.on('error', err => res.status(500).json({ error: err.message }));
+  proc.on('close', code => {
+    if (code !== 0 || !fs.existsSync(outPath)) {
+      return res.status(500).json({ error: `Export failed: ${stderr || 'code ' + code}` });
+    }
+    const mime = format === 'docx'
+      ? 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      : 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
+    res.setHeader('Content-Type', mime);
+    res.setHeader('Content-Disposition', `attachment; filename="${slug}-${report}.${format}"`);
+    fs.createReadStream(outPath).pipe(res).on('close', () => fs.unlink(outPath, () => {}));
+  });
 });
 
 if (fs.existsSync(DIST_DIR)) {
