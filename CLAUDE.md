@@ -61,5 +61,7 @@ System: libreoffice, poppler-utils, ffmpeg, marp-cli, ollama.
 ## Conventions
 
 - Commit one runnable checkpoint per logical change; keep the app bootable.
+- Update [CHANGELOG.md](CHANGELOG.md) (the `[Unreleased]` section) in the same
+  commit as any user-facing change — Added/Changed/Removed, matching the commit.
 - Treat the persona files as a stable contract across modes.
 - Prefer extending the existing job/SSE infra over new streaming mechanisms.
