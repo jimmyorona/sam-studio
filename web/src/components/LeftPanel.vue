@@ -84,7 +84,10 @@
 
     <!-- 2.4 Model -->
     <section class="block">
-      <h3>🤖 Model</h3>
+      <h3>🤖 Model
+        <button class="refresh" :disabled="refreshingModels" title="Reload models from Ollama"
+                @click="refreshModels">{{ refreshingModels ? '…' : '⟳' }}</button>
+      </h3>
       <select v-model="store.settings.model" class="full">
         <option v-for="m in store.models" :key="m" :value="m">{{ m }}</option>
       </select>
@@ -115,12 +118,24 @@
 import { ref, computed } from 'vue';
 import {
   store, setDocument, setPastedDocument, clearDocument, docSupportsNarrate,
-  startReview, startNarrate, startProduce, previewSlide, loadVoices, toast,
+  startReview, startNarrate, startProduce, previewSlide, loadVoices, loadModels, toast,
 } from '../store.js';
 
 const dragOver = ref(false);
 const showContext = ref(false);
 const previewing = ref(false);
+const refreshingModels = ref(false);
+
+async function refreshModels() {
+  refreshingModels.value = true;
+  try {
+    await loadModels();
+    if (!store.modelError) toast(`Loaded ${store.models.length} model${store.models.length === 1 ? '' : 's'}`);
+    else toast(store.modelError, 'error');
+  } finally {
+    refreshingModels.value = false;
+  }
+}
 
 const narrateOk = computed(() => docSupportsNarrate());
 
@@ -199,6 +214,12 @@ function run() {
 }
 .block h3 { font-size: 14px; margin: 0 0 var(--space-3); display: flex; justify-content: space-between; }
 .collapse { cursor: pointer; }
+.refresh {
+  background: transparent; border: 1px solid var(--border); color: var(--accent);
+  border-radius: var(--radius-sm); width: 24px; height: 22px; line-height: 1;
+  cursor: pointer; font-size: 14px; padding: 0;
+}
+.refresh:disabled { opacity: .5; cursor: progress; }
 .dropzone {
   border: 1.5px dashed var(--border); border-radius: var(--radius-md);
   padding: var(--space-5); text-align: center; cursor: pointer; transition: border-color .15s;
