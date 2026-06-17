@@ -230,19 +230,49 @@ def gather_review_findings(out_dir: Path) -> str:
     return "\n\n".join(parts).strip()
 
 
-def ollama_chat(ollama_url: str, model: str, system: str, user: str) -> str:
-    resp = requests.post(
-        f"{ollama_url}/api/chat",
-        json={
-            "model": model,
-            "stream": False,
-            "messages": [
-                {"role": "system", "content": system},
-                {"role": "user", "content": user},
-            ],
-        },
-        timeout=(10, 900),
-    )
+_CTX_CACHE: dict[str, "int | None"] = {}
+
+
+def model_max_ctx(ollama_url: str, model: str) -> "int | None":
+    """The selected model's maximum context window, via Ollama /api/show.
+
+    Set REVIEWER_NUM_CTX to override (e.g. to cap memory use on a small GPU).
+    Cached per model. Returns None if it can't be determined (then Ollama's
+    own default applies).
+    """
+    override = os.environ.get("REVIEWER_NUM_CTX")
+    if override and override.isdigit():
+        return int(override)
+    if model in _CTX_CACHE:
+        return _CTX_CACHE[model]
+    n = None
+    try:
+        resp = requests.post(f"{ollama_url}/api/show", json={"model": model}, timeout=(10, 30))
+        resp.raise_for_status()
+        info = resp.json().get("model_info", {}) or {}
+        for key, val in info.items():
+            if key.endswith(".context_length") and isinstance(val, int):
+                n = val
+                break
+    except Exception:  # noqa: BLE001  (best-effort; fall back to Ollama default)
+        n = None
+    _CTX_CACHE[model] = n
+    return n
+
+
+def ollama_chat(ollama_url: str, model: str, system: str, user: str,
+                num_ctx: "int | None" = None) -> str:
+    payload = {
+        "model": model,
+        "stream": False,
+        "messages": [
+            {"role": "system", "content": system},
+            {"role": "user", "content": user},
+        ],
+    }
+    if num_ctx:
+        payload["options"] = {"num_ctx": num_ctx}
+    resp = requests.post(f"{ollama_url}/api/chat", json=payload, timeout=(10, 900))
     resp.raise_for_status()
     return resp.json()["message"]["content"].strip()
 
@@ -289,6 +319,12 @@ def run(args) -> int:
 
     verb = "rewrite" if rewrite else "review"
     log(f"Running {len(personas)} persona {verb}(s), up to {MAX_CONCURRENT_REVIEWS} concurrent …")
+
+    # Use the model's full context window so stacked prompts (persona brief +
+    # context + findings + document) are never silently truncated.
+    num_ctx = model_max_ctx(args.ollama_url, args.model)
+    if num_ctx:
+        log(f"  Model context window: {num_ctx} tokens.")
 
     # Carry the prior review's analysis into every rewrite, regardless of the
     # rewrite persona. Gather once up front so concurrent rewrites don't read
@@ -351,7 +387,7 @@ def run(args) -> int:
                 f"{findings_block if rewrite else ''}"
                 f"{task_line}:\n\n{content}"
             )
-            report = ollama_chat(args.ollama_url, args.model, system, user_msg)
+            report = ollama_chat(args.ollama_url, args.model, system, user_msg, num_ctx)
             (out_dir / out_file).write_text(report + "\n", encoding="utf-8")
             p["state"] = "done"
             marker(f"@@STATE persona={p['slug']} state=done")
@@ -399,7 +435,7 @@ def run(args) -> int:
             f"Panel: {', '.join(p['name'] for p in done)}\n\n"
             + "\n\n".join(parts)
         )
-        synthesis = ollama_chat(args.ollama_url, args.model, SYNTHESIS_SYSTEM_PROMPT, user_msg)
+        synthesis = ollama_chat(args.ollama_url, args.model, SYNTHESIS_SYSTEM_PROMPT, user_msg, num_ctx)
         (out_dir / "00-SYNTHESIS.md").write_text(synthesis + "\n", encoding="utf-8")
         marker("@@REPORT slug=00-SYNTHESIS name=Synthesis")
         marker("@@DONE state=complete")

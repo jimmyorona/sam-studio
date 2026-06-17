@@ -23,6 +23,11 @@ this project is pre-1.0 and not yet versioned, so dated entries are used.
   (purple) inline, and the rewrite summary shows a drafted count.
 
 ### Changed
+- **Auto-size the model context window.** Review/rewrite now query the selected
+  model's max context length (Ollama `/api/show`) and pass it as `num_ctx`, so
+  stacked prompts (persona brief + context + findings + document) aren't
+  silently truncated by Ollama's small default. No config knob; override with
+  the `REVIEWER_NUM_CTX` env var to cap memory use.
 - **Skip synthesis for a single reviewer.** When only one persona review
   succeeds, the merge/synthesis pass is skipped (nothing to merge) — no
   `00-SYNTHESIS.md` is written, and the Review progress view omits the Synthesis
