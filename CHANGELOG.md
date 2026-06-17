@@ -7,6 +7,9 @@ this project is pre-1.0 and not yet versioned, so dated entries are used.
 ## [Unreleased]
 
 ### Added
+- **Architecture diagrams.** `docs/ARCHITECTURE.md` with Mermaid diagrams of the
+  component topology and the Review/Rewrite and Narrate/Produce workflows
+  (web UI ↔ API services ↔ Python bridges ↔ Ollama/TTS), linked from the README.
 - **Context file attachments.** The Context section accepts an attached `.md`/
   `.txt` file (combined with any typed text) as background that informs the
   review/rewrite. Context now reaches Review/Rewrite (previously narrate-only),

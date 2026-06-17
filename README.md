@@ -82,7 +82,9 @@ sam-studio/
 
 The Vue app is one SPA with a persistent top bar (mode tabs + settings) and a
 two-panel body: a shared left config panel and a per-mode right output panel.
-See [SCREEN-LAYOUT-PROMPT.md](SCREEN-LAYOUT-PROMPT.md) for the full UI spec.
+See [SCREEN-LAYOUT-PROMPT.md](SCREEN-LAYOUT-PROMPT.md) for the full UI spec, and
+[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for Mermaid diagrams of the
+component topology and the Review/Rewrite and Narrate/Produce workflows.
 
 ## Quick start
 
