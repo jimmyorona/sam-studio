@@ -741,27 +741,35 @@ app.get('/api/prereqs', async (req, res) => {
     try { await execFileP('python3', ['-c', 'import supertonic']); return true; } catch { return false; }
   }
 
+  async function checkPyModule(mod) {
+    try { await execFileP('python3', ['-c', `import ${mod}`]); return true; } catch { return false; }
+  }
+
   const usingElevenLabs = ttsProvider === 'elevenlabs' || ttsProvider === 'elevenlabs-js';
   const usingSupertonic = ttsProvider === 'supertonic';
 
   const checks = [
     checkBin('soffice'),
     checkBin('pdftoppm'),
+    checkBin('pdftotext'),
     checkBin('ffmpeg'),
     checkOllama(),
     checkMarp(),
+    checkPyModule('docx'),     // python-docx — review/rewrite DOCX export
   ];
   if (usingSupertonic) checks.push(checkSupertonic());
   else if (!usingElevenLabs) checks.push(checkEdgeTts());
 
-  const [soffice, pdftoppm, ffmpeg, ollama, marp, ttsDep] = await Promise.all(checks);
+  const [soffice, pdftoppm, pdftotext, ffmpeg, ollama, marp, pydocx, ttsDep] = await Promise.all(checks);
 
   const results = [
     { name: 'soffice (LibreOffice)', ok: soffice, hint: 'sudo apt install libreoffice' },
     { name: 'pdftoppm (poppler)', ok: pdftoppm, hint: 'sudo apt install poppler-utils' },
+    { name: 'pdftotext (poppler)', ok: pdftotext, hint: 'sudo apt install poppler-utils' },
     { name: 'ffmpeg', ok: ffmpeg, hint: 'sudo apt install ffmpeg' },
     { name: `Ollama (${ollamaUrl})`, ok: ollama, hint: 'Run: ollama serve' },
     { name: 'Marp CLI (Markdown slides)', ok: marp, hint: 'npm i -g @marp-team/marp-cli' },
+    { name: 'python-docx (DOCX export)', ok: pydocx, hint: 'pip install python-docx' },
   ];
 
   if (usingSupertonic) {
