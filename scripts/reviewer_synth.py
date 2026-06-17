@@ -311,6 +311,24 @@ def run(args) -> int:
         rewriter_system += REWRITER_ADVISE_ADDENDUM
         log("  Advise mode on — drafting proposed content for identified needs.")
 
+    # Optional background context (typed text and/or an attached file).
+    context_text = args.context or ""
+    if args.context_file:
+        try:
+            context_text = (context_text + "\n\n" + Path(args.context_file).read_text(
+                encoding="utf-8", errors="replace")).strip()
+        except OSError as e:
+            log(f"  WARNING: could not read context file: {e}")
+    context_block = ""
+    if context_text.strip():
+        context_block = (
+            "BACKGROUND CONTEXT (provided by the user to inform your "
+            f"{'rewrite' if rewrite else 'review'} — use it for grounding, but the "
+            "document content below is what you assess):\n\n"
+            f"{context_text.strip()}\n\n---\n\n"
+        )
+        log(f"  Using {len(context_text)} chars of background context.")
+
     def review_one(p: dict) -> dict:
         p["state"] = "running"
         marker(f"@@STATE persona={p['slug']} state=running")
@@ -329,6 +347,7 @@ def run(args) -> int:
                 f"PERSONA BRIEF (referred to as \"{p['name']}\" — use that name "
                 f"where a persona name is needed, not the internal character name):\n\n"
                 f"{brief}\n\n---\n\n"
+                f"{context_block}"
                 f"{findings_block if rewrite else ''}"
                 f"{task_line}:\n\n{content}"
             )
@@ -562,6 +581,8 @@ def main() -> int:
     r.add_argument("--mode", choices=["review", "rewrite"], default="review")
     r.add_argument("--advise", action="store_true",
                    help="rewrite: draft [DRAFT: …] content for each [NEEDS: …] gap")
+    r.add_argument("--context", default="", help="background context text to inform the review/rewrite")
+    r.add_argument("--context-file", help="path to a file whose text is used as background context")
     r.add_argument("--ollama-url", default=DEFAULT_OLLAMA_URL)
     r.set_defaults(func=run)
 

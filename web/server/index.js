@@ -1267,6 +1267,7 @@ function startReviewJob(mode) {
       text = '',
       title = '',
       advise = '',
+      context = '',
     } = req.body;
 
     const availablePersonas = new Set(
@@ -1315,6 +1316,13 @@ function startReviewJob(mode) {
     jobs.set(jobId, job);
     res.json({ jobId, docSlug: slug });
 
+    // Background context (typed + attached file) → a temp file passed to Python.
+    let contextPath = null;
+    if (context.trim()) {
+      contextPath = path.join(UPLOADS_DIR, `context-${jobId}.txt`);
+      try { fs.writeFileSync(contextPath, context); } catch { contextPath = null; }
+    }
+
     const broadcast = (payload) => {
       for (const client of job.clients) client.write(`data: ${JSON.stringify(payload)}\n\n`);
     };
@@ -1325,6 +1333,7 @@ function startReviewJob(mode) {
       broadcast({ type: 'done', status, error });
       for (const client of job.clients) client.end();
       if (req.file) fs.unlink(req.file.path, () => {});
+      if (contextPath) fs.unlink(contextPath, () => {});
     };
 
     const handleLine = (line) => {
@@ -1358,6 +1367,7 @@ function startReviewJob(mode) {
       '--ollama-url', ollamaUrl,
     ];
     if (mode === 'rewrite' && (advise === '1' || advise === 'true')) args.push('--advise');
+    if (contextPath) args.push('--context-file', contextPath);
     const proc = spawn('python3', args);
     proc.stdout.on('data', chunk => chunk.toString().split('\n').filter(Boolean).forEach(handleLine));
     proc.stderr.on('data', chunk => chunk.toString().split('\n').filter(Boolean).forEach(pushLog));

@@ -43,6 +43,7 @@ export const store = reactive({
   selectedPersona: '',                  // single (rewrite/narrate)
   voice: { provider: 'edge', voice: 'en-US-AriaNeural', style: '' },
   context: '',
+  contextFile: null,                    // { name, content } — attached .md/.txt
   adviseNeeds: false,                   // rewrite: draft content for [NEEDS:] gaps
 
   // ── per-mode results ──
@@ -148,6 +149,21 @@ export function clearDocument() {
   store.doc = null;
   store.pasteText = '';
 }
+
+// ── context (typed text + optional attached .md/.txt file) ──
+export async function setContextFile(file) {
+  const content = await file.text();
+  store.contextFile = { name: file.name, content };
+}
+export function clearContextFile() {
+  store.contextFile = null;
+}
+export function resolvedContext() {
+  const parts = [];
+  if (store.contextFile?.content?.trim()) parts.push(store.contextFile.content.trim());
+  if (store.context.trim()) parts.push(store.context.trim());
+  return parts.join('\n\n');
+}
 function slugify(name) {
   return name.replace(/\.[^.]+$/, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'document';
 }
@@ -181,6 +197,8 @@ export async function startReview(mode) {
   form.append('personas', personas.join(','));
   form.append('model', store.settings.model);
   form.append('ollamaUrl', store.settings.ollamaUrl);
+  const ctx = resolvedContext();
+  if (ctx) form.append('context', ctx);
   if (mode === 'rewrite' && store.adviseNeeds) form.append('advise', '1');
 
   let jobId, slug;
@@ -250,7 +268,8 @@ export async function startNarrate() {
   form.append('ttsProvider', store.voice.provider);
   form.append('voice', store.voice.voice);
   if (store.settings.elApiKey) form.append('elApiKey', store.settings.elApiKey);
-  if (store.context.trim()) form.append('contextText', store.context.trim());
+  const narrCtx = resolvedContext();
+  if (narrCtx) form.append('contextText', narrCtx);
   if (store.selectedPersona) {
     const p = store.personas.find(x => x.filename === store.selectedPersona);
     if (p) form.append('personaText', personaLabel(store.selectedPersona));

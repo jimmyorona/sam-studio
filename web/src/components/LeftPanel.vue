@@ -99,8 +99,15 @@
       <h3 class="collapse" @click="showContext = !showContext">
         📎 Context (optional) <span>{{ showContext ? '▾' : '▸' }}</span>
       </h3>
-      <textarea v-if="showContext" v-model="store.context" class="paste" rows="3"
-                placeholder="Background context…"></textarea>
+      <div v-if="showContext">
+        <div v-if="store.contextFile" class="ctx-file">
+          <span class="ok">✓ {{ store.contextFile.name }}</span>
+          <button class="x" title="Remove" @click="clearContextFile">✕</button>
+        </div>
+        <button v-else class="mini" @click="$refs.ctxInput.click()">📎 Attach .md / .txt</button>
+        <input ref="ctxInput" type="file" hidden accept=".md,.markdown,.txt" @change="onContextFile" />
+        <textarea v-model="store.context" class="paste" rows="3" placeholder="…or paste background context"></textarea>
+      </div>
     </section>
 
     <!-- 2.6 Run -->
@@ -118,7 +125,8 @@
 import { ref, computed } from 'vue';
 import {
   store, setDocument, setPastedDocument, clearDocument, docSupportsNarrate,
-  startReview, startNarrate, startProduce, previewSlide, loadVoices, loadModels, toast,
+  startReview, startNarrate, startProduce, previewSlide, loadVoices, loadModels,
+  setContextFile, clearContextFile, toast,
 } from '../store.js';
 
 const dragOver = ref(false);
@@ -142,6 +150,14 @@ const narrateOk = computed(() => docSupportsNarrate());
 function onDrop(e) { dragOver.value = false; if (e.dataTransfer.files[0]) setDocument(e.dataTransfer.files[0]); }
 function onPick(e) { if (e.target.files[0]) setDocument(e.target.files[0]); }
 function usePaste() { setPastedDocument(store.pasteText.trim(), ''); }
+
+async function onContextFile(e) {
+  const f = e.target.files[0];
+  if (!f) return;
+  try { await setContextFile(f); }
+  catch (err) { toast(`Could not read context file: ${err.message}`, 'error'); }
+  e.target.value = '';
+}
 
 function selectAll() { store.selectedPersonas = store.personas.map(p => p.filename); }
 function clearPersonas() { store.selectedPersonas = []; }
@@ -246,7 +262,8 @@ function run() {
 .personas input { grid-row: span 2; }
 .p-name { font-weight: 600; font-size: 13px; }
 .p-sum { grid-column: 2; font-size: 11px; color: var(--text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.doc-confirm { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
+.doc-confirm, .ctx-file { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
+.ctx-file { margin-bottom: var(--space-2); }
 .ok { color: var(--success); font-size: 13px; }
 .warn { color: var(--warning); font-size: 11px; }
 .x { background: none; border: none; color: var(--text-secondary); cursor: pointer; margin-left: auto; }

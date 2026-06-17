@@ -7,6 +7,10 @@ this project is pre-1.0 and not yet versioned, so dated entries are used.
 ## [Unreleased]
 
 ### Added
+- **Context file attachments.** The Context section accepts an attached `.md`/
+  `.txt` file (combined with any typed text) as background that informs the
+  review/rewrite. Context now reaches Review/Rewrite (previously narrate-only),
+  injected into each persona prompt as a grounding block.
 - **Model refresh button.** A `⟳` button re-queries Ollama for the available LLM
   models, with a toast on success/failure — on the Model picker (all tabs) and
   next to Default Model in the Settings panel.
