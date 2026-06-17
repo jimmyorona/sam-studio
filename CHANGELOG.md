@@ -19,6 +19,10 @@ this project is pre-1.0 and not yet versioned, so dated entries are used.
   (purple) inline, and the rewrite summary shows a drafted count.
 
 ### Changed
+- **Skip synthesis for a single reviewer.** When only one persona review
+  succeeds, the merge/synthesis pass is skipped (nothing to merge) — no
+  `00-SYNTHESIS.md` is written, and the Review progress view omits the Synthesis
+  row.
 - **Review findings now flow into Rewrite.** When a rewrite runs, the prior
   review's analysis for the same document (the synthesis if present, otherwise
   the per-persona reviews) is injected into every rewrite persona's prompt as a

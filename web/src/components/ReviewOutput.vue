@@ -16,7 +16,7 @@
           <span class="mark">{{ stateIcon(p.state) }}</span> {{ p.name }}
           <span class="dots"></span> <span class="st">{{ p.state }}</span>
         </li>
-        <li><span class="mark">{{ synthIcon }}</span> Synthesis <span class="dots"></span>
+        <li v-if="hasSynthesis"><span class="mark">{{ synthIcon }}</span> Synthesis <span class="dots"></span>
           <span class="st">{{ synthState }}</span></li>
       </ul>
       <pre class="log">{{ slot.logs.slice(-12).join('\n') }}</pre>
@@ -78,11 +78,15 @@ watch(() => slot.value.reports, reports => {
 const activeReport = computed(() => slot.value.reports.find(r => r.slug === active.value));
 function byslug(s) { return slot.value.reports.find(r => r.slug === s); }
 
+// A synthesis (merge) pass only runs when 2+ personas are reviewing.
+const hasSynthesis = computed(() => slot.value.personas.length > 1);
+
 const pct = computed(() => {
   const ps = slot.value.personas;
   if (!ps.length) return 5;
   const done = ps.filter(p => p.state === 'done' || p.state === 'error').length;
-  return Math.min(95, Math.round((done / (ps.length + 1)) * 100) || 5);
+  const total = ps.length + (hasSynthesis.value ? 1 : 0);
+  return Math.min(95, Math.round((done / total) * 100) || 5);
 });
 const synthState = computed(() => {
   const allDone = slot.value.personas.length && slot.value.personas.every(p => p.state === 'done' || p.state === 'error');

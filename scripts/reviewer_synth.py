@@ -363,6 +363,11 @@ def run(args) -> int:
         log("Rewrite complete.")
         return 0
 
+    if len(done) < 2:
+        log("Single reviewer — nothing to merge, skipping synthesis.")
+        marker("@@DONE state=complete")
+        return 0
+
     log("Synthesizing panel reviews …")
     try:
         parts = []
