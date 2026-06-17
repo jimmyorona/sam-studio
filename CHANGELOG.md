@@ -7,6 +7,9 @@ this project is pre-1.0 and not yet versioned, so dated entries are used.
 ## [Unreleased]
 
 ### Added
+- **UI walkthrough.** `docs/UI-WALKTHROUGH.md` — an annotated, screenshot tour of
+  the Review and Rewrite workflow stages (empty → configured → running → results
+  → compare), captured from real runs, linked from the README.
 - **Architecture diagrams.** `docs/ARCHITECTURE.md` with Mermaid diagrams of the
   component topology and the Review/Rewrite and Narrate/Produce workflows
   (web UI ↔ API services ↔ Python bridges ↔ Ollama/TTS), linked from the README.
