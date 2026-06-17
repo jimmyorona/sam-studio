@@ -171,6 +171,41 @@ def check_ollama(ollama_url: str) -> None:
         )
 
 
+_CTX_CACHE: dict = {}
+
+
+def model_max_ctx(ollama_url: str, model: str):
+    """The selected model's maximum context window, via Ollama /api/show.
+
+    Narration is stateful (the whole deck accumulates in one conversation), so
+    using the model's full window avoids silent truncation. Set NARRATE_NUM_CTX
+    to override (e.g. to cap memory on a small GPU). Returns None if it can't be
+    determined, in which case Ollama's own default applies.
+    """
+    override = os.environ.get("NARRATE_NUM_CTX")
+    if override and override.isdigit():
+        return int(override)
+    if model in _CTX_CACHE:
+        return _CTX_CACHE[model]
+    n = None
+    try:
+        data = json.dumps({"model": model}).encode("utf-8")
+        req = urllib.request.Request(
+            f"{ollama_url}/api/show", data=data,
+            headers={"Content-Type": "application/json"}, method="POST",
+        )
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            info = json.loads(resp.read().decode("utf-8")).get("model_info", {}) or {}
+        for key, val in info.items():
+            if key.endswith(".context_length") and isinstance(val, int):
+                n = val
+                break
+    except Exception:  # best-effort; fall back to Ollama default
+        n = None
+    _CTX_CACHE[model] = n
+    return n
+
+
 # ---------------------------------------------------------------------------
 # Markdown Slide Parsing
 # ---------------------------------------------------------------------------
@@ -304,6 +339,7 @@ def generate_narration_chat(
     history: List[dict],
     model: str,
     ollama_url: str,
+    num_ctx: "int | None" = None,
 ) -> Tuple[str, List[dict]]:
     """Generate narration for one slide, appending to the full conversation history."""
     if not slide_text.strip():
@@ -317,11 +353,14 @@ def generate_narration_chat(
     user_content = SLIDE_USER_TEMPLATE.format(slide_text=slide_text, notes_block=notes_block)
 
     messages = history + [{"role": "user", "content": user_content}]
+    options = {"temperature": 0.3, "top_p": 0.9}
+    if num_ctx:
+        options["num_ctx"] = num_ctx
     payload = {
         "model": model,
         "messages": messages,
         "stream": False,
-        "options": {"temperature": 0.3, "top_p": 0.9},
+        "options": options,
     }
     data = json.dumps(payload).encode("utf-8")
     req = urllib.request.Request(
@@ -348,6 +387,7 @@ def generate_music_prompt(
     context: str,
     model: str,
     ollama_url: str,
+    num_ctx: "int | None" = None,
 ) -> str:
     """Generate a single background-music prompt from all slide content."""
     lines = []
@@ -371,6 +411,9 @@ def generate_music_prompt(
             "Reference document (draw on this as background knowledge when relevant):\n\n" + context
         )
 
+    options = {"temperature": 0.6, "top_p": 0.9}
+    if num_ctx:
+        options["num_ctx"] = num_ctx
     payload = {
         "model": model,
         "messages": [
@@ -378,7 +421,7 @@ def generate_music_prompt(
             {"role": "user", "content": MUSIC_PROMPT_USER_TEMPLATE.format(content=content)},
         ],
         "stream": False,
-        "options": {"temperature": 0.6, "top_p": 0.9},
+        "options": options,
     }
     data = json.dumps(payload).encode("utf-8")
     req = urllib.request.Request(
@@ -919,6 +962,12 @@ def main() -> int:
         check_prerequisites()
     check_ollama(args.ollama_url)
 
+    # Use the model's full context window so the stateful narration history
+    # (which grows with every slide) isn't silently truncated by Ollama.
+    num_ctx = model_max_ctx(args.ollama_url, args.model)
+    if num_ctx:
+        log(f"Model context window: {num_ctx} tokens.")
+
     work_dir = Path(tempfile.mkdtemp(prefix="pptx_video_"))
     try:
         log(f"Working directory: {work_dir}")
@@ -933,7 +982,7 @@ def main() -> int:
             if args.generate_music_prompt_only:
                 persona = load_persona(args.persona_text, args.persona_file)
                 context = load_context(args.context_text, args.context_file)
-                prompt = generate_music_prompt(slide_texts, persona, context, args.model, args.ollama_url)
+                prompt = generate_music_prompt(slide_texts, persona, context, args.model, args.ollama_url, num_ctx)
                 Path(args.output).write_text(json.dumps({"prompt": prompt}, indent=2), encoding="utf-8")
                 log(f"Music prompt written to: {args.output}")
                 return 0
@@ -951,7 +1000,7 @@ def main() -> int:
             if args.generate_music_prompt_only:
                 persona = load_persona(args.persona_text, args.persona_file)
                 context = load_context(args.context_text, args.context_file)
-                prompt = generate_music_prompt(slide_texts, persona, context, args.model, args.ollama_url)
+                prompt = generate_music_prompt(slide_texts, persona, context, args.model, args.ollama_url, num_ctx)
                 Path(args.output).write_text(json.dumps({"prompt": prompt}, indent=2), encoding="utf-8")
                 log(f"Music prompt written to: {args.output}")
                 return 0
@@ -979,7 +1028,7 @@ def main() -> int:
         for idx, group in enumerate(groups):
             stext, notes = group["texts"]
             notes_for_prompt = re.sub(r'\[FRAME\]', '', notes, flags=re.IGNORECASE).strip()
-            narration, history = generate_narration_chat(stext, notes_for_prompt, history, args.model, args.ollama_url)
+            narration, history = generate_narration_chat(stext, notes_for_prompt, history, args.model, args.ollama_url, num_ctx)
             narrations.append(narration)
             log(f"  Group {idx + 1}/{len(groups)}: {narration[:100]} ...")
 
