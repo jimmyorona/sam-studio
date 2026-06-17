@@ -135,6 +135,18 @@ Rules:
 Output only the rewritten presentation in markdown — no preamble.
 """
 
+REWRITER_ADVISE_ADDENDUM = """\
+
+ADVISE MODE (enabled): do not leave gaps blank. For every `[NEEDS: X]`
+placeholder you would write, immediately follow it with `[DRAFT: …]` containing
+a specific, plausible value or sentence a domain expert might reasonably expect,
+so the author can confirm or correct it instead of starting from nothing. Base
+each draft on the document's context, the review findings, and conventional
+benchmarks — but never present a draft as verified fact; it is a starting
+proposal. Always keep the `[NEEDS: …]` marker in place so the gap stays tracked,
+with the `[DRAFT: …]` right after it.
+"""
+
 SYNTHESIS_SYSTEM_PROMPT = """\
 You are the chair of an expert review panel. You will receive several reviews
 of the same document, each written by a different expert persona. Write a
@@ -294,6 +306,11 @@ def run(args) -> int:
         else:
             log("  No prior review found for this document — rewriting from the source only.")
 
+    rewriter_system = REWRITER_SYSTEM_PROMPT
+    if rewrite and args.advise:
+        rewriter_system += REWRITER_ADVISE_ADDENDUM
+        log("  Advise mode on — drafting proposed content for identified needs.")
+
     def review_one(p: dict) -> dict:
         p["state"] = "running"
         marker(f"@@STATE persona={p['slug']} state=running")
@@ -301,7 +318,7 @@ def run(args) -> int:
         try:
             brief = (PERSONAS_DIR / p["file"]).read_text(encoding="utf-8")
             if rewrite:
-                system = REWRITER_SYSTEM_PROMPT
+                system = rewriter_system
                 task_line = f"PRESENTATION TO REWRITE ({args.file_name})"
                 out_file = f"rewrite-{p['slug']}.md"
             else:
@@ -538,6 +555,8 @@ def main() -> int:
     r.add_argument("--personas", required=True, help="comma-separated persona filenames")
     r.add_argument("--model", required=True)
     r.add_argument("--mode", choices=["review", "rewrite"], default="review")
+    r.add_argument("--advise", action="store_true",
+                   help="rewrite: draft [DRAFT: …] content for each [NEEDS: …] gap")
     r.add_argument("--ollama-url", default=DEFAULT_OLLAMA_URL)
     r.set_defaults(func=run)
 

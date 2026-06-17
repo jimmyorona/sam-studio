@@ -15,10 +15,14 @@ const SEVERITY = {
   minor: '🟡', low: '🔵', suggestion: '⚪',
 };
 function badge(text) {
-  return text.replace(/\*\*Severity:\*\*\s*([A-Za-z]+)/g, (_, sev) => {
+  let out = text.replace(/\*\*Severity:\*\*\s*([A-Za-z]+)/g, (_, sev) => {
     const icon = SEVERITY[sev.toLowerCase()] || '';
     return `**Severity:** ${icon} ${sev}`;
   });
+  // Highlight rewrite gap markers and their drafted suggestions.
+  out = out.replace(/\[NEEDS:\s*([^\]]+)\]/gi, '<span class="needs-tag">NEEDS: $1</span>');
+  out = out.replace(/\[DRAFT:\s*([^\]]+)\]/gi, '<span class="draft-tag">DRAFT: $1</span>');
+  return out;
 }
 
 const html = computed(() =>
@@ -47,4 +51,14 @@ const html = computed(() =>
 .md :deep(th), .md :deep(td) { border: 1px solid var(--border-card); padding: 6px 10px; text-align: left; }
 .md :deep(th) { background: var(--bg-card-alt); }
 .md :deep(a) { color: var(--accent); }
+.md :deep(.needs-tag) {
+  background: rgba(217, 119, 6, .14); color: var(--warning);
+  border: 1px dashed var(--warning); border-radius: 4px;
+  padding: 0 5px; font-size: 12px; font-family: var(--font-mono);
+}
+.md :deep(.draft-tag) {
+  background: rgba(124, 58, 237, .12); color: var(--accent-2);
+  border: 1px solid var(--accent-2); border-radius: 4px;
+  padding: 0 5px; font-size: 12px; font-family: var(--font-mono);
+}
 </style>

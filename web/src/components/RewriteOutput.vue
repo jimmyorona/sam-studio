@@ -24,6 +24,7 @@
       </div>
       <div v-if="placeholders.length" class="needs">
         Placeholders ({{ placeholders.length }}): {{ placeholders.join(' · ') }}
+        <span v-if="draftCount" class="drafts">· {{ draftCount }} drafted</span>
       </div>
       <div class="exportbar">
         <a class="btn" :href="`/api/export/${slot.slug}/${report.slug}.pptx`">📥 Export PPTX</a>
@@ -66,6 +67,11 @@ const placeholders = computed(() => {
   return [...md.matchAll(/\[NEEDS:\s*([^\]]+)\]/gi)].map(m => m[1].trim());
 });
 
+const draftCount = computed(() => {
+  const md = report.value?.content || '';
+  return [...md.matchAll(/\[DRAFT:\s*[^\]]+\]/gi)].length;
+});
+
 function highlighted(body) {
   return body.replace(/\*\*Speaker notes:?\*\*/i, '\n\n--- Speaker Notes ---\n');
 }
@@ -84,6 +90,7 @@ watch(report, () => { active.value = 0; });
 .tabs button.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
 .content { background: var(--bg-card); border-radius: var(--radius-md); padding: var(--space-5); }
 .needs { margin-top: var(--space-3); padding: 8px 12px; background: rgba(210,153,34,.12); border: 1px dashed var(--warning); border-radius: var(--radius-sm); font-size: 12px; color: var(--warning); }
+.drafts { color: var(--accent-2); }
 .exportbar { display: flex; gap: var(--space-3); margin-top: var(--space-4); }
 .btn { background: var(--accent); color: #fff; border: none; border-radius: var(--radius-sm); padding: 8px 14px; cursor: pointer; text-decoration: none; font-size: 13px; }
 .btn.ghost { background: transparent; color: var(--accent); border: 1px solid var(--border); }

@@ -1266,6 +1266,7 @@ function startReviewJob(mode) {
       ollamaUrl = 'http://localhost:11434',
       text = '',
       title = '',
+      advise = '',
     } = req.body;
 
     const availablePersonas = new Set(
@@ -1356,6 +1357,7 @@ function startReviewJob(mode) {
       '--mode', mode,
       '--ollama-url', ollamaUrl,
     ];
+    if (mode === 'rewrite' && (advise === '1' || advise === 'true')) args.push('--advise');
     const proc = spawn('python3', args);
     proc.stdout.on('data', chunk => chunk.toString().split('\n').filter(Boolean).forEach(handleLine));
     proc.stderr.on('data', chunk => chunk.toString().split('\n').filter(Boolean).forEach(pushLog));

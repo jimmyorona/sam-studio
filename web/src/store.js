@@ -43,6 +43,7 @@ export const store = reactive({
   selectedPersona: '',                  // single (rewrite/narrate)
   voice: { provider: 'edge', voice: 'en-US-AriaNeural', style: '' },
   context: '',
+  adviseNeeds: false,                   // rewrite: draft content for [NEEDS:] gaps
 
   // ── per-mode results ──
   review: { jobId: null, status: 'idle', error: '', personas: [], reports: [], slug: null, logs: [] },
@@ -180,6 +181,7 @@ export async function startReview(mode) {
   form.append('personas', personas.join(','));
   form.append('model', store.settings.model);
   form.append('ollamaUrl', store.settings.ollamaUrl);
+  if (mode === 'rewrite' && store.adviseNeeds) form.append('advise', '1');
 
   let jobId, slug;
   try {

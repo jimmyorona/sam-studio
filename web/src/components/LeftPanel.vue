@@ -52,6 +52,16 @@
       <div class="badge-ro">{{ personaBadge }}</div>
     </section>
 
+    <!-- Advise (rewrite only) -->
+    <section class="block" v-if="store.mode === 'rewrite'">
+      <h3>🧩 Advise</h3>
+      <label class="check">
+        <input type="checkbox" v-model="store.adviseNeeds" />
+        <span>Draft content for <code>[NEEDS:]</code> gaps</span>
+      </label>
+      <p class="hint">The persona proposes <code>[DRAFT:]</code> values for each gap the review flagged — clearly marked for you to confirm.</p>
+    </section>
+
     <!-- 2.3 Voice (narrate + produce) -->
     <section class="block" v-if="store.mode === 'narrate' || store.mode === 'produce'">
       <h3>🎤 Voice</h3>
@@ -220,6 +230,9 @@ function run() {
 .warn { color: var(--warning); font-size: 11px; }
 .x { background: none; border: none; color: var(--text-secondary); cursor: pointer; margin-left: auto; }
 .badge-ro { background: var(--bg-chrome); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 6px 10px; font-size: 13px; }
+.check { display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; }
+.check code, .hint code { font-family: var(--font-mono); font-size: 12px; }
+.hint { font-size: 11px; color: var(--text-secondary); margin: 6px 0 0; }
 .err, .run-hint { font-size: 11px; color: var(--warning); margin-top: 6px; }
 .err { color: var(--danger); }
 .run { margin-top: auto; }
