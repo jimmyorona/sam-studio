@@ -1,0 +1,92 @@
+/* SAM Studio — design tokens & themes (SCREEN-LAYOUT §12) */
+
+:root {
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;
+  --space-5: 20px; --space-6: 24px; --space-8: 32px; --space-12: 48px;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+}
+
+/* ---- Dark theme ---- */
+.theme-dark {
+  --bg-chrome: #161b22;
+  --bg-panel: #1c2333;
+  --bg-body: #0d1117;
+  --bg-card: #161b22;
+  --bg-card-alt: #1c2333;
+  --text-primary: #f0f6fc;
+  --text-secondary: #8b949e;
+  --accent: #58a6ff;
+  --accent-2: #bc8cff;
+  --success: #3fb950;
+  --warning: #d29922;
+  --danger: #f85149;
+  --border: #30363d;
+  --shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* ---- Light theme ---- */
+.theme-light {
+  --bg-chrome: #ffffff;
+  --bg-panel: #f8fafc;
+  --bg-body: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-alt: #f8fafc;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --accent: #2563eb;
+  --accent-2: #7c3aed;
+  --success: #059669;
+  --warning: #d97706;
+  --danger: #dc2626;
+  --border: #e2e8f0;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* ---- Mixed theme (default): dark chrome, light reading cards ---- */
+.theme-mixed {
+  --bg-chrome: #161b22;
+  --bg-panel: #1c2333;
+  --bg-body: #0d1117;
+  --bg-card: #ffffff;
+  --bg-card-alt: #f8fafc;
+  --text-primary: #f0f6fc;       /* chrome text */
+  --text-secondary: #8b949e;
+  --text-card: #1e293b;          /* reading-card text */
+  --text-card-secondary: #64748b;
+  --accent: #58a6ff;
+  --accent-2: #bc8cff;
+  --success: #3fb950;
+  --warning: #d29922;
+  --danger: #f85149;
+  --border: #30363d;
+  --border-card: #e2e8f0;
+  --shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+/* Themes that aren't mixed: reading-card tokens fall back to primary tokens */
+.theme-dark, .theme-light {
+  --text-card: var(--text-primary);
+  --text-card-secondary: var(--text-secondary);
+  --border-card: var(--border);
+}
+
+* { box-sizing: border-box; }
+
+html, body, #app {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--text-primary);
+  background: var(--bg-body);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}

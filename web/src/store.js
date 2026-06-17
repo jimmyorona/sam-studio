@@ -1,0 +1,338 @@
+// SAM Studio — shared reactive store (SCREEN-LAYOUT §10, §17.2)
+// One reactive object holds document + selections + per-mode results so work
+// persists across tab switches. API helpers wrap the Express endpoints.
+import { reactive } from 'vue';
+
+const NARRATE_EXTS = ['.pptx', '.md'];                                   // converter pipeline
+const REVIEW_EXTS = ['.pptx', '.pdf', '.docx', '.md', '.txt'];          // reviewer bridge
+
+function loadSettings() {
+  try {
+    return JSON.parse(localStorage.getItem('sam-studio-settings') || '{}');
+  } catch {
+    return {};
+  }
+}
+
+const saved = loadSettings();
+
+export const store = reactive({
+  // ── global ──
+  mode: 'review',                       // review | rewrite | narrate | produce
+  settings: {
+    ollamaUrl: saved.ollamaUrl || 'http://localhost:11434',
+    model: saved.model || 'llama3.2:3b',
+    theme: saved.theme || 'mixed',
+    concurrency: saved.concurrency || 3,
+    ttsProvider: saved.ttsProvider || 'edge',
+    elApiKey: saved.elApiKey || '',
+  },
+
+  // ── shared document state ──
+  doc: null,                            // { file, name, ext, slideCount, text, slug }
+  pasteText: '',
+
+  // ── catalogues (fetched once) ──
+  personas: [],                         // [{ filename, label, summary }]
+  models: ['llama3.2:3b'],
+  voices: [],
+  modelError: '',
+
+  // ── selections ──
+  selectedPersonas: [],                 // filenames (multi for review)
+  selectedPersona: '',                  // single (rewrite/narrate)
+  voice: { provider: 'edge', voice: 'en-US-AriaNeural', style: '' },
+  context: '',
+
+  // ── per-mode results ──
+  review: { jobId: null, status: 'idle', error: '', personas: [], reports: [], slug: null, logs: [] },
+  rewrite: { jobId: null, status: 'idle', error: '', reports: [], slug: null, logs: [] },
+  narrate: { jobId: null, status: 'idle', error: '', script: '', narrations: [], slideCount: 0, logs: [] },
+  produce: { status: 'idle', error: '', logs: [], videoUrl: null, settings: { pause: 1.0, animFps: 8, dpi: 150 } },
+
+  // ── toasts ──
+  toasts: [],
+});
+
+// ── persistence ──
+export function persistSettings() {
+  localStorage.setItem('sam-studio-settings', JSON.stringify(store.settings));
+}
+
+// ── toasts ──
+let toastId = 0;
+export function toast(message, kind = 'success') {
+  const id = ++toastId;
+  store.toasts.push({ id, message, kind });
+  if (kind === 'success') setTimeout(() => dismissToast(id), 5000);
+}
+export function dismissToast(id) {
+  const i = store.toasts.findIndex(t => t.id === id);
+  if (i !== -1) store.toasts.splice(i, 1);
+}
+
+// ── helpers ──
+export function fileExt(name) {
+  const m = /\.[a-z0-9]+$/i.exec(name || '');
+  return m ? m[0].toLowerCase() : '';
+}
+export function docSupportsNarrate() {
+  return store.doc && NARRATE_EXTS.includes(store.doc.ext);
+}
+export function docSupportsReview() {
+  return store.doc && REVIEW_EXTS.includes(store.doc.ext);
+}
+
+// ── catalogue loading ──
+export async function loadPersonas() {
+  try {
+    const r = await fetch('/api/personas');
+    const d = await r.json();
+    store.personas = (d.personas || []).map(p => ({
+      filename: p.filename,
+      label: p.label,
+      summary: firstSummaryLine(p.content),
+    }));
+  } catch {
+    store.personas = [];
+  }
+}
+function firstSummaryLine(content) {
+  for (const line of (content || '').split('\n')) {
+    const m = /^\*\*(?:Archetype|Role):\*\*\s*(.+)/.exec(line.trim());
+    if (m) return m[1].trim();
+  }
+  return '';
+}
+
+export async function loadModels() {
+  store.modelError = '';
+  try {
+    const r = await fetch(`/api/models?ollamaUrl=${encodeURIComponent(store.settings.ollamaUrl)}`);
+    const d = await r.json();
+    if (d.models && d.models.length) {
+      store.models = d.models;
+      if (!d.models.includes(store.settings.model)) store.settings.model = d.models[0];
+    } else {
+      store.modelError = 'No models found — is Ollama running?';
+    }
+  } catch {
+    store.modelError = 'Cannot reach Ollama';
+  }
+}
+
+export async function loadVoices(provider = 'edge') {
+  try {
+    const url = provider === 'supertonic' ? '/api/supertonic-voices' : '/api/voices';
+    const r = await fetch(url);
+    const d = await r.json();
+    store.voices = d.voices || [];
+  } catch {
+    store.voices = [];
+  }
+}
+
+// ── document upload (client-side; the file is sent with each job) ──
+export function setDocument(file) {
+  const ext = fileExt(file.name);
+  store.doc = { file, name: file.name, ext, slideCount: null, text: null, slug: slugify(file.name) };
+}
+export function setPastedDocument(text, title) {
+  store.doc = {
+    file: null, name: title || 'Pasted text', ext: '.txt',
+    slideCount: null, text, slug: title ? slugify(title) : `pasted-${Date.now().toString(36)}`,
+  };
+}
+export function clearDocument() {
+  store.doc = null;
+  store.pasteText = '';
+}
+function slugify(name) {
+  return name.replace(/\.[^.]+$/, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'document';
+}
+
+// ── SSE helper ──
+function streamJob(jobId, { onLog, onEvent, onDone }) {
+  const es = new EventSource(`/api/jobs/${jobId}/stream`);
+  es.onmessage = e => {
+    const msg = JSON.parse(e.data);
+    if (msg.type === 'log') onLog?.(msg.line);
+    else if (msg.type === 'done') { onDone?.(msg); es.close(); }
+    else onEvent?.(msg);
+  };
+  es.onerror = () => es.close();
+  return es;
+}
+
+// ── Review / Rewrite ──
+export async function startReview(mode) {
+  const slot = store[mode];
+  slot.status = 'running';
+  slot.error = '';
+  slot.logs = [];
+  slot.reports = [];
+  if (mode === 'review') slot.personas = [];
+
+  const personas = mode === 'review' ? store.selectedPersonas : [store.selectedPersona];
+  const form = new FormData();
+  if (store.doc.file) form.append('file', store.doc.file);
+  else { form.append('text', store.doc.text); form.append('title', store.doc.name); }
+  form.append('personas', personas.join(','));
+  form.append('model', store.settings.model);
+  form.append('ollamaUrl', store.settings.ollamaUrl);
+
+  let jobId, slug;
+  try {
+    const r = await fetch(`/api/${mode}`, { method: 'POST', body: form });
+    if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error || `HTTP ${r.status}`);
+    const d = await r.json();
+    jobId = d.jobId; slug = d.docSlug;
+  } catch (err) {
+    slot.status = 'error'; slot.error = err.message;
+    toast(`${mode} failed: ${err.message}`, 'error');
+    return;
+  }
+  slot.jobId = jobId;
+  slot.slug = slug;
+
+  // seed persona state for the progress view
+  if (mode === 'review') {
+    slot.personas = store.selectedPersonas.map(f => ({
+      slug: f.replace(/\.md$/i, '').toLowerCase(),
+      name: personaLabel(f), state: 'queued',
+    }));
+  }
+
+  streamJob(jobId, {
+    onLog: line => slot.logs.push(line),
+    onEvent: msg => {
+      if (msg.type === 'slug') slot.slug = msg.slug;
+      else if (msg.type === 'persona') {
+        const p = (slot.personas || []).find(x => x.slug === msg.slug);
+        if (p) p.state = msg.state;
+      }
+    },
+    onDone: async msg => {
+      if (msg.status === 'error') {
+        slot.status = 'error'; slot.error = msg.error || 'Failed';
+        toast(`${mode} failed`, 'error');
+        return;
+      }
+      try {
+        const r = await fetch(`/api/reviews/${slot.slug}/reports`);
+        slot.reports = (await r.json()).reports || [];
+      } catch { /* leave reports empty */ }
+      slot.status = 'done';
+      toast(`${mode === 'review' ? 'Review' : 'Rewrite'} complete`);
+    },
+  });
+}
+
+function personaLabel(filename) {
+  const found = store.personas.find(p => p.filename === filename);
+  if (found) return found.label;
+  const base = filename.replace(/^\d+-/, '').replace(/-PERSONA\.md$/i, '').replace(/\.md$/, '');
+  return base.split('-').map(w => w[0].toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+}
+
+// ── Narrate (phase 1: LLM script) ──
+export async function startNarrate() {
+  const slot = store.narrate;
+  slot.status = 'running';
+  slot.error = ''; slot.logs = []; slot.script = ''; slot.narrations = []; slot.slideCount = 0;
+
+  const form = new FormData();
+  form.append('file', store.doc.file);
+  form.append('ollamaUrl', store.settings.ollamaUrl);
+  form.append('model', store.settings.model);
+  form.append('ttsProvider', store.voice.provider);
+  form.append('voice', store.voice.voice);
+  if (store.settings.elApiKey) form.append('elApiKey', store.settings.elApiKey);
+  if (store.context.trim()) form.append('contextText', store.context.trim());
+  if (store.selectedPersona) {
+    const p = store.personas.find(x => x.filename === store.selectedPersona);
+    if (p) form.append('personaText', personaLabel(store.selectedPersona));
+  }
+
+  let jobId;
+  try {
+    const r = await fetch('/api/narrate', { method: 'POST', body: form });
+    if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error || `HTTP ${r.status}`);
+    jobId = (await r.json()).jobId;
+  } catch (err) {
+    slot.status = 'error'; slot.error = err.message;
+    toast(`Narrate failed: ${err.message}`, 'error');
+    return;
+  }
+  slot.jobId = jobId;
+
+  streamJob(jobId, {
+    onLog: line => slot.logs.push(line),
+    onDone: async msg => {
+      if (msg.status === 'narrated') {
+        try {
+          const d = await (await fetch(`/api/jobs/${jobId}/narrations`)).json();
+          slot.narrations = [...(d.narrations || [])];
+          slot.script = d.script || slot.narrations.map((t, i) => `## SLIDE ${i + 1}\n\n${(t || '').trim()}`).join('\n\n');
+          slot.slideCount = slot.narrations.length;
+          slot.status = 'done';
+          toast('Narration script ready');
+        } catch (err) {
+          slot.status = 'error'; slot.error = `Failed to load narrations: ${err.message}`;
+        }
+      } else {
+        slot.status = msg.status === 'done' ? 'done' : 'error';
+        slot.error = msg.error || '';
+      }
+    },
+  });
+}
+
+// ── Produce (phase 2: TTS + assembly), reuses the narrate jobId ──
+export async function startProduce() {
+  const slot = store.produce;
+  const nar = store.narrate;
+  if (!nar.jobId || !nar.script.trim()) {
+    toast('Generate a narration script first', 'error');
+    return;
+  }
+  slot.status = 'running'; slot.error = ''; slot.logs = []; slot.videoUrl = null;
+
+  try {
+    const r = await fetch(`/api/jobs/${nar.jobId}/synthesize`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ script: nar.script }),
+    });
+    if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error || `HTTP ${r.status}`);
+  } catch (err) {
+    slot.status = 'error'; slot.error = err.message;
+    toast(`Produce failed: ${err.message}`, 'error');
+    return;
+  }
+
+  streamJob(nar.jobId, {
+    onLog: line => slot.logs.push(line),
+    onDone: msg => {
+      if (msg.status === 'done') {
+        slot.status = 'done';
+        slot.videoUrl = `/api/jobs/${nar.jobId}/download`;
+        toast('Video complete');
+      } else {
+        slot.status = 'error'; slot.error = msg.error || 'Failed';
+        toast('Produce failed', 'error');
+      }
+    },
+  });
+}
+
+// ── per-slide TTS preview ──
+export async function previewSlide(text) {
+  const body = { text, ttsProvider: store.voice.provider, voice: store.voice.voice };
+  if (store.voice.provider.startsWith('elevenlabs')) body.elApiKey = store.settings.elApiKey;
+  const r = await fetch('/api/tts-preview', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+  });
+  if (!r.ok) throw new Error(`Preview failed (HTTP ${r.status})`);
+  return URL.createObjectURL(await r.blob());
+}
