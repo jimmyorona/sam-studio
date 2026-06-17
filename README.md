@@ -28,6 +28,36 @@ It merges two former projects into a single Express + Vue web app:
 Review/Rewrite accept PPTX, PDF, DOCX, MD, and TXT. Narrate/Produce require
 PPTX or MD (the video pipeline renders slide images).
 
+## Feature highlights
+
+- **Multi-persona review with synthesis** — run any subset of the 12 personas in
+  parallel; consensus findings, conflicts (weighted by each persona's known
+  blind spots), and a top-5 priority-fix list are merged into one synthesis.
+  Pick a single reviewer and the redundant synthesis pass is skipped.
+- **Review-informed rewrite** — when you rewrite after reviewing the same
+  document, the prior review's findings are folded into every rewrite persona's
+  prompt automatically, so the fixes actually get applied regardless of voice.
+- **"Advise" mode** — optionally have the rewrite draft proposed `[DRAFT: …]`
+  content for each `[NEEDS: …]` gap the review surfaced, clearly labeled as
+  unverified starting points to confirm or replace.
+- **Editable narration, then video** — narration is generated per slide with
+  cross-slide memory and directorial cues, fully editable (raw or per-slide)
+  with in-browser voice preview before you produce the MP4.
+- **Background context, typed or attached** — add a `.md`/`.txt` file or pasted
+  notes that ground the review, rewrite, and narration.
+- **Automatic context sizing** — the model's full context window is detected and
+  used (no manual token config), so stacked prompts and long narration history
+  aren't silently truncated.
+- **Exports** — DOCX for any report, PPTX for rewrites (real speaker-notes
+  pages), MP4 for produced video.
+- **One shared workspace** — document, persona picks, and results persist across
+  tabs; live SSE progress, three themes (light/dark/mixed), settings drawer,
+  toasts, and keyboard shortcuts.
+- **Local-first** — all generation runs against a local Ollama model; TTS via
+  Edge (free), ElevenLabs, or offline Supertonic.
+- **Terminal too** — the same multi-persona review runs from Claude Code via the
+  `/review` skill.
+
 ## Architecture
 
 ```
