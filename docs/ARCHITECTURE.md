@@ -46,7 +46,7 @@ flowchart LR
         MEDIA["LibreOffice · Marp · ffmpeg"]
     end
 
-    DISK[("reviews/&lt;slug&gt;/ · web/outputs/")]
+    DISK[("reviews/ · web/outputs/")]
 
     ST -- "HTTP + multipart" --> REVAPI & NARAPI & SYNAPI & PREV & CAT & REP & EXP & DL
     ST -- "EventSource" --> SSE
@@ -90,7 +90,7 @@ sequenceDiagram
     participant E as Express (:3001)
     participant R as reviewer_synth.py
     participant O as Ollama (:11434)
-    participant D as reviews/&lt;slug&gt;/
+    participant D as Reports on disk
 
     B->>E: POST /api/review (file|text, personas[], model, context?)
     E->>R: spawn run --personas … --model … [--context-file]
@@ -102,7 +102,7 @@ sequenceDiagram
     par up to 3 personas in parallel
         R->>O: POST /api/chat (persona brief + context + slides, num_ctx)
         O-->>R: persona review markdown
-        R->>D: write <persona>.md
+        R->>D: write persona report .md
         R-->>E: @@STATE/@@REPORT  (→ SSE persona/report events)
     end
 
@@ -174,7 +174,7 @@ sequenceDiagram
     T-->>P: final.mp4
     P-->>E: status done  (→ SSE done)
     B->>E: GET /api/jobs/:id/download
-    E-->>B: stream MP4 (inline <video> + download)
+    E-->>B: stream MP4 (inline video player + download)
     end
 ```
 
