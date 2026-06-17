@@ -12,6 +12,10 @@ All screenshots are real runs (theme: *mixed* — dark chrome, light reading
 cards). The two workflows share one document and the same left config panel; only
 the persona-selection mode and the right output panel change per tab.
 
+> 🖥️ Prefer a slideshow? Open [ui-deck.html](ui-deck.html) — a self-contained,
+> light-blue HTML deck of these same stages with prev/next, keyboard arrows, and
+> a clickable thumbnail rail.
+
 ---
 
 ## Review

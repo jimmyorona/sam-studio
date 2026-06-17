@@ -86,7 +86,8 @@ See [SCREEN-LAYOUT-PROMPT.md](SCREEN-LAYOUT-PROMPT.md) for the full UI spec,
 [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for Mermaid diagrams of the
 component topology and the Review/Rewrite and Narrate/Produce workflows, and
 [docs/UI-WALKTHROUGH.md](docs/UI-WALKTHROUGH.md) for an annotated, screenshot
-tour of the Review and Rewrite stages.
+tour of the Review and Rewrite stages (with a slideshow at
+[docs/ui-deck.html](docs/ui-deck.html)).
 
 ## Quick start
 
