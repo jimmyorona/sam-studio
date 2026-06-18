@@ -10,7 +10,10 @@ this project is pre-1.0 and not yet versioned, so dated entries are used.
 - **Review showed reports for personas you didn't select.** A review/rewrite run
   listed every report in `reviews/<doc-slug>/`, so prior runs on the same
   document (other personas, a stale synthesis) appeared as result tabs. Results
-  are now scoped to the reports the current job produced (via its job snapshot).
+  are now scoped to the reports the current job produced (via its job snapshot),
+  and each run also clears its own stale outputs on disk: a review run replaces
+  prior persona reviews + synthesis; a rewrite run replaces prior rewrites
+  (keeping the review reports it reads for findings).
 
 ### Added
 - **Accept draft recommendations.** In the Rewrite tab, an "✓ Accept N drafts"

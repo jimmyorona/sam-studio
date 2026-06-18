@@ -277,6 +277,26 @@ def ollama_chat(ollama_url: str, model: str, system: str, user: str,
     return resp.json()["message"]["content"].strip()
 
 
+def clear_stale_outputs(out_dir: Path, rewrite: bool) -> None:
+    """Remove this mode's previous outputs so each run starts clean.
+
+    A review run clears prior persona reviews + synthesis; a rewrite run clears
+    prior rewrites. The raw extract and the *other* mode's files are kept — a
+    rewrite reads the review's reports for its findings, so a rewrite must not
+    delete them (and vice-versa).
+    """
+    removed = 0
+    for f in out_dir.glob("*.md"):
+        if f.name == "_extracted.md":
+            continue
+        is_rewrite = f.name.startswith("rewrite-")
+        if is_rewrite == rewrite:
+            f.unlink()
+            removed += 1
+    if removed:
+        log(f"  Cleared {removed} stale {'rewrite' if rewrite else 'review'} report(s) from this slug.")
+
+
 # --------------------------------------------------------------------------- #
 # run: fan-out reviews + synthesis
 # --------------------------------------------------------------------------- #
@@ -307,6 +327,11 @@ def run(args) -> int:
 
     (out_dir / "_extracted.md").write_text(content, encoding="utf-8")
     marker(f"@@SLUG {args.slug}")
+
+    # A fresh review replaces any prior review of this document (rewrites are
+    # cleared later, after their findings are read).
+    if not rewrite:
+        clear_stale_outputs(out_dir, rewrite=False)
 
     persona_files = [f for f in args.personas.split(",") if f.strip()]
     personas = [
@@ -341,6 +366,8 @@ def run(args) -> int:
             log(f"  Applying prior review findings to the rewrite ({len(findings)} chars).")
         else:
             log("  No prior review found for this document — rewriting from the source only.")
+        # Findings are captured; now drop any prior rewrites for this slug.
+        clear_stale_outputs(out_dir, rewrite=True)
 
     rewriter_system = REWRITER_SYSTEM_PROMPT
     if rewrite and args.advise:
