@@ -1,4 +1,4 @@
-# SAM Slide Suite
+# SAM Studio Suite
 
 A unified, local-first platform for **reviewing**, **rewriting**, **narrating**,
 and **producing** presentation content — one document in, expert critique, a
