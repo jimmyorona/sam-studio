@@ -7,6 +7,11 @@ this project is pre-1.0 and not yet versioned, so dated entries are used.
 ## [Unreleased]
 
 ### Fixed
+- **Supertonic ignored the voice selection (always its default).** The Supertonic
+  voice (F1/M1/…) is the `stVoice` field, but the client only sent it as `voice`,
+  which the server ignores for Supertonic — so every preview/narration used the
+  default. The store now sends `stVoice` for Supertonic in preview and narrate
+  (Produce inherits it).
 - **Voice preview played the same voice regardless of selection.** The voice-
   picker Preview used a fire-and-forget `new Audio().play()` that wasn't retained
   (could be GC'd before playing) and never stopped the previous clip, so a newly

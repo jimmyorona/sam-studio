@@ -279,6 +279,8 @@ export async function startNarrate() {
   form.append('model', store.settings.model);
   form.append('ttsProvider', store.voice.provider);
   form.append('voice', store.voice.voice);
+  // Supertonic's voice is the stVoice field (F1/M1/…), not `voice`.
+  if (store.voice.provider === 'supertonic') form.append('stVoice', store.voice.voice);
   if (store.settings.elApiKey) form.append('elApiKey', store.settings.elApiKey);
   const narrCtx = resolvedContext();
   if (narrCtx) form.append('contextText', narrCtx);
@@ -385,6 +387,7 @@ export async function acceptRewriteDrafts() {
 export async function previewSlide(text) {
   const body = { text, ttsProvider: store.voice.provider, voice: store.voice.voice };
   if (store.voice.provider.startsWith('elevenlabs')) body.elApiKey = store.settings.elApiKey;
+  if (store.voice.provider === 'supertonic') body.stVoice = store.voice.voice;  // F1/M1/… not `voice`
   const r = await fetch('/api/tts-preview', {
     method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
   });
