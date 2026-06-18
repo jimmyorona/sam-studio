@@ -46,6 +46,7 @@ export const store = reactive({
   context: '',
   contextFile: null,                    // { name, content } — attached .md/.txt
   adviseNeeds: false,                   // rewrite: draft content for [NEEDS:] gaps
+  narrateSource: 'document',            // 'document' | 'rewrite' — narration input
 
   // ── per-mode results ──
   review: { jobId: null, status: 'idle', error: '', personas: [], reports: [], slug: null, logs: [] },
@@ -267,6 +268,34 @@ function personaLabel(filename) {
   return base.split('-').map(w => w[0].toUpperCase() + w.slice(1).toLowerCase()).join(' ');
 }
 
+// Is a rewrite available to narrate from?
+export function rewriteOutput() {
+  if (store.rewrite.status !== 'done') return null;
+  return store.rewrite.reports.find(r => r.slug.startsWith('rewrite-')) || null;
+}
+
+// Convert a rewrite report into a Marp-friendly deck: one `## Slide N` section
+// per slide separated by `---` (so both Marp image rendering and the narration
+// slide-split agree), with speaker notes, NEEDS/DRAFT markers, and the trailing
+// `## Rewrite notes` section dropped from the on-slide content.
+export function rewriteToDeck(md) {
+  const slides = [];
+  for (const sec of md.split(/^## /m).slice(1)) {
+    const heading = sec.split('\n', 1)[0];
+    if (/^rewrite notes\b/i.test(heading.trim())) continue;
+    let body = sec;
+    const sn = body.search(/\*\*Speaker notes:?\*\*/i);
+    if (sn !== -1) body = body.slice(0, sn);
+    body = body
+      .replace(/^\s*---+\s*$/gm, '')                       // drop stray rules
+      .replace(/\[NEEDS:[^\]]*\]/gi, '')                   // drop unfilled gaps
+      .replace(/\[DRAFT:\s*([^\]]*)\]/gi, '$1')            // accept drafts inline
+      .trim();
+    slides.push('## ' + body);
+  }
+  return slides.join('\n\n---\n\n') || '## Slide 1\n\n(empty rewrite)';
+}
+
 // ── Narrate (phase 1: LLM script) ──
 export async function startNarrate() {
   const slot = store.narrate;
@@ -274,7 +303,14 @@ export async function startNarrate() {
   slot.error = ''; slot.logs = []; slot.script = ''; slot.narrations = []; slot.slideCount = 0;
 
   const form = new FormData();
-  form.append('file', store.doc.file);
+  const rep = store.narrateSource === 'rewrite' ? rewriteOutput() : null;
+  if (rep) {
+    const deck = rewriteToDeck(rep.content);
+    const name = `${store.doc?.slug || 'rewrite'}-rewrite.md`;
+    form.append('file', new File([deck], name, { type: 'text/markdown' }));
+  } else {
+    form.append('file', store.doc.file);
+  }
   form.append('ollamaUrl', store.settings.ollamaUrl);
   form.append('model', store.settings.model);
   form.append('ttsProvider', store.voice.provider);

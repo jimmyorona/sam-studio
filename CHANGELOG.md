@@ -38,6 +38,11 @@ this project is pre-1.0 and not yet versioned, so dated entries are used.
   (keeping the review reports it reads for findings).
 
 ### Added
+- **Narrate from the Rewrite output.** A "Narration source" toggle on the Narrate
+  tab lets you narrate either the uploaded document (default) or the Rewrite tab's
+  rewritten deck. Choosing the rewrite converts it to a clean Marp deck (one slide
+  per `## Slide N` section, speaker notes + NEEDS/DRAFT dropped) and feeds that to
+  the narration pipeline. The option is disabled until a rewrite exists.
 - **TTS provider availability guard.** A new `GET /api/tts-status` reports which
   providers are installed; the Voice picker disables an unavailable provider
   (e.g. "Supertonic (not installed)") and, if one is somehow selected, warns and

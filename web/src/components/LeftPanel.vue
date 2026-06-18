@@ -62,6 +62,19 @@
       <p class="hint">The persona proposes <code>[DRAFT:]</code> values for each gap the review flagged — clearly marked for you to confirm.</p>
     </section>
 
+    <!-- Narration source (narrate only) -->
+    <section class="block" v-if="store.mode === 'narrate'">
+      <h3>🎚️ Narration source</h3>
+      <label class="radio-line">
+        <input type="radio" value="document" v-model="store.narrateSource" />
+        <span>Uploaded document</span>
+      </label>
+      <label class="radio-line" :class="{ muted: !hasRewrite }">
+        <input type="radio" value="rewrite" :disabled="!hasRewrite" v-model="store.narrateSource" />
+        <span>Rewrite output{{ hasRewrite ? '' : ' (run Rewrite first)' }}</span>
+      </label>
+    </section>
+
     <!-- 2.3 Voice (narrate + produce) -->
     <section class="block" v-if="store.mode === 'narrate' || store.mode === 'produce'">
       <h3>🎤 Voice</h3>
@@ -134,7 +147,7 @@ import { ref, computed } from 'vue';
 import {
   store, setDocument, setPastedDocument, clearDocument, docSupportsNarrate,
   startReview, startNarrate, startProduce, previewSlide, loadVoices, loadModels,
-  setContextFile, clearContextFile, toast,
+  setContextFile, clearContextFile, rewriteOutput, toast,
 } from '../store.js';
 
 const dragOver = ref(false);
@@ -154,6 +167,7 @@ async function refreshModels() {
 }
 
 const narrateOk = computed(() => docSupportsNarrate());
+const hasRewrite = computed(() => !!rewriteOutput());
 
 function onDrop(e) { dragOver.value = false; if (e.dataTransfer.files[0]) setDocument(e.dataTransfer.files[0]); }
 function onPick(e) { if (e.target.files[0]) setDocument(e.target.files[0]); }
@@ -229,18 +243,20 @@ const runLabel = computed(() => ({
 const runDisabled = computed(() => {
   if (running.value) return true;
   if (store.mode === 'produce') return !store.narrate.script.trim();
+  if (store.mode === 'narrate') {
+    if (!providerAvailable.value) return true;
+    if (store.narrateSource === 'rewrite') return !hasRewrite.value;   // uses rewrite md
+    return !store.doc || !narrateOk.value;
+  }
   if (!store.doc) return true;
   if (store.mode === 'review') return store.selectedPersonas.length < 1;
-  if (store.mode === 'rewrite' || store.mode === 'narrate') {
-    if (!store.selectedPersona && store.mode === 'rewrite') return true;
-  }
-  if ((store.mode === 'narrate') && !narrateOk.value) return true;
-  if (store.mode === 'narrate' && !providerAvailable.value) return true;
+  if (store.mode === 'rewrite' && !store.selectedPersona) return true;
   return false;
 });
 
 const runHint = computed(() => {
   if (store.mode === 'narrate' && !providerAvailable.value) return `${providerName.value} isn't installed — choose another voice provider.`;
+  if (store.mode === 'narrate' && store.narrateSource === 'rewrite') return hasRewrite.value ? 'Narrating the rewritten deck.' : 'Run a Rewrite first to narrate its output.';
   if (store.mode === 'narrate' && store.doc && !narrateOk.value) return 'Narrate requires a PPTX or MD file.';
   if (store.mode === 'produce' && !store.narrate.script.trim()) return 'Generate a narration script in Narrate first.';
   return '';
@@ -300,6 +316,8 @@ function run() {
 .warn { color: var(--warning); font-size: 11px; }
 .x { background: none; border: none; color: var(--text-secondary); cursor: pointer; margin-left: auto; }
 .badge-ro { background: var(--bg-chrome); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 6px 10px; font-size: 13px; }
+.radio-line { display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; padding: 3px 0; }
+.radio-line.muted { color: var(--text-secondary); cursor: not-allowed; }
 .check { display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; }
 .check code, .hint code { font-family: var(--font-mono); font-size: 12px; }
 .hint { font-size: 11px; color: var(--text-secondary); margin: 6px 0 0; }
