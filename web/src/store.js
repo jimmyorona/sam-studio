@@ -347,6 +347,28 @@ export async function startProduce() {
   });
 }
 
+// ── accept Advise drafts: fold [DRAFT: …] into the slide content, drop the
+//    paired [NEEDS: …] marker, persist so exports use the accepted version ──
+export async function acceptRewriteDrafts() {
+  const slot = store.rewrite;
+  const rep = slot.reports.find(r => r.slug.startsWith('rewrite-')) || slot.reports[0];
+  if (!rep) return;
+  const accepted = rep.content
+    .replace(/\[NEEDS:[^\]]*\]\s*\[DRAFT:\s*([^\]]*)\]/gi, '$1')   // accept paired
+    .replace(/\[DRAFT:\s*([^\]]*)\]/gi, '$1');                      // accept lone drafts
+  try {
+    const r = await fetch(`/api/reviews/${slot.slug}/${rep.slug}`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ content: accepted }),
+    });
+    if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error || `HTTP ${r.status}`);
+    rep.content = accepted;
+    toast('Draft recommendations accepted');
+  } catch (e) {
+    toast(`Could not save accepted drafts: ${e.message}`, 'error');
+  }
+}
+
 // ── per-slide TTS preview ──
 export async function previewSlide(text) {
   const body = { text, ttsProvider: store.voice.provider, voice: store.voice.voice };

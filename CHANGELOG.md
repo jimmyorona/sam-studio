@@ -7,6 +7,10 @@ this project is pre-1.0 and not yet versioned, so dated entries are used.
 ## [Unreleased]
 
 ### Added
+- **Accept draft recommendations.** In the Rewrite tab, an "✓ Accept N drafts"
+  button (shown when Advise produced drafts) folds each `[DRAFT: …]` into the
+  slide content, drops the paired `[NEEDS: …]` marker, and persists the result
+  (new `POST /api/reviews/:slug/:report`) so exports use the accepted version.
 - **Prompt reference.** `docs/PROMPTS.md` — a table of every LLM prompt the
   workflows send to Ollama (role, workflow, and the script + line where it
   lives), with per-prompt notes. Linked from the README.

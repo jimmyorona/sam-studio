@@ -1413,6 +1413,22 @@ app.get('/api/reviews/:slug/reports', (req, res) => {
   res.json({ reports });
 });
 
+// Overwrite a report's markdown (e.g. after accepting draft recommendations),
+// so subsequent exports use the edited content.
+app.post('/api/reviews/:slug/:report', (req, res) => {
+  const { slug, report } = req.params;
+  const { content } = req.body || {};
+  if (!/^[a-z0-9-]+$/.test(slug) || !/^[a-z0-9-]+$/i.test(report)) {
+    return res.status(400).json({ error: 'Invalid report reference' });
+  }
+  if (typeof content !== 'string') return res.status(400).json({ error: 'Missing content' });
+  const name = report.toLowerCase() === '00-synthesis' ? '00-SYNTHESIS.md' : `${report}.md`;
+  const mdPath = path.join(REVIEWS_DIR, slug, name);
+  if (!fs.existsSync(mdPath)) return res.status(404).json({ error: 'Report not found' });
+  fs.writeFileSync(mdPath, content.endsWith('\n') ? content : content + '\n');
+  res.json({ ok: true });
+});
+
 // Export a finished report to DOCX or PPTX via the Python helper.
 app.get('/api/export/:slug/:report.:format(docx|pptx)', (req, res) => {
   const { slug, report, format } = req.params;

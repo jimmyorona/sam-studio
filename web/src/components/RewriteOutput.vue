@@ -27,6 +27,9 @@
         <span v-if="draftCount" class="drafts">· {{ draftCount }} drafted</span>
       </div>
       <div class="exportbar">
+        <button v-if="draftCount" class="btn accept" @click="acceptRewriteDrafts">
+          ✓ Accept {{ draftCount }} draft{{ draftCount === 1 ? '' : 's' }}
+        </button>
         <a class="btn" :href="`/api/export/${slot.slug}/${report.slug}.pptx`">📥 Export PPTX</a>
         <a class="btn ghost" :href="`/api/export/${slot.slug}/${report.slug}.docx`">📥 Export DOCX</a>
       </div>
@@ -41,7 +44,7 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue';
-import { store } from '../store.js';
+import { store, acceptRewriteDrafts } from '../store.js';
 import Markdown from './Markdown.vue';
 
 const slot = computed(() => store.rewrite);
@@ -94,6 +97,7 @@ watch(report, () => { active.value = 0; });
 .exportbar { display: flex; gap: var(--space-3); margin-top: var(--space-4); }
 .btn { background: var(--accent); color: #fff; border: none; border-radius: var(--radius-sm); padding: 8px 14px; cursor: pointer; text-decoration: none; font-size: 13px; }
 .btn.ghost { background: transparent; color: var(--accent); border: 1px solid var(--border); }
+.btn.accept { background: var(--success); }
 .bar { height: 8px; background: var(--bg-card-alt); border-radius: 6px; overflow: hidden; }
 .fill.indeterminate { width: 40%; height: 100%; background: var(--accent); animation: slide 1.2s infinite; }
 @keyframes slide { 0% { margin-left: -40%; } 100% { margin-left: 100%; } }
