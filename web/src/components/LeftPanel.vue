@@ -67,11 +67,19 @@
       <h3>🎤 Voice</h3>
       <label class="field">Provider
         <select v-model="store.voice.provider" :disabled="store.mode === 'produce'" @change="onProvider">
-          <option value="edge">Edge TTS</option>
+          <option value="edge" :disabled="!store.ttsStatus.edge">
+            Edge TTS{{ store.ttsStatus.edge ? '' : ' (not installed)' }}
+          </option>
           <option value="elevenlabs">ElevenLabs</option>
-          <option value="supertonic">Supertonic</option>
+          <option value="supertonic" :disabled="!store.ttsStatus.supertonic">
+            Supertonic{{ store.ttsStatus.supertonic ? '' : ' (not installed)' }}
+          </option>
         </select>
       </label>
+      <p v-if="!providerAvailable" class="warn-hint">
+        {{ providerName }} isn't installed on the server — pick Edge TTS, or
+        <code>pip install {{ store.voice.provider }}</code> and reload.
+      </p>
       <label class="field">Voice
         <select v-model="store.voice.voice" :disabled="store.mode === 'produce'">
           <option v-for="v in voiceOptions" :key="voiceVal(v)" :value="voiceVal(v)">{{ voiceLabel(v) }}</option>
@@ -189,6 +197,16 @@ async function preview() {
   }
 }
 
+const providerAvailable = computed(() => {
+  const p = store.voice.provider;
+  if (p === 'supertonic') return store.ttsStatus.supertonic;
+  if (p === 'edge') return store.ttsStatus.edge;
+  return true;   // elevenlabs is key-gated, handled at run time
+});
+const providerName = computed(() => ({
+  edge: 'Edge TTS', elevenlabs: 'ElevenLabs', supertonic: 'Supertonic',
+}[store.voice.provider] || store.voice.provider));
+
 const running = computed(() => store[store.mode]?.status === 'running');
 
 const runLabel = computed(() => ({
@@ -205,10 +223,12 @@ const runDisabled = computed(() => {
     if (!store.selectedPersona && store.mode === 'rewrite') return true;
   }
   if ((store.mode === 'narrate') && !narrateOk.value) return true;
+  if (store.mode === 'narrate' && !providerAvailable.value) return true;
   return false;
 });
 
 const runHint = computed(() => {
+  if (store.mode === 'narrate' && !providerAvailable.value) return `${providerName.value} isn't installed — choose another voice provider.`;
   if (store.mode === 'narrate' && store.doc && !narrateOk.value) return 'Narrate requires a PPTX or MD file.';
   if (store.mode === 'produce' && !store.narrate.script.trim()) return 'Generate a narration script in Narrate first.';
   return '';
@@ -271,6 +291,8 @@ function run() {
 .check { display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; }
 .check code, .hint code { font-family: var(--font-mono); font-size: 12px; }
 .hint { font-size: 11px; color: var(--text-secondary); margin: 6px 0 0; }
+.warn-hint { font-size: 11px; color: var(--warning); margin: 6px 0 0; }
+.warn-hint code { font-family: var(--font-mono); }
 .err, .run-hint { font-size: 11px; color: var(--warning); margin-top: 6px; }
 .err { color: var(--danger); }
 .run { margin-top: auto; }

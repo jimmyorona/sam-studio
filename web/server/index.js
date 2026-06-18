@@ -701,6 +701,27 @@ app.get('/api/voices', (req, res) => {
 });
 
 // ---------------------------------------------------------------------------
+// GET /api/tts-status  — which TTS providers are usable (cached)
+// ---------------------------------------------------------------------------
+let cachedTtsStatus = null;
+
+app.get('/api/tts-status', async (req, res) => {
+  if (cachedTtsStatus) return res.json(cachedTtsStatus);
+  const { execFile } = require('child_process');
+  const execFileP = require('util').promisify(execFile);
+  const check = async (cmd, args) => {
+    try { await execFileP(cmd, args, { timeout: 15000 }); return true; } catch { return false; }
+  };
+  const [edge, supertonic] = await Promise.all([
+    check('edge-tts', ['--version']),
+    check('python3', ['-c', 'import supertonic']),
+  ]);
+  // ElevenLabs is a bundled SDK gated by an API key (handled client-side).
+  cachedTtsStatus = { edge, elevenlabs: true, supertonic };
+  res.json(cachedTtsStatus);
+});
+
+// ---------------------------------------------------------------------------
 // GET /api/supertonic-voices  — list Supertonic voice styles (cached)
 // ---------------------------------------------------------------------------
 let cachedSupertonicVoices = null;

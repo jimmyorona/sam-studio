@@ -36,6 +36,7 @@ export const store = reactive({
   personas: [],                         // [{ filename, label, summary }]
   models: ['llama3.2:3b'],
   voices: [],
+  ttsStatus: { edge: true, elevenlabs: true, supertonic: true },  // optimistic until loaded
   modelError: '',
 
   // ── selections ──
@@ -121,6 +122,12 @@ export async function loadModels() {
   } catch {
     store.modelError = 'Cannot reach Ollama';
   }
+}
+
+export async function loadTtsStatus() {
+  try {
+    store.ttsStatus = await fetch('/api/tts-status').then(r => r.json());
+  } catch { /* keep optimistic defaults */ }
 }
 
 export async function loadVoices(provider = 'edge') {

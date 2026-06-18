@@ -40,7 +40,7 @@
 
 <script setup>
 import { ref, computed, watchEffect, onMounted, onBeforeUnmount } from 'vue';
-import { store, dismissToast, loadPersonas, loadModels, loadVoices } from './store.js';
+import { store, dismissToast, loadPersonas, loadModels, loadVoices, loadTtsStatus } from './store.js';
 import LeftPanel from './components/LeftPanel.vue';
 import ReviewOutput from './components/ReviewOutput.vue';
 import RewriteOutput from './components/RewriteOutput.vue';
@@ -81,7 +81,7 @@ function onKey(e) {
 
 onMounted(async () => {
   window.addEventListener('keydown', onKey);
-  await Promise.all([loadPersonas(), loadModels(), loadVoices('edge')]);
+  await Promise.all([loadPersonas(), loadModels(), loadVoices('edge'), loadTtsStatus()]);
 });
 onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
 </script>

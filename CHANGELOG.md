@@ -27,6 +27,10 @@ this project is pre-1.0 and not yet versioned, so dated entries are used.
   (keeping the review reports it reads for findings).
 
 ### Added
+- **TTS provider availability guard.** A new `GET /api/tts-status` reports which
+  providers are installed; the Voice picker disables an unavailable provider
+  (e.g. "Supertonic (not installed)") and, if one is somehow selected, warns and
+  blocks Run — so you can't start a Narrate/Produce that would fail at TTS.
 - **Accept draft recommendations.** In the Rewrite tab, an "✓ Accept N drafts"
   button (shown when Advise produced drafts) folds each `[DRAFT: …]` into the
   slide content, drops the paired `[NEEDS: …]` marker, and persists the result
