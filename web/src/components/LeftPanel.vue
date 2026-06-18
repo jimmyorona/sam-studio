@@ -182,14 +182,26 @@ function voiceVal(v) { return typeof v === 'string' ? v : (v.id || v.name || v.v
 function voiceLabel(v) { return typeof v === 'string' ? v : (v.label || v.name || v.id); }
 function onProvider() { loadVoices(store.voice.provider); }
 
+let previewAudio = null;       // retained so it isn't GC'd mid-playback
+let previewUrl = null;
+
 async function preview() {
+  // Stop any in-flight preview so a new voice doesn't overlap the previous clip.
+  if (previewAudio) { previewAudio.pause(); previewAudio = null; }
+  if (previewUrl) { URL.revokeObjectURL(previewUrl); previewUrl = null; }
+
   previewing.value = true;
   try {
     const sample = store.narrate.script
       ? store.narrate.script.replace(/^##.*$/gm, '').trim().slice(0, 200)
       : 'This is a short preview of the selected voice.';
-    const url = await previewSlide(sample || 'Preview of the selected voice.');
-    new Audio(url).play();
+    previewUrl = await previewSlide(sample || 'Preview of the selected voice.');
+    previewAudio = new Audio(previewUrl);
+    previewAudio.onended = () => {
+      if (previewUrl) { URL.revokeObjectURL(previewUrl); previewUrl = null; }
+      previewAudio = null;
+    };
+    await previewAudio.play();
   } catch (e) {
     toast(e.message, 'error');
   } finally {

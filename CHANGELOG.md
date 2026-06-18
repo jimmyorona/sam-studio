@@ -7,6 +7,12 @@ this project is pre-1.0 and not yet versioned, so dated entries are used.
 ## [Unreleased]
 
 ### Fixed
+- **Voice preview played the same voice regardless of selection.** The voice-
+  picker Preview used a fire-and-forget `new Audio().play()` that wasn't retained
+  (could be GC'd before playing) and never stopped the previous clip, so a newly
+  selected voice's audio could be lost under the still-playing earlier one. It now
+  retains a single audio element, stops the prior preview, and revokes old blob
+  URLs. (The server already returned the correct per-voice audio.)
 - **Produce failures left the job unretryable.** The synthesize step deleted the
   rendered work_dir on *error*, so a second Produce attempt failed with a
   confusing `ENOENT … supertonic_narrations.json` instead of the real cause. The
