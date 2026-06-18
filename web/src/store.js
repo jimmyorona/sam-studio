@@ -239,8 +239,13 @@ export async function startReview(mode) {
         return;
       }
       try {
-        const r = await fetch(`/api/reviews/${slot.slug}/reports`);
-        slot.reports = (await r.json()).reports || [];
+        // Scope to the reports THIS job produced — the slug dir may also hold
+        // reports from earlier runs on the same document (other personas /
+        // a stale synthesis). The job snapshot lists only this run's outputs.
+        const snap = await fetch(`/api/reviews/jobs/${jobId}`).then(r => r.json()).catch(() => ({}));
+        const produced = new Set((snap.reports || []).map(r => r.slug));
+        const all = await fetch(`/api/reviews/${slot.slug}/reports`).then(r => r.json()).then(d => d.reports || []);
+        slot.reports = produced.size ? all.filter(rp => produced.has(rp.slug)) : all;
       } catch { /* leave reports empty */ }
       slot.status = 'done';
       toast(`${mode === 'review' ? 'Review' : 'Rewrite'} complete`);

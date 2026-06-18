@@ -6,6 +6,12 @@ this project is pre-1.0 and not yet versioned, so dated entries are used.
 
 ## [Unreleased]
 
+### Fixed
+- **Review showed reports for personas you didn't select.** A review/rewrite run
+  listed every report in `reviews/<doc-slug>/`, so prior runs on the same
+  document (other personas, a stale synthesis) appeared as result tabs. Results
+  are now scoped to the reports the current job produced (via its job snapshot).
+
 ### Added
 - **Accept draft recommendations.** In the Rewrite tab, an "✓ Accept N drafts"
   button (shown when Advise produced drafts) folds each `[DRAFT: …]` into the
