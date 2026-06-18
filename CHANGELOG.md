@@ -7,6 +7,17 @@ this project is pre-1.0 and not yet versioned, so dated entries are used.
 ## [Unreleased]
 
 ### Fixed
+- **Produce failures left the job unretryable.** The synthesize step deleted the
+  rendered work_dir on *error*, so a second Produce attempt failed with a
+  confusing `ENOENT … supertonic_narrations.json` instead of the real cause. The
+  work_dir is now kept on error (cleaned only on success), and a missing work_dir
+  reports "re-run Narrate" clearly.
+- **Empty/cue-only slides crashed Produce.** A slide whose narration stripped to
+  nothing made edge-tts emit a 0-byte file and ffprobe/ffmpeg fail; such slides
+  now get brief silence instead.
+- **Voice picker was empty.** `/api/voices` didn't parse edge-tts ≥7's table
+  output, so only two fallback voices showed; it now parses the table (322
+  voices) with a fallback to the old format.
 - **Review showed reports for personas you didn't select.** A review/rewrite run
   listed every report in `reviews/<doc-slug>/`, so prior runs on the same
   document (other personas, a stale synthesis) appeared as result tabs. Results

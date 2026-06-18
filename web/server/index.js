@@ -146,12 +146,30 @@ async function synthesizeElevenLabsSDKSlides(narrations, workDir, opts, pushLog)
   }
 }
 
+// Brief silence for slides with no spoken text — edge-tts emits a 0-byte file
+// for empty/whitespace input, which then breaks ffprobe/ffmpeg downstream.
+function writeSilenceMp3(outPath, seconds = 1.2) {
+  return new Promise((resolve, reject) => {
+    const proc = spawn('ffmpeg', [
+      '-f', 'lavfi', '-i', 'anullsrc=r=24000:cl=mono', '-t', String(seconds), '-q:a', '9', '-y', outPath,
+    ]);
+    proc.on('close', code => code === 0 ? resolve() : reject(new Error(`ffmpeg silence exited ${code}`)));
+    proc.on('error', reject);
+  });
+}
+
 async function synthesizeEdgeTTSSlides(narrations, workDir, voice, pushLog) {
   for (let i = 0; i < narrations.length; i++) {
     const outPath = path.join(workDir, `slide_${String(i + 1).padStart(3, '0')}.mp3`);
+    const text = (narrations[i] || '').trim();
+    if (!text) {
+      pushLog(`  Edge TTS: slide ${i + 1}/${narrations.length} — no spoken text, inserting brief silence`);
+      await writeSilenceMp3(outPath);
+      continue;
+    }
     pushLog(`  Edge TTS: slide ${i + 1}/${narrations.length} ...`);
     await new Promise((resolve, reject) => {
-      const proc = spawn('edge-tts', ['--voice', voice, '--text', narrations[i], '--write-media', outPath]);
+      const proc = spawn('edge-tts', ['--voice', voice, '--text', text, '--write-media', outPath]);
       proc.stderr.on('data', chunk => {
         const msg = chunk.toString().trim();
         if (msg) pushLog(msg);
@@ -655,19 +673,25 @@ app.get('/api/voices', (req, res) => {
   proc.on('close', code => {
     if (res.headersSent) return;
     if (code !== 0) return res.json({ voices: [] });
-    // Parse "Name: en-US-AriaNeural\nGender: Female\n..." blocks
     const voices = [];
-    const blocks = output.split('\n\n');
-    for (const block of blocks) {
-      const nameLine = block.match(/^Name:\s*(.+)$/m);
-      const genderLine = block.match(/^Gender:\s*(.+)$/m);
-      const localeLine = block.match(/^Locale:\s*(.+)$/m);
-      if (nameLine) {
-        voices.push({
-          name: nameLine[1].trim(),
-          gender: genderLine ? genderLine[1].trim() : '',
-          locale: localeLine ? localeLine[1].trim() : '',
-        });
+    // edge-tts ≥7 prints a table: "en-US-AriaNeural   Female   General   ...".
+    for (const line of output.split('\n')) {
+      const m = line.match(/^(\S+Neural)\s+(Male|Female|Neutral)\b/);
+      if (m) voices.push({ name: m[1], gender: m[2], locale: m[1].split('-').slice(0, 2).join('-') });
+    }
+    // Fallback: older "Name: …\nGender: …" block format.
+    if (!voices.length) {
+      for (const block of output.split('\n\n')) {
+        const nameLine = block.match(/^Name:\s*(.+)$/m);
+        if (nameLine) {
+          const genderLine = block.match(/^Gender:\s*(.+)$/m);
+          const localeLine = block.match(/^Locale:\s*(.+)$/m);
+          voices.push({
+            name: nameLine[1].trim(),
+            gender: genderLine ? genderLine[1].trim() : '',
+            locale: localeLine ? localeLine[1].trim() : '',
+          });
+        }
       }
     }
     cachedVoices = voices;
@@ -1175,7 +1199,16 @@ app.post('/api/jobs/:id/synthesize', async (req, res) => {
       client.write(`data: ${JSON.stringify({ type: 'done', status, error })}\n\n`);
       client.end();
     }
-    if (ttsOpts.keepTemp !== 'true') fs.rm(manifest.work_dir, { recursive: true, force: true }, () => {});
+    // Only clean up on success — keeping the work_dir on error lets the user
+    // retry (e.g. after installing a TTS dep) instead of hitting a confusing
+    // ENOENT when the rendered slides/manifest are gone.
+    if (status === 'done' && ttsOpts.keepTemp !== 'true') {
+      fs.rm(manifest.work_dir, { recursive: true, force: true }, () => {});
+    }
+  }
+
+  if (!fs.existsSync(manifest.work_dir)) {
+    return finish('error', 'Rendered narration assets are no longer available — re-run Narrate before producing.');
   }
 
   try {
