@@ -1,0 +1,18 @@
+# Build-context excludes for docker/Dockerfile (honored by BuildKit, which is the
+# default in modern Docker). Keeps the context small and avoids baking host state.
+.git
+.gitignore
+**/node_modules
+web/dist
+web/uploads
+web/outputs
+reviews/*
+!reviews/.gitkeep
+outputs
+**/__pycache__
+**/*.py[cod]
+.venv
+docs
+video-production
+**/.DS_Store
+docker/README.md
