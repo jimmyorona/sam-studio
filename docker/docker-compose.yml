@@ -3,8 +3,8 @@
 #   docker compose -f docker/docker-compose.yml up --build
 #
 # Build context is the repo root (..), so the image can see scripts/ personas/ web/.
-# Ollama is bundled INSIDE the app container (with the gpt-oss model baked in), so
-# there is no separate Ollama service to run. To use an external Ollama instead,
+# Ollama is bundled INSIDE the app container (with the llama3.1:8b model baked in),
+# so there is no separate Ollama service to run. To use an external Ollama instead,
 # set OLLAMA_URL to its address (the entrypoint then skips the in-container one).
 
 services:
@@ -25,8 +25,8 @@ services:
     volumes:
       # Persist generated artifacts and the Ollama model store across restarts.
       # The model volume is seeded from the baked image layer on first run, so
-      # gpt-oss is already present (do NOT switch this to a bind mount, which
-      # would shadow the baked model).
+      # the baked model is already present (do NOT switch this to a bind mount,
+      # which would shadow it).
       - sam-uploads:/app/web/uploads
       - sam-outputs:/app/web/outputs
       - sam-reviews:/app/reviews

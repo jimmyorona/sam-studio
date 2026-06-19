@@ -10,12 +10,14 @@
 # The container runs the Express server (web/server/index.js) on :3001, serving
 # the prebuilt Vue bundle from web/dist and spawning the Python helpers for
 # review / rewrite / narrate / produce. Ollama is BUNDLED in this image, with the
-# gpt-oss model baked in at build time: the entrypoint starts `ollama serve`
+# llama3.1:8b model baked in at build time: the entrypoint starts `ollama serve`
 # alongside the Node server, and the app talks to it over localhost. Override
 # OLLAMA_URL to use an external Ollama instead.
 #
-# NOTE: baking gpt-oss makes this a very large image (the model is ~14 GB). The
-# build also needs network access to pull the model from ollama.com.
+# llama3.1:8b (~4.9 GB, 128K context) comfortably runs all four modes' prompts
+# while keeping the image far smaller than a 20B model; pick another with
+# --build-arg OLLAMA_MODEL=… . The build needs network access to pull from
+# ollama.com.
 # ---------------------------------------------------------------------------
 
 # ---- Stage 1: build the Vue/Vite frontend bundle --------------------------
@@ -73,12 +75,12 @@ RUN curl -fsSL https://ollama.com/download/ollama-linux-amd64.tgz -o /tmp/ollama
     && tar -C /usr -xzf /tmp/ollama.tgz \
     && rm /tmp/ollama.tgz
 
-# Bake the gpt-oss model into the image. Models are stored at a fixed path (not a
+# Bake the default model into the image. Models are stored at a fixed path (not a
 # user home) so the build-time pull and the runtime `node` user agree on the
 # location. A named volume mounted here at runtime is initialized FROM this layer,
 # so the baked model survives; a bind mount would shadow it.
 ENV OLLAMA_MODELS=/opt/ollama/models
-ARG OLLAMA_MODEL=gpt-oss
+ARG OLLAMA_MODEL=llama3.1:8b
 RUN mkdir -p "$OLLAMA_MODELS" \
     && (ollama serve & echo $! > /tmp/ollama.pid) \
     && for i in $(seq 1 60); do \

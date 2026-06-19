@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Start the bundled Ollama, then the SAM Slide Suite server. Both run in this one
-# container; the app reaches Ollama over localhost (OLLAMA_URL). The gpt-oss model
+# container; the app reaches Ollama over localhost (OLLAMA_URL). The default model
 # is baked into the image at /opt/ollama/models, so it is available immediately.
 set -euo pipefail
 

@@ -41,7 +41,9 @@ this project is pre-1.0 and not yet versioned, so dated entries are used.
 - **Docker package.** `docker/` ships a single, self-contained image
   (`docker/Dockerfile`, multi-stage: Vite build → slim runtime with
   libreoffice/poppler/ffmpeg/chromium, a Python venv, and Marp CLI) that also
-  **bundles Ollama with the `gpt-oss` model baked in at build time**. An
+  **bundles Ollama with the `llama3.1:8b` model baked in at build time** (chosen
+  to run all four modes' prompts while keeping the image far smaller than a 20B
+  model; override with `--build-arg OLLAMA_MODEL`). An
   `entrypoint.sh` starts `ollama serve` alongside the Node server; the app reaches
   it on localhost (override `OLLAMA_URL` for an external Ollama, `OLLAMA_PULL` for
   an extra model, `--build-arg OLLAMA_MODEL` to bake a different one). Includes
