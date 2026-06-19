@@ -38,6 +38,15 @@ this project is pre-1.0 and not yet versioned, so dated entries are used.
   (keeping the review reports it reads for findings).
 
 ### Added
+- **Docker package.** `docker/` ships a single, self-contained image
+  (`docker/Dockerfile`, multi-stage: Vite build → slim runtime with
+  libreoffice/poppler/ffmpeg/chromium, a Python venv, and Marp CLI) that also
+  **bundles Ollama with the `gpt-oss` model baked in at build time**. An
+  `entrypoint.sh` starts `ollama serve` alongside the Node server; the app reaches
+  it on localhost (override `OLLAMA_URL` for an external Ollama, `OLLAMA_PULL` for
+  an extra model, `--build-arg OLLAMA_MODEL` to bake a different one). Includes
+  `docker-compose.yml`, `.env.example`, and a `README.md` with ECR/ECS/EC2 deploy
+  steps for an AWS tenant.
 - **`OLLAMA_URL` server default.** The Express server now reads its default Ollama
   endpoint from the `OLLAMA_URL` env var (falling back to `http://localhost:11434`),
   so containerized deployments can target an Ollama elsewhere in the VPC without a
