@@ -38,6 +38,10 @@ this project is pre-1.0 and not yet versioned, so dated entries are used.
   (keeping the review reports it reads for findings).
 
 ### Added
+- **`OLLAMA_URL` server default.** The Express server now reads its default Ollama
+  endpoint from the `OLLAMA_URL` env var (falling back to `http://localhost:11434`),
+  so containerized deployments can target an Ollama elsewhere in the VPC without a
+  UI change; per-request `ollamaUrl` from the UI still wins.
 - **Narrate from the Rewrite output.** A "Narration source" toggle on the Narrate
   tab lets you narrate either the uploaded document (default) or the Rewrite tab's
   rewritten deck. Choosing the rewrite converts it to a clean Marp deck (one slide
@@ -78,6 +82,11 @@ this project is pre-1.0 and not yet versioned, so dated entries are used.
   (purple) inline, and the rewrite summary shows a drafted count.
 
 ### Changed
+- **Edge TTS voices: English-only with personalities.** `/api/voices` now reads
+  the catalogue via the `edge_tts` Python API and returns only English-speaking
+  locales (en-US, en-GB, en-AU, en-IN, …), each labeled with its voice
+  "personalities" (Microsoft's term for the voice actors), replacing the
+  table-scraping parser that returned all 322 voices unlabeled.
 - **Auto-size the model context window.** Review/rewrite and narrate now query
   the selected model's max context length (Ollama `/api/show`) and pass it as
   `num_ctx`, so stacked review prompts (persona brief + context + findings +

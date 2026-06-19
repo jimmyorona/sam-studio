@@ -9,6 +9,10 @@ const https = require('https');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+// Default Ollama endpoint. Override with OLLAMA_URL so containerized deployments
+// (e.g. AWS, pointing at an Ollama service elsewhere in the VPC) need no UI change;
+// the UI's per-request ollamaUrl still wins when supplied.
+const DEFAULT_OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
 
 const SCRIPT_PATH = path.join(__dirname, '..', '..', 'scripts', 'pptx_to_video.py');
 const SUPERTONIC_SCRIPT_PATH = path.join(__dirname, '..', '..', 'scripts', 'supertonic_synth.py');
@@ -379,7 +383,7 @@ app.post('/api/convert', upload.single('file'), (req, res) => {
     pause = '1.0',
     dpi = '150',
     theme = 'default',
-    ollamaUrl = 'http://localhost:11434',
+    ollamaUrl = DEFAULT_OLLAMA_URL,
     keepTemp = 'false',
     // ElevenLabs fields
     elApiKey = '',
@@ -637,7 +641,7 @@ app.get('/api/personas', (req, res) => {
 // GET /api/models  — proxy Ollama model list
 // ---------------------------------------------------------------------------
 app.get('/api/models', (req, res) => {
-  const ollamaUrl = req.query.ollamaUrl || 'http://localhost:11434';
+  const ollamaUrl = req.query.ollamaUrl || DEFAULT_OLLAMA_URL;
   let url;
   try { url = new URL(`${ollamaUrl}/api/tags`); } catch {
     return res.json({ models: [] });
@@ -667,34 +671,48 @@ let cachedVoices = null;
 app.get('/api/voices', (req, res) => {
   if (cachedVoices) return res.json({ voices: cachedVoices });
 
-  const proc = spawn('edge-tts', ['--list-voices'], { timeout: 20000 });
+  // edge-tts 7.x prints a fixed-width table from `--list-voices` that is awkward
+  // and version-fragile to parse, so we read the catalogue via its Python API,
+  // which returns structured dicts (ShortName, Locale, VoiceTag.VoicePersonalities).
+  // We keep only English-speaking locales and surface the voice "personalities"
+  // (Microsoft's term for the voice actors / personas) for the UI label.
+  const PY = `
+import asyncio, json, edge_tts
+voices = asyncio.run(edge_tts.list_voices())
+out = []
+for v in voices:
+    loc = v.get("Locale", "")
+    if not loc.startswith("en-"):
+        continue
+    tag = v.get("VoiceTag") or {}
+    out.append({
+        "name": v.get("ShortName", ""),
+        "gender": v.get("Gender", ""),
+        "locale": loc,
+        "personalities": tag.get("VoicePersonalities") or [],
+    })
+out.sort(key=lambda x: (x["locale"], x["name"]))
+print(json.dumps(out))
+`;
+  const proc = spawn('python3', ['-c', PY], { timeout: 30000 });
   let output = '';
   proc.stdout.on('data', chunk => (output += chunk));
   proc.on('close', code => {
     if (res.headersSent) return;
     if (code !== 0) return res.json({ voices: [] });
-    const voices = [];
-    // edge-tts ≥7 prints a table: "en-US-AriaNeural   Female   General   ...".
-    for (const line of output.split('\n')) {
-      const m = line.match(/^(\S+Neural)\s+(Male|Female|Neutral)\b/);
-      if (m) voices.push({ name: m[1], gender: m[2], locale: m[1].split('-').slice(0, 2).join('-') });
-    }
-    // Fallback: older "Name: …\nGender: …" block format.
-    if (!voices.length) {
-      for (const block of output.split('\n\n')) {
-        const nameLine = block.match(/^Name:\s*(.+)$/m);
-        if (nameLine) {
-          const genderLine = block.match(/^Gender:\s*(.+)$/m);
-          const localeLine = block.match(/^Locale:\s*(.+)$/m);
-          voices.push({
-            name: nameLine[1].trim(),
-            gender: genderLine ? genderLine[1].trim() : '',
-            locale: localeLine ? localeLine[1].trim() : '',
-          });
-        }
-      }
-    }
-    cachedVoices = voices;
+    let parsed;
+    try { parsed = JSON.parse(output); } catch { return res.json({ voices: [] }); }
+    const voices = parsed.map(v => {
+      const persona = (v.personalities || []).join(', ');
+      return {
+        name: v.name,
+        gender: v.gender,
+        locale: v.locale,
+        personalities: v.personalities || [],
+        label: persona ? `${v.name} — ${persona}` : v.name,
+      };
+    });
+    if (voices.length) cachedVoices = voices;
     res.json({ voices });
   });
   proc.on('error', () => { if (!res.headersSent) res.json({ voices: [] }); });
@@ -750,7 +768,7 @@ app.get('/api/supertonic-voices', (req, res) => {
 // GET /api/prereqs  — check system dependencies
 // ---------------------------------------------------------------------------
 app.get('/api/prereqs', async (req, res) => {
-  const ollamaUrl = req.query.ollamaUrl || 'http://localhost:11434';
+  const ollamaUrl = req.query.ollamaUrl || DEFAULT_OLLAMA_URL;
   const ttsProvider = req.query.ttsProvider || 'edge';
   const { execFile } = require('child_process');
   const util = require('util');
@@ -871,7 +889,7 @@ app.post('/api/generate-music-prompt', upload.single('file'), (req, res) => {
 
   const {
     model = 'llama3.2:3b',
-    ollamaUrl = 'http://localhost:11434',
+    ollamaUrl = DEFAULT_OLLAMA_URL,
     personaText = '',
     contextText = '',
   } = req.body;
@@ -1030,7 +1048,7 @@ app.post('/api/narrate', upload.single('file'), (req, res) => {
     pause = '1.0',
     dpi = '150',
     theme = 'default',
-    ollamaUrl = 'http://localhost:11434',
+    ollamaUrl = DEFAULT_OLLAMA_URL,
     keepTemp = 'false',
     elApiKey = '',
     elVoiceId = 'pNInz6obpgDQGcFmaJgB',
@@ -1317,7 +1335,7 @@ function startReviewJob(mode) {
     const {
       personas = '',
       model = 'llama3.2:3b',
-      ollamaUrl = 'http://localhost:11434',
+      ollamaUrl = DEFAULT_OLLAMA_URL,
       text = '',
       title = '',
       advise = '',
