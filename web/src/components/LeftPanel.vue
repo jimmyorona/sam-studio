@@ -106,13 +106,13 @@
     <!-- 2.4 Model -->
     <section class="block">
       <h3>🤖 Model
-        <button class="refresh" :disabled="refreshingModels" title="Reload models from Ollama"
+        <button v-if="store.settings.provider === 'ollama'" class="refresh" :disabled="refreshingModels" title="Reload models from Ollama"
                 @click="refreshModels">{{ refreshingModels ? '…' : '⟳' }}</button>
       </h3>
       <select v-model="store.settings.model" class="full">
         <option v-for="m in store.models" :key="m" :value="m">{{ m }}</option>
       </select>
-      <div v-if="store.modelError" class="err">{{ store.modelError }}</div>
+      <div v-if="store.settings.provider === 'ollama' && store.modelError" class="err">{{ store.modelError }}</div>
     </section>
 
     <!-- 2.5 Context (collapsible) -->

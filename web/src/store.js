@@ -20,6 +20,8 @@ export const store = reactive({
   // ── global ──
   mode: 'review',                       // review | rewrite | narrate | produce
   settings: {
+    provider: saved.provider || 'ollama',
+    geminiApiKey: saved.geminiApiKey || '',
     ollamaUrl: saved.ollamaUrl || 'http://localhost:11434',
     model: saved.model || 'llama3.2:3b',
     theme: saved.theme || 'mixed',
@@ -111,6 +113,14 @@ function firstSummaryLine(content) {
 
 export async function loadModels() {
   store.modelError = '';
+  if (store.settings.provider === 'gemini') {
+    const geminiModels = ['gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-1.5-flash', 'gemini-1.5-pro'];
+    store.models = geminiModels;
+    if (!geminiModels.includes(store.settings.model)) {
+      store.settings.model = 'gemini-2.5-flash';
+    }
+    return;
+  }
   try {
     const r = await fetch(`/api/models?ollamaUrl=${encodeURIComponent(store.settings.ollamaUrl)}`);
     const d = await r.json();
@@ -205,6 +215,8 @@ export async function startReview(mode) {
   form.append('personas', personas.join(','));
   form.append('model', store.settings.model);
   form.append('ollamaUrl', store.settings.ollamaUrl);
+  form.append('provider', store.settings.provider);
+  form.append('geminiApiKey', store.settings.geminiApiKey);
   const ctx = resolvedContext();
   if (ctx) form.append('context', ctx);
   if (mode === 'rewrite' && store.adviseNeeds) form.append('advise', '1');
@@ -313,6 +325,8 @@ export async function startNarrate() {
   }
   form.append('ollamaUrl', store.settings.ollamaUrl);
   form.append('model', store.settings.model);
+  form.append('provider', store.settings.provider);
+  form.append('geminiApiKey', store.settings.geminiApiKey);
   form.append('ttsProvider', store.voice.provider);
   form.append('voice', store.voice.voice);
   // Supertonic's voice is the stVoice field (F1/M1/…), not `voice`.

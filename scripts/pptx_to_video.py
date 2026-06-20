@@ -88,6 +88,71 @@ SLIDE_USER_TEMPLATE = (
 OLLAMA_TIMEOUT = 300  # seconds per slide
 FFMPEG_TIMEOUT = 300  # seconds
 
+
+def gemini_chat(api_key: str, model: str, messages: list, temperature: float = 0.3) -> str:
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}"
+    
+    system_prompt = ""
+    contents = []
+    for msg in messages:
+        if msg["role"] == "system":
+            system_prompt = msg["content"]
+        else:
+            role = "user" if msg["role"] == "user" else "model"
+            contents.append({
+                "role": role,
+                "parts": [{"text": msg["content"]}]
+            })
+            
+    payload = {
+        "contents": contents,
+        "generationConfig": {
+            "temperature": temperature
+        }
+    }
+    if system_prompt:
+        payload["systemInstruction"] = {
+            "parts": [{"text": system_prompt}]
+        }
+        
+    import urllib.request
+    import urllib.error
+    import json
+    import time
+    import random
+    
+    data = json.dumps(payload).encode("utf-8")
+    max_retries = 5
+    base_delay = 2.0
+    
+    for attempt in range(max_retries + 1):
+        req = urllib.request.Request(
+            url,
+            data=data,
+            headers={"Content-Type": "application/json"},
+            method="POST"
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=300) as resp:
+                result = json.loads(resp.read().decode("utf-8"))
+            return result['candidates'][0]['content']['parts'][0]['text'].strip()
+        except urllib.error.HTTPError as e:
+            if attempt < max_retries and (e.code == 429 or e.code >= 500):
+                retry_after = e.headers.get("Retry-After")
+                delay = float(retry_after) if (retry_after and retry_after.isdigit()) else (base_delay * (2 ** attempt) + random.uniform(0, 1.0))
+                reason = "rate limit (429)" if e.code == 429 else f"server error ({e.code})"
+                log(f"  Gemini API {reason} hit. Retrying in {delay:.1f}s (attempt {attempt + 1}/{max_retries}) ...")
+                time.sleep(delay)
+                continue
+            raise e
+        except Exception as e:
+            if attempt < max_retries:
+                delay = base_delay * (2 ** attempt) + random.uniform(0, 1.0)
+                log(f"  Gemini API call failed ({e}). Retrying in {delay:.1f}s (attempt {attempt + 1}/{max_retries}) ...")
+                time.sleep(delay)
+                continue
+            raise e
+
 MUSIC_PROMPT_SYSTEM_BASE = (
     "You are a music director scoring a presentation video. "
     "Write a concise, vivid music description for the ElevenLabs Sound Generation API. "
@@ -340,6 +405,8 @@ def generate_narration_chat(
     model: str,
     ollama_url: str,
     num_ctx: "int | None" = None,
+    provider: str = 'ollama',
+    gemini_api_key: str = '',
 ) -> Tuple[str, List[dict]]:
     """Generate narration for one slide, appending to the full conversation history."""
     if not slide_text.strip():
@@ -353,27 +420,30 @@ def generate_narration_chat(
     user_content = SLIDE_USER_TEMPLATE.format(slide_text=slide_text, notes_block=notes_block)
 
     messages = history + [{"role": "user", "content": user_content}]
-    options = {"temperature": 0.3, "top_p": 0.9}
-    if num_ctx:
-        options["num_ctx"] = num_ctx
-    payload = {
-        "model": model,
-        "messages": messages,
-        "stream": False,
-        "options": options,
-    }
-    data = json.dumps(payload).encode("utf-8")
-    req = urllib.request.Request(
-        f"{ollama_url}/api/chat",
-        data=data,
-        headers={"Content-Type": "application/json"},
-        method="POST",
-    )
+    if provider == 'gemini':
+        raw = gemini_chat(gemini_api_key, model, messages, temperature=0.3)
+    else:
+        options = {"temperature": 0.3, "top_p": 0.9}
+        if num_ctx:
+            options["num_ctx"] = num_ctx
+        payload = {
+            "model": model,
+            "messages": messages,
+            "stream": False,
+            "options": options,
+        }
+        data = json.dumps(payload).encode("utf-8")
+        req = urllib.request.Request(
+            f"{ollama_url}/api/chat",
+            data=data,
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
 
-    with urllib.request.urlopen(req, timeout=OLLAMA_TIMEOUT) as resp:
-        response = json.loads(resp.read().decode("utf-8"))
+        with urllib.request.urlopen(req, timeout=OLLAMA_TIMEOUT) as resp:
+            response = json.loads(resp.read().decode("utf-8"))
 
-    raw = response.get("message", {}).get("content", "").strip()
+        raw = response.get("message", {}).get("content", "").strip()
     raw = re.sub(r"```[\w]*\n?", "", raw)
     raw = raw.replace("```", "").strip()
     narration = raw or " "
@@ -388,6 +458,8 @@ def generate_music_prompt(
     model: str,
     ollama_url: str,
     num_ctx: "int | None" = None,
+    provider: str = 'ollama',
+    gemini_api_key: str = '',
 ) -> str:
     """Generate a single background-music prompt from all slide content."""
     lines = []
@@ -411,30 +483,34 @@ def generate_music_prompt(
             "Reference document (draw on this as background knowledge when relevant):\n\n" + context
         )
 
-    options = {"temperature": 0.6, "top_p": 0.9}
-    if num_ctx:
-        options["num_ctx"] = num_ctx
-    payload = {
-        "model": model,
-        "messages": [
-            {"role": "system", "content": "\n\n".join(system_parts)},
-            {"role": "user", "content": MUSIC_PROMPT_USER_TEMPLATE.format(content=content)},
-        ],
-        "stream": False,
-        "options": options,
-    }
-    data = json.dumps(payload).encode("utf-8")
-    req = urllib.request.Request(
-        f"{ollama_url}/api/chat",
-        data=data,
-        headers={"Content-Type": "application/json"},
-        method="POST",
-    )
+    messages = [
+        {"role": "system", "content": "\n\n".join(system_parts)},
+        {"role": "user", "content": MUSIC_PROMPT_USER_TEMPLATE.format(content=content)},
+    ]
+    if provider == 'gemini':
+        raw = gemini_chat(gemini_api_key, model, messages, temperature=0.6)
+    else:
+        options = {"temperature": 0.6, "top_p": 0.9}
+        if num_ctx:
+            options["num_ctx"] = num_ctx
+        payload = {
+            "model": model,
+            "messages": messages,
+            "stream": False,
+            "options": options,
+        }
+        data = json.dumps(payload).encode("utf-8")
+        req = urllib.request.Request(
+            f"{ollama_url}/api/chat",
+            data=data,
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
 
-    with urllib.request.urlopen(req, timeout=OLLAMA_TIMEOUT) as resp:
-        response = json.loads(resp.read().decode("utf-8"))
+        with urllib.request.urlopen(req, timeout=OLLAMA_TIMEOUT) as resp:
+            response = json.loads(resp.read().decode("utf-8"))
 
-    raw = response.get("message", {}).get("content", "").strip()
+        raw = response.get("message", {}).get("content", "").strip()
     raw = re.sub(r"```[\w]*\n?", "", raw)
     raw = raw.replace("```", "").strip()
     return raw or "Ambient background music, calm and unobtrusive, suitable for a professional presentation."
@@ -855,6 +931,9 @@ def main() -> int:
         help="Extract slide text, ask Ollama for a music prompt, write JSON to --output, and exit.",
     )
 
+    parser.add_argument("--provider", choices=["ollama", "gemini"], default="ollama", help="Model provider: 'ollama' or 'gemini'. Default: 'ollama'")
+    parser.add_argument("--gemini-api-key", default="", help="Gemini API Key (or set GEMINI_API_KEY environment variable)")
+
     # Persona / prompt injection
     persona_group = parser.add_argument_group("Narrator Persona")
     persona_group.add_argument(
@@ -960,13 +1039,21 @@ def main() -> int:
     log("Step 1/5: Checking prerequisites ...")
     if not args.generate_music_prompt_only:
         check_prerequisites()
-    check_ollama(args.ollama_url)
+    if args.provider == 'ollama':
+        check_ollama(args.ollama_url)
+
+    # Ensure Gemini API Key is configured if provider is gemini
+    gemini_key = args.gemini_api_key or os.environ.get("GEMINI_API_KEY", "")
+    if args.provider == "gemini" and not gemini_key:
+        raise SystemExit("ERROR: Gemini API Key is required when using gemini provider")
 
     # Use the model's full context window so the stateful narration history
     # (which grows with every slide) isn't silently truncated by Ollama.
-    num_ctx = model_max_ctx(args.ollama_url, args.model)
-    if num_ctx:
-        log(f"Model context window: {num_ctx} tokens.")
+    num_ctx = None
+    if args.provider == 'ollama':
+        num_ctx = model_max_ctx(args.ollama_url, args.model)
+        if num_ctx:
+            log(f"Model context window: {num_ctx} tokens.")
 
     work_dir = Path(tempfile.mkdtemp(prefix="pptx_video_"))
     try:
@@ -982,7 +1069,7 @@ def main() -> int:
             if args.generate_music_prompt_only:
                 persona = load_persona(args.persona_text, args.persona_file)
                 context = load_context(args.context_text, args.context_file)
-                prompt = generate_music_prompt(slide_texts, persona, context, args.model, args.ollama_url, num_ctx)
+                prompt = generate_music_prompt(slide_texts, persona, context, args.model, args.ollama_url, num_ctx, args.provider, gemini_key)
                 Path(args.output).write_text(json.dumps({"prompt": prompt}, indent=2), encoding="utf-8")
                 log(f"Music prompt written to: {args.output}")
                 return 0
@@ -1000,7 +1087,7 @@ def main() -> int:
             if args.generate_music_prompt_only:
                 persona = load_persona(args.persona_text, args.persona_file)
                 context = load_context(args.context_text, args.context_file)
-                prompt = generate_music_prompt(slide_texts, persona, context, args.model, args.ollama_url, num_ctx)
+                prompt = generate_music_prompt(slide_texts, persona, context, args.model, args.ollama_url, num_ctx, args.provider, gemini_key)
                 Path(args.output).write_text(json.dumps({"prompt": prompt}, indent=2), encoding="utf-8")
                 log(f"Music prompt written to: {args.output}")
                 return 0
@@ -1028,7 +1115,7 @@ def main() -> int:
         for idx, group in enumerate(groups):
             stext, notes = group["texts"]
             notes_for_prompt = re.sub(r'\[FRAME\]', '', notes, flags=re.IGNORECASE).strip()
-            narration, history = generate_narration_chat(stext, notes_for_prompt, history, args.model, args.ollama_url, num_ctx)
+            narration, history = generate_narration_chat(stext, notes_for_prompt, history, args.model, args.ollama_url, num_ctx, args.provider, gemini_key)
             narrations.append(narration)
             log(f"  Group {idx + 1}/{len(groups)}: {narration[:100]} ...")
 

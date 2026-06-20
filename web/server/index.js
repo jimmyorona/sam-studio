@@ -407,6 +407,8 @@ app.post('/api/convert', upload.single('file'), (req, res) => {
     musicPrompt = '',
     musicDuration = '70',
     musicVolume = '-20',
+    provider = 'ollama',
+    geminiApiKey = '',
   } = req.body;
 
   const inputPath = req.file.path;
@@ -466,6 +468,8 @@ app.post('/api/convert', upload.single('file'), (req, res) => {
       '--dpi', dpi,
       '--anim-fps', animFps,
       '--ollama-url', ollamaUrl,
+      '--provider', provider,
+      '--gemini-api-key', geminiApiKey,
     ];
     if (isMarkdown) a.push('--theme', theme);
     if (keepTemp === 'true') a.push('--keep-temp');
@@ -1071,6 +1075,8 @@ app.post('/api/narrate', upload.single('file'), (req, res) => {
     musicPrompt = '',
     musicDuration = '70',
     musicVolume = '-20',
+    provider = 'ollama',
+    geminiApiKey = '',
   } = req.body;
 
   const inputPath = req.file.path;
@@ -1139,6 +1145,8 @@ app.post('/api/narrate', upload.single('file'), (req, res) => {
     '--anim-fps', animFps,
     '--ollama-url', ollamaUrl,
     '--manifest-output', manifestPath,
+    '--provider', provider,
+    '--gemini-api-key', geminiApiKey,
   ];
   if (isMarkdown) args.push('--theme', theme);
   if (keepTemp === 'true') args.push('--keep-temp');
@@ -1340,6 +1348,8 @@ function startReviewJob(mode) {
       title = '',
       advise = '',
       context = '',
+      provider = 'ollama',
+      geminiApiKey = '',
     } = req.body;
 
     const availablePersonas = new Set(
@@ -1437,6 +1447,8 @@ function startReviewJob(mode) {
       '--model', model,
       '--mode', mode,
       '--ollama-url', ollamaUrl,
+      '--provider', provider,
+      '--gemini-api-key', geminiApiKey,
     ];
     if (mode === 'rewrite' && (advise === '1' || advise === 'true')) args.push('--advise');
     if (contextPath) args.push('--context-file', contextPath);

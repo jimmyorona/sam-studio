@@ -277,6 +277,58 @@ def ollama_chat(ollama_url: str, model: str, system: str, user: str,
     return resp.json()["message"]["content"].strip()
 
 
+def gemini_chat(api_key: str, model: str, system: str, user: str, temperature: float = 0.3) -> str:
+    import random
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}"
+    payload = {
+        "contents": [
+            {
+                "role": "user",
+                "parts": [{"text": user}]
+            }
+        ],
+        "systemInstruction": {
+            "parts": [{"text": system}]
+        },
+        "generationConfig": {
+            "temperature": temperature
+        }
+    }
+    
+    max_retries = 5
+    base_delay = 2.0
+    
+    for attempt in range(max_retries + 1):
+        resp = None
+        try:
+            resp = requests.post(url, json=payload, timeout=(10, 900))
+            if resp.status_code == 429:
+                if attempt == max_retries:
+                    resp.raise_for_status()
+                retry_after = resp.headers.get("Retry-After")
+                delay = float(retry_after) if (retry_after and retry_after.isdigit()) else (base_delay * (2 ** attempt) + random.uniform(0, 1.0))
+                log(f"  Gemini API rate limit (429) hit. Retrying in {delay:.1f}s (attempt {attempt + 1}/{max_retries}) ...")
+                time.sleep(delay)
+                continue
+            resp.raise_for_status()
+            result = resp.json()
+            return result['candidates'][0]['content']['parts'][0]['text'].strip()
+        except requests.exceptions.HTTPError as e:
+            if attempt < max_retries and resp is not None and resp.status_code >= 500:
+                delay = base_delay * (2 ** attempt) + random.uniform(0, 1.0)
+                log(f"  Gemini API server error ({resp.status_code}). Retrying in {delay:.1f}s (attempt {attempt + 1}/{max_retries}) ...")
+                time.sleep(delay)
+                continue
+            raise e
+        except requests.exceptions.RequestException as e:
+            if attempt < max_retries:
+                delay = base_delay * (2 ** attempt) + random.uniform(0, 1.0)
+                log(f"  Gemini API request failed ({e}). Retrying in {delay:.1f}s (attempt {attempt + 1}/{max_retries}) ...")
+                time.sleep(delay)
+                continue
+            raise e
+
+
 def clear_stale_outputs(out_dir: Path, rewrite: bool) -> None:
     """Remove this mode's previous outputs so each run starts clean.
 
@@ -345,11 +397,20 @@ def run(args) -> int:
     verb = "rewrite" if rewrite else "review"
     log(f"Running {len(personas)} persona {verb}(s), up to {MAX_CONCURRENT_REVIEWS} concurrent …")
 
+    # Ensure Gemini API Key is configured if provider is gemini
+    gemini_key = args.gemini_api_key or os.environ.get("GEMINI_API_KEY", "")
+    if args.provider == "gemini" and not gemini_key:
+        marker("@@DONE state=error error=Gemini API Key is required when using gemini provider")
+        log("ERROR: Gemini API Key not provided")
+        return 1
+
     # Use the model's full context window so stacked prompts (persona brief +
     # context + findings + document) are never silently truncated.
-    num_ctx = model_max_ctx(args.ollama_url, args.model)
-    if num_ctx:
-        log(f"  Model context window: {num_ctx} tokens.")
+    num_ctx = None
+    if args.provider == 'ollama':
+        num_ctx = model_max_ctx(args.ollama_url, args.model)
+        if num_ctx:
+            log(f"  Model context window: {num_ctx} tokens.")
 
     # Carry the prior review's analysis into every rewrite, regardless of the
     # rewrite persona. Gather once up front so concurrent rewrites don't read
@@ -414,7 +475,10 @@ def run(args) -> int:
                 f"{findings_block if rewrite else ''}"
                 f"{task_line}:\n\n{content}"
             )
-            report = ollama_chat(args.ollama_url, args.model, system, user_msg, num_ctx)
+            if args.provider == 'gemini':
+                report = gemini_chat(gemini_key, args.model, system, user_msg)
+            else:
+                report = ollama_chat(args.ollama_url, args.model, system, user_msg, num_ctx)
             (out_dir / out_file).write_text(report + "\n", encoding="utf-8")
             p["state"] = "done"
             marker(f"@@STATE persona={p['slug']} state=done")
@@ -462,7 +526,10 @@ def run(args) -> int:
             f"Panel: {', '.join(p['name'] for p in done)}\n\n"
             + "\n\n".join(parts)
         )
-        synthesis = ollama_chat(args.ollama_url, args.model, SYNTHESIS_SYSTEM_PROMPT, user_msg, num_ctx)
+        if args.provider == 'gemini':
+            synthesis = gemini_chat(gemini_key, args.model, SYNTHESIS_SYSTEM_PROMPT, user_msg)
+        else:
+            synthesis = ollama_chat(args.ollama_url, args.model, SYNTHESIS_SYSTEM_PROMPT, user_msg, num_ctx)
         (out_dir / "00-SYNTHESIS.md").write_text(synthesis + "\n", encoding="utf-8")
         marker("@@REPORT slug=00-SYNTHESIS name=Synthesis")
         marker("@@DONE state=complete")
@@ -647,6 +714,8 @@ def main() -> int:
     r.add_argument("--context", default="", help="background context text to inform the review/rewrite")
     r.add_argument("--context-file", help="path to a file whose text is used as background context")
     r.add_argument("--ollama-url", default=DEFAULT_OLLAMA_URL)
+    r.add_argument("--provider", choices=["ollama", "gemini"], default="ollama")
+    r.add_argument("--gemini-api-key", default="")
     r.set_defaults(func=run)
 
     e = sub.add_parser("export", help="render a report markdown file to docx/pptx")

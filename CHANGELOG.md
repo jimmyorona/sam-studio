@@ -6,7 +6,11 @@ this project is pre-1.0 and not yet versioned, so dated entries are used.
 
 ## [Unreleased]
 
+### Added
+- **Google Gemini API support.** Integrated Google Gemini API as a first-class model provider alongside local Ollama. Added Model Provider configuration select and Gemini API Key input to Settings Drawer, updated store and left config panel, and modified Python subprocess bridges (`reviewer_synth.py`, `pptx_to_video.py`) to route requests to Gemini generateContent REST endpoints with stateful role mapping.
+
 ### Fixed
+- **Gemini API calls failed with 429 Too Many Requests.** High frequency requests (e.g. slide-by-slide loops or concurrent persona critiques) triggered rate limit errors. Added robust retry logic with exponential backoff and jitter for `429` (rate limit) and `5xx` (server error) responses.
 - **Supertonic ignored the voice selection (always its default).** The Supertonic
   voice (F1/M1/…) is the `stVoice` field, but the client only sent it as `voice`,
   which the server ignores for Supertonic — so every preview/narration used the
