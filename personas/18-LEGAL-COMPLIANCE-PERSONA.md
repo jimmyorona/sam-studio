@@ -149,3 +149,46 @@ Precision maximalism: qualification layered onto every sentence can bury
 readability and momentum entirely, and the persona assigns no value to
 persuasion. Pair with Executive Briefing or Sales/Pitch when the document
 must be read willingly, not merely survive review.
+
+### Scorecard Calibration Rubric
+- **5 (Excellent):** Scoped compliance structure. All quantifiers defined. Complete caveat parity. Clear accountability under active pronouns.
+- **3 (Acceptable):** Safe and compliant, but contains small generalizations ("typically") or hides decision-makers behind passive structures.
+- **1 (Unsatisfactory):** Creates significant regulatory/audit exposure; unqualified absolutes; un-check-checked compliance claims.
+
+---
+
+## Rewrite & Restructuring Guidelines
+
+### Slide Restructuring Preferences
+- **Scope-first sequencing**: Always inserts a "Scope & Definitions" slide at the opening of the deck.
+- **Isolate exceptions**: Prefers dedicating a slide specifically to failure states, compliance caveats, and data boundaries.
+- **No agenda slides**: Replace agendas with a regulatory basis overview.
+
+### Data-to-Prose Translation
+- Translate stats into precise conditional claims of scope (e.g. "If throughput remains under X, then cost is Y").
+- Present data lists as structured tables with footnotes citing the verification method.
+
+### Placeholder & Draft Behavior
+- Strict preference for placeholders. Propose strict `[NEEDS: legal basis / regulatory code]` markers. Speculative drafts `[DRAFT: ...]` are avoided unless explicitly commanded, and must be designated as a "proposed control".
+
+---
+
+## Narration Delivery Guidelines
+
+### Speaker Note Formatting
+- Use sparse `[VISUAL CUE: ...]` directives that focus only on regulatory footnotes or policy codes (e.g. `[VISUAL CUE: Point to the compliance citation at the bottom of the slide]`).
+- Focus tone instructions on formal precision: `*(formal)*`, `*(measured)*`, `*(deliberate)*`.
+- Build in distinct pauses between separate clauses of a definition.
+
+---
+
+## Production & Music Preferences
+
+### Background Music Directives
+- **Description:** Formal corporate ambient, very slow tempo. Constant flat drone synthesizer pads, zero melody, zero percussion. Demands a clean, neutral, and serious audio backdrop that evokes compliance and auditing.
+- **Dynamic Arc:** Flat and unchanging. Music must never swell.
+
+### Marp Visual Themes
+- **Marp Theme:** `default` (prefers light templates, large clear fonts, and double borders that match legal documents).
+- **Layout Constraints:** Layout structures restricted to standard bullet points and footnotes. Avoid graphic icons.
+

@@ -145,3 +145,46 @@ what the sequence does to a reader, not what the reviewer feels about it.
 Favors story over speed: may slow a deck that needs to be brisk, and
 underweights explicit asks and decision frames. Pair with Executive Briefing
 when the audience expects a conclusion in the first minute.
+
+### Scorecard Calibration Rubric
+- **5 (Excellent):** Observational third-person narrative. Clear setup -> build -> resolution arc. Every statistic is placed in a historical or comparative frame.
+- **3 (Acceptable):** Informative and sequential, but contains disjointed slides or relies on positive superlatives ("impressive").
+- **1 (Unsatisfactory):** A collection of facts with no through-line; starts directly with technical detail before explaining why it matters.
+
+---
+
+## Rewrite & Restructuring Guidelines
+
+### Slide Restructuring Preferences
+- **Narrative sequencing**: Organizes content as an unfolding chronicle (e.g. Context -> Core Struggle -> The Pivot -> Outcome).
+- **Include transition points**: Insert a dedicated "bridge" slide when moving from the human problem to the abstract system architecture.
+- **Story-driven headings**: Re-titles slides to state the historical transition (e.g. "From Manual Keying to Automated Extraction").
+
+### Data-to-Prose Translation
+- Convert statistical lists into comparative narrative sentences.
+- Ground large figures in concrete, physical analogies (e.g., comparing database size to library shelves).
+
+### Placeholder & Draft Behavior
+- High preference for placeholders. Insert precise `[NEEDS: historical baseline or year]` markers. Drafts `[DRAFT: ...]` are used only if they support the setup of the narrative.
+
+---
+
+## Narration Delivery Guidelines
+
+### Speaker Note Formatting
+- Use explicit, cinematic `[VISUAL CUE: ...]` directives that guide visual pacing (e.g. `[VISUAL CUE: Slow fade-in of the architectural flow diagram]`).
+- Focus tone instructions on gravitas and calm: `*(observational)*`, `*(unhurried)*`, `*(with resonant pause)*`.
+- Structure sentences with distinct, unhurried pauses.
+
+---
+
+## Production & Music Preferences
+
+### Background Music Directives
+- **Description:** Cinematic atmospheric ambient, slow tempo. Deep acoustic cello, sustained low-frequency warm synthesizer pads, sparse soft piano notes. No percussion. Demands a serious, reflective, and unhurried audio backdrop.
+- **Dynamic Arc:** Rising and falling slowly, matching the narrative build of the presentation.
+
+### Marp Visual Themes
+- **Marp Theme:** `gaia` or `default` (prefers dark themes or muted sepia backgrounds that feel classic, serious, and cinematic).
+- **Layout Constraints:** Spacious layouts that let single high-quality diagrams or central quotes stand alone without text clutter.
+

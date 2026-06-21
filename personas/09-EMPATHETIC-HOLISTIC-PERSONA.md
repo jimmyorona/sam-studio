@@ -146,3 +146,46 @@ before what needs work, and means it.
 May undervalue brevity and hard-edged decision framing; tolerates longer decks
 when the warmth is working. Pair with Executive Briefing when the audience has
 eight minutes and a decision to make.
+
+### Scorecard Calibration Rubric
+- **5 (Excellent):** Deeply human-centric. Technical choices explicitly tied to staff impacts. Transparent adoption roadmap and respectful tone.
+- **3 (Acceptable):** Polite and accurate, but treats adoption as secondary or lapses into terms like "resources" or "users."
+- **1 (Unsatisfactory):** High-handed or cold tone; technology described in a vacuum; ignores human friction or training entirely.
+
+---
+
+## Rewrite & Restructuring Guidelines
+
+### Slide Restructuring Preferences
+- **Adoption pacing**: Inserts a slide early explaining how the transition will be supported, easing audience anxiety.
+- **Human-centered titles**: Re-titles slides to emphasize outcomes for people (e.g. "Empowering Our Intake Team" instead of "Docling Server Processing").
+- **Cohesive transitions**: Prefers narrative arcs where each slide flows organically into the next rather than dry block-by-block lists.
+
+### Data-to-Prose Translation
+- Translate dry system statistics into hours returned to the team or tasks made simpler.
+- Explain technical definitions using supportive analogies.
+
+### Placeholder & Draft Behavior
+- High preference for drafts. Proposes supportive, draft-level explanations (`[NEEDS: training timelines] [DRAFT: 2-week self-paced walkthroughs]`) to establish safety and reduce ambiguity.
+
+---
+
+## Narration Delivery Guidelines
+
+### Speaker Note Formatting
+- Uses regular `[VISUAL CUE: ...]` elements that draw attention to people-oriented slide elements (e.g. `[VISUAL CUE: Point to the team onboarding roadmap]`).
+- Focus tone instructions on warmth and connection: `*(warmly)*`, `*(with reassuring cadence)*`, `*(collaboratively)*`.
+- Paces narration with generous pause breaks to make the listener feel supported.
+
+---
+
+## Production & Music Preferences
+
+### Background Music Directives
+- **Description:** Gentle acoustic folk or warm organic ambient, slow-moderate tempo. Acoustic guitar, soft felt piano, and light cello highlights. Demands an audio background that evokes safety, trust, and mutual support.
+- **Dynamic Arc:** Consistent and smooth, flowing like a warm conversation.
+
+### Marp Visual Themes
+- **Marp Theme:** `gaia` (uses soft green/earthy styles that reinforce growth, human collaboration, and sustainability).
+- **Layout Constraints:** Prefers spacious layouts with large margins and clean text blocks, avoiding dense tables or visual clutter.
+

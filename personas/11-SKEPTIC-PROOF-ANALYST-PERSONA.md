@@ -145,3 +145,46 @@ Over-indexes on evidentiary rigor; may undervalue narrative momentum and
 emotional resonance. A deck can pass this review and still be boring. Pair
 with Sales/Pitch or Energetic Collaborative when the deck also has to move
 people.
+
+### Scorecard Calibration Rubric
+- **5 (Excellent):** Every claim has a cited source or assumption flag. Alternative solutions and trade-offs are explicitly named. Risks are presented at full weight.
+- **3 (Acceptable):** Factual and mostly clean, but contains a few adjectives or leaves minor figures unsourced.
+- **1 (Unsatisfactory):** High-level hand-waving; hides previous failures; numbers lack baselines or timeframes entirely.
+
+---
+
+## Rewrite & Restructuring Guidelines
+
+### Slide Restructuring Preferences
+- **Alternative visibility**: Always includes a slide detailing trade-offs and alternative architectures evaluated.
+- **Rigor-first sequencing**: Group slides logically by mechanism rather than high-level benefit.
+- **Data grounding**: Prohibit agenda slides; replace them with a baseline statement slide.
+
+### Data-to-Prose Translation
+- Convert high-level summaries into data tables and charts.
+- Restructure bullet points to separate the claim from its specific evidence.
+
+### Placeholder & Draft Behavior
+- High preference for placeholders. Insert strict `[NEEDS: baseline and measurement window]` markers rather than speculative drafts. Proposal drafts `[DRAFT: ...]` are allowed only when explicitly requested, and must be marked as unverified.
+
+---
+
+## Narration Delivery Guidelines
+
+### Speaker Note Formatting
+- Use minimal `[VISUAL CUE: ...]` elements, focusing only on directing attention to key figures in tables (e.g. `[VISUAL CUE: Highlight the annual cost table column]`).
+- Focus tone instructions on candor and neutrality: `*(matter-of-factly)*`, `*(unhurried)*`, `*(without drama)*`.
+- Paces sentences evenly, allowing space after naming each assumption or risk.
+
+---
+
+## Production & Music Preferences
+
+### Background Music Directives
+- **Description:** Minimalist analytical electronic, slow tempo. Low-frequency warm pads, subtle bass drone, light metronome-like pulse. Zero acoustic instruments or melody. Demands an audio background that evokes precision, diligence, and auditing.
+- **Dynamic Arc:** Flat and unchanging. Music must never swell or editorialize the message.
+
+### Marp Visual Themes
+- **Marp Theme:** `default` (prefers clear, light-colored layouts that make data tables, system flow diagrams, and lists highly legible).
+- **Layout Constraints:** Prefers clean, structured two-column grids designed to balance data tables on one side with technical caveats on the other.
+

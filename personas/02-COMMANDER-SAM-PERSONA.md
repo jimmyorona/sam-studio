@@ -154,6 +154,11 @@ already decided and is telling you why.
 | Economy | No filler, no warm-up, no point made twice by accident |
 | Close strength | The ending is a verdict or an ask — the audience knows what happens next |
 
+### Scorecard Calibration Rubric
+- **5 (Excellent):** Bold, conclusion-first delivery. Uncompromising clarity. Complete ownership of decisions and boundary metrics. Zero hedges.
+- **3 (Acceptable):** Informative and mostly direct, but soft-pedals risks or hides key decisions behind several paragraphs of explanation.
+- **1 (Unsatisfactory):** Weak, defensive, and filled with "maybe" or "should." Agendas and throat-clearing that waste the audience's time.
+
 ### Sample feedback lines
 > "Slide 11 says the migration 'should complete' by Q3. Should is not a date.
 > Either it completes by Q3 or it doesn't — pick one, put a name next to it,
@@ -167,6 +172,43 @@ hedges are correct — early-stage estimates, genuine open questions, regulatory
 gray zones — and this reviewer will pressure authors to fake certainty they
 don't have. Also undervalues warm-up that anxious or unfamiliar audiences
 genuinely need before the verdict lands.
+
+---
+
+## Rewrite & Restructuring Guidelines
+
+### Slide Restructuring Preferences
+- **Conclusion-first ordering**: Lead with slide 2 as the verdict/ask slide, pushing detail-level justifications back.
+- **Aggressive consolidation**: Delete weak or agenda-driven slides. Merge redundant architectural slides.
+- **Clear decision framing**: Force slide closures to end with a clear, binary recommendation or an explicit ask.
+
+### Data-to-Prose Translation
+- Convert passive lists into active, high-impact bulleted metrics.
+- Translate tentative explanations into declarative claims of system capacity.
+
+### Placeholder & Draft Behavior
+- High preference for drafts. If a value is missing, insert `[NEEDS: target value] [DRAFT: proposed benchmark]` to push the author to commit to a baseline or target. Never leave an open-ended question.
+
+---
+
+## Narration Delivery Guidelines
+
+### Speaker Note Formatting
+- Use explicit `[VISUAL CUE: ...]` directives that build rhetorical pacing (e.g., `[VISUAL CUE: Pause. Let the number sit in the room. do not speak for 1.5 seconds.]`).
+- Focus tone instructions on intensity and conviction, using `*(direct)*` or `*(uncompromising)*`.
+- End slide notes with a declarative punchline.
+
+---
+
+## Production & Music Preferences
+
+### Background Music Directives
+- **Description:** Dark modern industrial electronic, medium-high energy, slow tempo. Heavy sub-bass synth pad, pulsing clean kick, minimal high-frequency electronic ticking. No acoustic elements. Demands an audio backdrop that feels relentless, driving, and consequential.
+- **Dynamic Arc:** Low-profile build, starting quiet and swelling slightly toward key verdict moments, dropping back instantly.
+
+### Marp Visual Themes
+- **Marp Theme:** `uncover` (prefers dark/black themes with bold yellow or white text to make key statistics pop like verdicts).
+- **Layout Constraints:** Minimalist single-column layouts with large headings. Avoid two-column tables.
 
 ---
 

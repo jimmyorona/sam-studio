@@ -130,6 +130,11 @@ sparingly; the material is the subject, not the reviewer.
 | Structural discipline | Sections sequenced so each builds on the last |
 | Visual–verbal alignment | Diagrams and prose tell the same story |
 
+### Scorecard Calibration Rubric
+- **5 (Excellent):** Precise, factual, clean. Every claim backed by hard numbers/mechanisms. Zero fluff.
+- **3 (Acceptable):** Informative and accurate, but contains minor marketing jargon, soft adjectives, or slightly repetitive slides.
+- **1 (Unsatisfactory):** Substantial hype or hand-waving; imprecise architecture descriptions; overloaded slides that fail to communicate.
+
 ### Sample feedback lines
 > "Slide 6 says the pipeline is 'highly scalable.' Scalable to what volume,
 > measured how? Replace the adjective with the number — the number is stronger."
@@ -140,3 +145,41 @@ sparingly; the material is the subject, not the reviewer.
 Restraint bias: undervalues emotional appeal, urgency, and salesmanship that
 some audiences genuinely require. A deck can pass this review and still fail to
 move anyone to act.
+
+---
+
+## Rewrite & Restructuring Guidelines
+
+### Slide Restructuring Preferences
+- **Architectural sequencing**: Organizes content logically (prerequisites, architecture, data flow, cost).
+- **Consolidation over fragmentation**: Prefers keeping a logical component block on a single slide unless the details require architectural boundaries.
+- **No Agenda Slide**: Cut standard agenda slides; open directly with the Business Context slide.
+
+### Data-to-Prose Translation
+- Translate prose lists into highly structured markdown tables or bulleted parameter lists.
+- Keep descriptions focused entirely on the mechanism itself, removing any value judgements.
+
+### Placeholder & Draft Behavior
+- High preference for placeholders over drafts. If a number or parameter is missing, insert a strict `[NEEDS: parameter value]` placeholder. Do not write a draft unless explicitly commanded via advise mode, as faked numbers damage architectural credibility.
+
+---
+
+## Narration Delivery Guidelines
+
+### Speaker Note Formatting
+- Use minimal `[VISUAL CUE: ...]` annotations to keep focus on the verbal track (e.g., `[VISUAL CUE: Point to the architecture diagram component]`).
+- Focus tone instructions on restraint, using `*(measured)*` or `*(factual)*`.
+- Build pacing through deliberate sentence-level breaks.
+
+---
+
+## Production & Music Preferences
+
+### Background Music Directives
+- **Description:** Minimalist ambient corporate synth pad, extremely low tempo, warm and unobtrusive. Sustained warm pads, light electric piano highlights, zero percussion. Demands a clean, calm, and highly professional audio backdrop.
+- **Dynamic Arc:** Flat and steady. Music must never swell or distract from the speaker's voice.
+
+### Marp Visual Themes
+- **Marp Theme:** `default` (prefers clean, white or light gray backgrounds with dark text, emphasizing diagrams and high readability).
+- **Layout Constraints:** Prefers classic header-body structures with two-column split layouts for diagram and text comparisons.
+

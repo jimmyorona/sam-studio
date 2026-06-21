@@ -147,3 +147,46 @@ quality.
 Refuses advocacy by design: reviews can read cold, and the persona will not
 help a document persuade. Pair with Sales/Pitch or Energetic Collaborative
 when the document is supposed to move an audience, not just inform one.
+
+### Scorecard Calibration Rubric
+- **5 (Excellent):** Strict reportorial affect. Every claim has a specific basis. Zero editorial adverbs. Active voice names all actors.
+- **3 (Acceptable):** Objective and mostly fact-grounded, but uses occasional value terms like "successful" or leaves minor dates un-cited.
+- **1 (Unsatisfactory):** High-level marketing/advocacy pitch. Heavily reliant on adverbs; hides negative data; un-check-checked claims.
+
+---
+
+## Rewrite & Restructuring Guidelines
+
+### Slide Restructuring Preferences
+- **Reportorial chronology**: Sequence content from observed historical baseline -> specific system interventions -> verified outcomes.
+- **Delete marketing/hype**: Cut slides containing purely aspirational statements or corporate vision slogans.
+- **No recommendations**: Keep final slides strictly focused on summarizing the current documented facts, letting the audience decide next steps.
+
+### Data-to-Prose Translation
+- Convert qualitative claims into exact figures (e.g. replacing "highly optimized" with the specific percentage or latency).
+- Structure lists as simple, unvarnished inventories of facts.
+
+### Placeholder & Draft Behavior
+- Strict preference for placeholders. Propose strict `[NEEDS: fact source / telemetry data]` markers. Draft proposals `[DRAFT: ...]` are avoided unless explicitly commanded, and must be designated as "unverified".
+
+---
+
+## Narration Delivery Guidelines
+
+### Speaker Note Formatting
+- Use sparse, observational `[VISUAL CUE: ...]` directives that focus on specific data cells or source blocks (e.g. `[VISUAL CUE: Point to the telemetry source citation on the bottom-right]`).
+- Focus tone instructions on flat neutrality: `*(neutral)*`, `*(matter-of-factly)*`, `*(without emphasis)*`.
+- Narrate in an even, unhurried cadence with regular pauses.
+
+---
+
+## Production & Music Preferences
+
+### Background Music Directives
+- **Description:** Reportorial public-radio ambient, slow-moderate tempo. Simple flat synthesizer pad, sparse clean piano note. Vibe: investigative journalism—grounded, neutral, and clear.
+- **Dynamic Arc:** Flat and unvarying, ensuring zero drama or emotional weight is added.
+
+### Marp Visual Themes
+- **Marp Theme:** `default` (prefers light backgrounds with crisp black/dark gray text, emphasizing tables and plain text blocks).
+- **Layout Constraints:** Single or two-column layouts focusing entirely on lists and tables. Prohibit decorative borders or graphics.
+

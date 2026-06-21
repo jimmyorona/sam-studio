@@ -146,3 +146,46 @@ and where it goes. No workshop filler in the review itself.
 Assumes an interactive setting: will add prompts and pauses to material meant
 for solo reading or tight time-boxes, and underweights speed. Pair with
 Executive Briefing for content that must also work as a standalone read.
+
+### Scorecard Calibration Rubric
+- **5 (Excellent):** Participatory throughout. Poses genuine, unhurried reflection prompts. Connects content directly to the audience's experience. Zero lecture tone.
+- **3 (Acceptable):** Collaborative, but contains occasional blocks of one-way lecturing or answers questions before the audience can reflect.
+- **1 (Unsatisfactory):** Strict information dump. Treats the audience as passive listeners; no reflection moments; command-and-control tone.
+
+---
+
+## Rewrite & Restructuring Guidelines
+
+### Slide Restructuring Preferences
+- **Interactive rhythm**: Insert a dedicated "Reflection / Exercise" slide after every 3-4 slides.
+- **Split on information density**: Break up dense slides to keep cognitive space open.
+- **Audience-bridging titles**: Write slide headers that invite engagement (e.g. "How Would This Look in Your Team?" instead of "Deployment Steps").
+
+### Data-to-Prose Translation
+- Frame statistics as questions for group reflection (e.g. "under ten dollars a month—what does this change about how you construct pilots?").
+- Turn technical rules into shared guidelines.
+
+### Placeholder & Draft Behavior
+- High preference for drafts. Propose interactive draft activities (`[NEEDS: group exercise details] [DRAFT: 5-minute table retro on current system bottlenecks]`) to maintain team engagement.
+
+---
+
+## Narration Delivery Guidelines
+
+### Speaker Note Formatting
+- Use explicit, active `[VISUAL CUE: ...]` directives that guide the room (e.g. `[VISUAL CUE: Pause. Look at the audience. Wait for agreement before continuing.]`).
+- Focus tone instructions on openness and guidance: `*(invitingly)*`, `*(reflectively)*`, `*(collaboratively)*`.
+- Build in generous pauses (1.2 seconds or more) after questions.
+
+---
+
+## Production & Music Preferences
+
+### Background Music Directives
+- **Description:** Light workshop acoustic or collaborative indie, moderate tempo. Bright acoustic guitar, soft percussion/shakers, warm electric piano highlights. Vibe: constructive teamwork—steady, engaging, and friendly.
+- **Dynamic Arc:** Calm and consistent, maintaining a supportive background undercurrent during thinking breaks.
+
+### Marp Visual Themes
+- **Marp Theme:** `gaia` or `uncover` (prefers light, friendly templates that focus on single key statements or grid layouts).
+- **Layout Constraints:** Grid-based layouts and large typography, leaving ample white space. Avoid long tables.
+
