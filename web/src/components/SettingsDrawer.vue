@@ -6,18 +6,32 @@
         <button class="x" @click="$emit('close')">✕</button>
       </div>
 
-      <label class="field">Ollama URL
-        <input type="text" v-model="store.settings.ollamaUrl" /></label>
+      <label class="field">Model Provider
+        <select v-model="store.settings.provider" @change="loadModels">
+          <option value="ollama">Ollama</option>
+          <option value="gemini">Google Gemini</option>
+        </select>
+      </label>
+
+      <div v-if="store.settings.provider === 'ollama'">
+        <label class="field">Ollama URL
+          <input type="text" v-model="store.settings.ollamaUrl" /></label>
+      </div>
+
+      <div v-if="store.settings.provider === 'gemini'">
+        <label class="field">Gemini API Key
+          <input type="password" v-model="store.settings.geminiApiKey" /></label>
+      </div>
 
       <div class="field">Default Model
         <div class="model-row">
           <select v-model="store.settings.model">
             <option v-for="m in store.models" :key="m" :value="m">{{ m }}</option>
           </select>
-          <button class="refresh" :disabled="refreshingModels" title="Reload models from Ollama"
+          <button v-if="store.settings.provider === 'ollama'" class="refresh" :disabled="refreshingModels" title="Reload models from Ollama"
                   @click="refreshModels">{{ refreshingModels ? '…' : '⟳' }}</button>
         </div>
-        <div v-if="store.modelError" class="model-err">{{ store.modelError }}</div>
+        <div v-if="store.settings.provider === 'ollama' && store.modelError" class="model-err">{{ store.modelError }}</div>
       </div>
 
       <div class="field">Theme
@@ -76,13 +90,16 @@ async function save() {
 }
 
 function resetDefaults() {
+  store.settings.provider = 'ollama';
+  store.settings.geminiApiKey = '';
   store.settings.ollamaUrl = 'http://localhost:11434';
-  store.settings.model = store.models[0] || 'llama3.2:3b';
+  store.settings.model = 'llama3.2:3b';
   store.settings.theme = 'mixed';
   store.settings.concurrency = 3;
   store.settings.ttsProvider = 'edge';
   store.settings.elApiKey = '';
   persistSettings();
+  loadModels();
 }
 </script>
 

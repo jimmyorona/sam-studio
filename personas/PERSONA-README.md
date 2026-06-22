@@ -1,6 +1,6 @@
 # Persona Files — Summary & Selector Guide
 
-Twelve narrator personas are available. All follow the same structure (character profile, voice personality, hybrid tone rules, ElevenLabs spec, SSML conventions, sample lines, and guardrails) so any of them can be dropped into the pipeline with no code changes.
+Eighteen narrator personas are available. All follow the same structure (character profile, voice personality, hybrid tone rules, ElevenLabs spec, SSML conventions, sample lines, guardrails, rewrite/narration guidelines, and production preferences) so any of them can be dropped into the pipeline with no code changes.
 
 **Usage (CLI):**
 ```bash
@@ -267,6 +267,121 @@ python scripts/pptx_to_video.py \
 
 ---
 
+### 13. `19-SCRUM-MASTER-PERSONA.md` — Scrum Master · Sam Agile
+
+| Attribute | Description |
+|-----------|-------------|
+| **Archetype** | Servant leader and Agile Coach focused on transparent flow, blocker removal, and iterative user value. Speaks with encouraging, peer-level whiteboard energy. |
+| **Tone** | Steady and facilitative — collaborative, encouraging, and action-oriented. |
+| **Warmth** | High; team-centered, focusing on collective wins and shared ownership. |
+| **Authority** | Soft and supportive — derives from guiding the team, not directives. |
+| **Pacing** | Measured and structured, giving room for retro/sprint backlog points. |
+| **Best for** | Sprint/iteration planning, team retros, agile transformations, or presentations highlighting release increments, blocker mitigation, and developer flow. |
+
+**Key distinctions:**
+- Strictly avoids command-and-control wording (e.g., mandates, dictates).
+- Strongly prefers draft estimations (`[NEEDS: ...] [DRAFT: ...]`) over blank placeholders to spark conversation.
+- Highlights impediments, user story mappings, and team autonomy in rewrites.
+
+**Recommended voices:** Edge TTS `en-US-DavisNeural` · ElevenLabs Callum or Jenny
+
+---
+
+### 14. `20-PRODUCT-MANAGER-PERSONA.md` — Product Manager · Sam Product
+
+| Attribute | Description |
+|-----------|-------------|
+| **Archetype** | Product strategist and target-market guide who evaluates slide alignment to target segments, Jobs to be Done, and success metrics. Speaks with strategic clarity. |
+| **Tone** | Active, pragmatic, and outcome-oriented — engaging and structured. |
+| **Warmth** | High; customer-centric and enthusiastic about solving user problems. |
+| **Authority** | Derived from user evidence and strategic prioritization. |
+| **Pacing** | Brisk but structured, prioritizing the "so what?" questions. |
+| **Best for** | Product roadmap reviews, business case pitches, feature specifications alignment, or presentations highlighting release user-value outcomes. |
+
+**Key distinctions:**
+- Always maps features to target user segments and documented pain points.
+- Insists on clear success metrics (KPIs) to measure product adoption and value.
+
+**Recommended voices:** Edge TTS `en-US-JennyNeural` · ElevenLabs Rachel or Callum
+
+---
+
+### 15. `21-SECURITY-AUDITOR-PERSONA.md` — Security Auditor · Sam Shield
+
+| Attribute | Description |
+|-----------|-------------|
+| **Archetype** | Certified Threat Modeler and Cybersecurity Auditor who views systems in terms of trust boundaries, attack vectors, data lifecycle privacy, and FedRAMP/SOC2 compliance. |
+| **Tone** | Flat, serious, and cautious — reportorial and highly defensive. |
+| **Warmth** | Minimal; evaluates architecture strictly for risk, compliance, and containment. |
+| **Authority** | Derived from established security frameworks and verification. |
+| **Pacing** | Slow and deliberate, emphasizing access controls and boundaries. |
+| **Best for** | Architecture reviews, security compliance checklists, data residency/privacy reviews, or regulatory submission audits. |
+
+**Key distinctions:**
+- Enforces zero-trust boundaries; flags unredacted PII or implicit security assumptions.
+- Rejects promotional claims of safety; demands explicit, verifiable technical controls.
+
+**Recommended voices:** Edge TTS `en-US-GuyNeural` · ElevenLabs Adam or George
+
+---
+
+### 16. `22-DESIGN-CRITIQUE-PERSONA.md` — Design Critique · Sam Pixel
+
+| Attribute | Description |
+|-----------|-------------|
+| **Archetype** | Lead Product Designer advocating for WCAG AA contrast, visual minimalism, clean grids, and reduced cognitive load. Cares about focal anchors and alignment. |
+| **Tone** | Modern, clean, and precise — aesthetic and highly intentional. |
+| **Register** | Conversational design-fluent creative director. |
+| **Warmth** | Moderate; constructive partner focused on visual flow and clarity. |
+| **Pacing** | Measured, allowing design details to be mapped clearly. |
+| **Best for** | Design system reviews, user-experience walkthroughs, deck formatting cleanup, or presentations where visual communication is critical. |
+
+**Key distinctions:**
+- Rejects slides with cognitive load (more than 4 bullets or paragraph blocks).
+- Enforces strict grid alignment, typography hierarchy, and accessibility rules.
+
+**Recommended voices:** Edge TTS `en-US-JennyNeural` · ElevenLabs Jenny or Callum
+
+---
+
+### 17. `23-FINANCIAL-CONTROLLER-PERSONA.md` — Financial Controller · Sam Capital
+
+| Attribute | Description |
+|-----------|-------------|
+| **Archetype** | Finance Director who evaluates software architectures in terms of OpEx infrastructure, CapEx setup, multi-year TCO, and amortized ROI. |
+| **Tone** | Dry, measured, and completely steady — reportorial and highly pragmatic. |
+| **Warmth** | Minimal; focuses entirely on value return, budgeting, and cost boundaries. |
+| **Authority** | Derived from multi-year ROI metrics and rigorous cost baselines. |
+| **Pacing** | Measured, letting each cost threshold and contingency margin stand out. |
+| **Best for** | CFO/CTO budget audits, cloud capacity scaling planning, total cost of ownership estimates, or cost-benefit retrospectives. |
+
+**Key distinctions:**
+- Compares automation costs directly to manual labor costs to calculate ROI payback.
+- Insists on clear scaling thresholds (cost at X volume vs. Y volume).
+
+**Recommended voices:** Edge TTS `en-US-GuyNeural` · ElevenLabs Guy or Adam
+
+---
+
+### 18. `24-CHANGE-MANAGER-PERSONA.md` — Change Manager · Sam People
+
+| Attribute | Description |
+|-----------|-------------|
+| **Archetype** | Organizational transition coach (Prosci certified) focused on training footprints, role redefinitions, pilot cohorts, and reducing adoption friction. |
+| **Tone** | Warm, structured, and reassuring — collaborative and coaching-oriented. |
+| **Warmth** | High; prioritizes team safety, support structures, and active feedback loops. |
+| **Authority** | Derived from change frameworks and active pilot/retro feedback loops. |
+| **Pacing** | Measured, pacing timelines by sprint capacity. |
+| **Best for** | Training summaries, adoption planning, rollout roadmaps, change management retros, or operational transition updates. |
+
+**Key distinctions:**
+- Strongly opposes big-bang rollouts; demands phased pilot sequences.
+- Insists on describing how existing roles evolve and how training is supported.
+
+**Recommended voices:** Edge TTS `en-US-JennyNeural` · ElevenLabs Jenny or Callum
+
+---
+
 ## Quick Selector
 
 | Situation | Recommended Persona |
@@ -289,6 +404,13 @@ python scripts/pptx_to_video.py \
 | Interactive training, team retrospective | `17-WORKSHOP-FACILITATOR-PERSONA.md` |
 | Policy briefing, regulatory submission | `18-LEGAL-COMPLIANCE-PERSONA.md` |
 | Data handling or compliance documentation | `18-LEGAL-COMPLIANCE-PERSONA.md` |
+| Sprint retrospectives, blockers, agile status | `19-SCRUM-MASTER-PERSONA.md` |
+| Team empowerment, user story mappings | `19-SCRUM-MASTER-PERSONA.md` |
+| Product roadmaps, target segments, success KPIs | `20-PRODUCT-MANAGER-PERSONA.md` |
+| Threat audits, security boundaries, encryption | `21-SECURITY-AUDITOR-PERSONA.md` |
+| Slide visual design, accessibility contrast, grids | `22-DESIGN-CRITIQUE-PERSONA.md` |
+| CFO budget audits, OpEx/CapEx TCO, ROI payback | `23-FINANCIAL-CONTROLLER-PERSONA.md` |
+| Rollout roadmaps, staff training, role changes | `24-CHANGE-MANAGER-PERSONA.md` |
 | Mixed audience — safe default | `01-SAM-PERSONA.md` |
 
 ---
@@ -309,6 +431,12 @@ python scripts/pptx_to_video.py \
 | Journalist / Investigative | `en-US-GuyNeural` | 0.78 | 0.10 | 0.93 | Guy |
 | Workshop Facilitator | `en-US-JennyNeural` | 0.58 | 0.38 | 0.91 | Jenny |
 | Legal / Compliance | `en-US-AriaNeural` | 0.80 | 0.08 | 0.86 | Adam |
+| Scrum Master | `en-US-DavisNeural` | 0.60 | 0.30 | 0.95 | Callum |
+| Product Manager | `en-US-JennyNeural` | 0.60 | 0.35 | 0.96 | Rachel |
+| Security Auditor | `en-US-GuyNeural` | 0.78 | 0.08 | 0.90 | Adam |
+| Design Critique | `en-US-JennyNeural` | 0.65 | 0.30 | 0.94 | Jenny |
+| Financial Controller | `en-US-GuyNeural` | 0.75 | 0.10 | 0.93 | Guy |
+| Change Manager | `en-US-JennyNeural` | 0.58 | 0.35 | 0.92 | Jenny |
 
 ---
 
@@ -318,4 +446,7 @@ python scripts/pptx_to_video.py \
 - **Pipeline compatibility:** The Python script and Express server read the file as plain text and prepend it to the Ollama prompt. Any valid Markdown file works.
 - **Voice availability:** Each persona includes ElevenLabs voice recommendations and JSON settings, but the pipeline itself does not enforce a specific voice — select the voice in the Web UI or via `--voice` / `--elevenlabs-voice-id` on the CLI to match the persona's guidance.
 - **Adding new personas:** Create a new file following the same section headers. Number it with the next available prefix (`19-NEW-PERSONA.md`). No code changes are required; the Web UI auto-discovers all `.md` files in this directory and the ↺ button refreshes the dropdown without a server restart.
-- **Review Lens section:** Each persona file ends with a `## Review Lens (Document & Slide Review)` section used by the slide/document review workflow (`/review`). It defines the persona's written critique style, hunt priorities, severity calibration, fixed scorecard dimensions, sample feedback lines, and known blind spots (used by the synthesis to weigh conflicting findings). The narration pipeline ignores this section; the review agent treats it as authoritative. New personas should include one — without it, the reviewer falls back to inferring priorities from the archetype and guardrails.
+- **Review Lens section:** Each persona file ends with a `## Review Lens (Document & Slide Review)` section used by the slide/document review workflow (`/review`). It defines the persona's written critique style, hunt priorities, severity calibration, fixed scorecard dimensions, sample feedback lines, and known blind spots. It now includes a **Scorecard Calibration Rubric** defining what different score levels represent. The review agent treats this as authoritative.
+- **Rewrite Guidelines (`## Rewrite & Restructuring Guidelines`):** Guides the rewrite pipeline on slide restructuring preferences (e.g., splits, merges), data-to-prose translations, and placeholder/draft generation behavior (resolving gaps).
+- **Narration Guidelines (`## Narration Delivery Guidelines`):** Dictates spoken cadences, formatting patterns for physical or camera actions (`[VISUAL CUE: ...]`), and vocal tone annotations (`*(encouragingly)*`).
+- **Production Preferences (`## Production & Music Preferences`):** Specifies Marp theme targets and layout styles, and details the background music profile (genre, mood, tempo, dynamic arc) to feed the ElevenLabs music prompt generator.

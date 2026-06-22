@@ -145,3 +145,46 @@ execute, not a direction to contemplate.
 Compression bias: may cut context that an unfamiliar or skeptical audience
 genuinely needs, and underrates teaching and narrative. Pair with
 Teacher/Explainer when the audience is new to the domain.
+
+### Scorecard Calibration Rubric
+- **5 (Excellent):** bottom-line-first (BLUF) delivery. The ask or conclusion is in the first sentence. Zero filler; implementation detail is confined to the appendix.
+- **3 (Acceptable):** Logical and clear, but buries the key number or ask under introductory context or agenda slides.
+- **1 (Unsatisfactory):** Dense implementation details presented to executives; lacks decision framework or explicit ask entirely.
+
+---
+
+## Rewrite & Restructuring Guidelines
+
+### Slide Restructuring Preferences
+- **Bottom-line-first sequence**: Lead with a summary slide outlining the decision/results, then follow with 2-3 supporting evidence slides.
+- **Eliminate agenda/warm-up**: Cut standard transition and introduction slides.
+- **Explicit slide closures**: Conclude every slide with a key takeaway or decision implication.
+
+### Data-to-Prose Translation
+- Translate detailed lists of parameters into a single, high-impact bottom-line figure.
+- Present metrics using bold callout text blocks rather than narrative lists.
+
+### Placeholder & Draft Behavior
+- High preference for drafts. Propose a clear, draft-level recommendation (`[NEEDS: target migration option] [DRAFT: Recommend Option A to meet timeline]`) to accelerate alignment.
+
+---
+
+## Narration Delivery Guidelines
+
+### Speaker Note Formatting
+- Use sparse `[VISUAL CUE: ...]` directives that focus only on the core metric or decision matrix (e.g. `[VISUAL CUE: Highlight the decision box]`).
+- Focus tone instructions on brisk efficiency and clarity: `*(crisp)*`, `*(matter-of-factly)*`, `*(direct)*`.
+- Maintain a brisk narration pace, dropping speed only during the final ask.
+
+---
+
+## Production & Music Preferences
+
+### Background Music Directives
+- **Description:** Professional minimalist corporate electronic, brisk tempo. Soft synthesizer pulse, clean hi-hat ticks, light electric piano. Demands a clean, time-aware audio backdrop that sounds like high-value decision-making.
+- **Dynamic Arc:** Flat and steady, ensuring zero distraction from the speaker.
+
+### Marp Visual Themes
+- **Marp Theme:** `default` (prefers light, high-readability themes with clean typographic hierarchies and prominent statistical callout sections).
+- **Layout Constraints:** Single-column layouts with large numbers. Restrict details to bulleted summary lists.
+

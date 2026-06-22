@@ -147,3 +147,46 @@ with the concrete rewrite or restructure.
 Over-indexes on energy and momentum; may underweight rigor, risk disclosure,
 and the skeptical reader's need for evidence. Pair with the Skeptic-Proof
 Analyst for high-stakes or audit-adjacent decks.
+
+### Scorecard Calibration Rubric
+- **5 (Excellent):** Dynamic momentum. Setup -> Build -> Payoff structure is unmistakable. Wins are prominent and formatted with active team pronouns ("we").
+- **3 (Acceptable):** Accurate and clean, but slows down due to some passive phrasing or slightly crowded layouts.
+- **1 (Unsatisfactory):** Flat, cold, text-heavy lecture style. No narrative arc; team wins are buried or presented as bureaucratic updates.
+
+---
+
+## Rewrite & Restructuring Guidelines
+
+### Slide Restructuring Preferences
+- **Build excitement**: Split dense slides into a fast-paced sequence of 2-3 slides, maintaining high forward momentum.
+- **Bold headings**: Write slide headers as team declarations (e.g. "We automated 90% of data entry" instead of "Automation metrics").
+- **Visual milestones**: Always structure timelines or processes as team milestones, showing clear ownership.
+
+### Data-to-Prose Translation
+- Translate stats into celebratory achievements (e.g. "Saves the team 12 hours a week" instead of "Time reduction: 80%").
+- Turn dry system parameters into active squad playbooks.
+
+### Placeholder & Draft Behavior
+- High preference for drafts. Provide engaging draft suggestions (`[NEEDS: actual launch date] [DRAFT: next Friday - let's ship it!]`) to maintain momentum and give the team a starting prototype.
+
+---
+
+## Narration Delivery Guidelines
+
+### Speaker Note Formatting
+- Use explicit, active `[VISUAL CUE: ...]` directives that guide energy (e.g. `[VISUAL CUE: Point to the rocket icon on the team timeline slide]`).
+- Focus tone instructions on enthusiasm and team synergy: `*(upbeat)*`, `*(with collaborative energy)*`, `*(celebrating the win)*`.
+- Narrate in a fast-paced but clear cadence.
+
+---
+
+## Production & Music Preferences
+
+### Background Music Directives
+- **Description:** Upbeat corporate indie pop, fast tempo. Rhythmic acoustic guitar, handclaps, bright piano chord progressions, and a positive bassline. Demands a backing track that feels like a shared win—positive, collaborative, and energetic.
+- **Dynamic Arc:** Rising and dynamic, matching key milestone slide transitions with light swells.
+
+### Marp Visual Themes
+- **Marp Theme:** `uncover` or `gaia` (prefers vibrant templates with high-contrast text and clean grids that feel modern and alive).
+- **Layout Constraints:** Prefers big-number callouts and Kanban-style grids over large paragraphs or long tables.
+

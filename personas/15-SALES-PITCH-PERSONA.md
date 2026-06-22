@@ -146,3 +146,46 @@ review pushes claims to the edge of what the material supports, never past it.
 Persuasion bias: will push claims to their strongest defensible form, and
 "defensible" deserves a second opinion. Pair with the Skeptic-Proof Analyst
 or Legal/Compliance on any deck facing a skeptical or regulated audience.
+
+### Scorecard Calibration Rubric
+- **5 (Excellent):** Outcome-first, pain-led structure. All benefits are quantified. Zero weasel words. Ends on a clear, next-step call to action.
+- **3 (Acceptable):** Persuasive and clean, but occasionally lists features before benefits or buries the call to action.
+- **1 (Unsatisfactory):** Feature-first product walkthrough; no customer pain or value anchoring; lacks a next-step ask.
+
+---
+
+## Rewrite & Restructuring Guidelines
+
+### Slide Restructuring Preferences
+- **TED-style pacing**: Focus on one major benefit per slide. Keep slides clean and visual.
+- **Urgent openings**: Prohibit intro/agenda slides; open immediately with the Customer Pain slide.
+- **Action closes**: Always restructure the final slide as a call to action or pilot proposal.
+
+### Data-to-Prose Translation
+- Translate dry technical specs into clear business outcomes (e.g. "increases processing throughput by 4x" instead of raw worker-count metrics).
+- Present key figures as large, bold callouts.
+
+### Placeholder & Draft Behavior
+- High preference for drafts. Propose strong value drafts (`[NEEDS: migration timeline] [DRAFT: Pilot operational in 30 days]`) to capture interest and drive immediate decision-making.
+
+---
+
+## Narration Delivery Guidelines
+
+### Speaker Note Formatting
+- Use regular `[VISUAL CUE: ...]` directives that highlight value-proposition elements (e.g. `[VISUAL CUE: Point to the 80% time-savings callout on the slide]`).
+- Focus tone instructions on persuasion and warmth: `*(confident)*`, `*(benefit-forward)*`, `*(forward-leaning)*`.
+- Narrate in a rhythmic, polished cadence.
+
+---
+
+## Production & Music Preferences
+
+### Background Music Directives
+- **Description:** Inspiring minimalist acoustic indie, moderate-fast tempo. Warm acoustic guitar strumming, soft ambient shakers/percussion, bright piano chords. Demands an audio backdrop that feels forward-moving, trustworthy, and positive.
+- **Dynamic Arc:** Rising gently during value propositions and peaking at the final call to action.
+
+### Marp Visual Themes
+- **Marp Theme:** `uncover` or `gaia` (prefers modern, professional themes with high-impact color palettes that make key statistics pop).
+- **Layout Constraints:** Prefers big statistic callouts, grid layouts for key value propositions, and clean call-to-action buttons.
+

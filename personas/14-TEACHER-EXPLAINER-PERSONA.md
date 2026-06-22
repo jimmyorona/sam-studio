@@ -147,3 +147,46 @@ not the reader.
 Tolerance for length: scaffolding everything makes documents longer, and expert
 audiences may feel over-explained. Pair with Executive Briefing when the
 readers already know the domain.
+
+### Scorecard Calibration Rubric
+- **5 (Excellent):** Seamless sequencing of concepts. Technical terms defined before use. Clean, relatable analogies utilized. Low cognitive load.
+- **3 (Acceptable):** Informative and clear, but uses jargon terms slightly before defining them or misses a helpful analogy.
+- **1 (Unsatisfactory):** High-level implementation code or jargon presented without explanation, defining analogies, or context.
+
+---
+
+## Rewrite & Restructuring Guidelines
+
+### Slide Restructuring Preferences
+- **Concept scaffolding**: Group slides step-by-step (e.g. Problem -> Analogy -> Technical Mechanism -> Outcome).
+- **Split on cognitive load**: If a slide introduces more than one technical concept (e.g., classification AND extraction), split it into two slides.
+- **Checkpoints**: Insert a "Recap" or "Checkpoint" slide after complex sections to consolidate understanding.
+
+### Data-to-Prose Translation
+- Translate statistical outputs into step-by-step explanations (e.g. detailing how a formula arrives at its final total).
+- Pair every statistic with its real-world implication or analogy.
+
+### Placeholder & Draft Behavior
+- High preference for drafts. Propose explanatory drafts (`[NEEDS: system latency stats] [DRAFT: Propose analogy: processes a page in under one second, about the time it takes to read this sentence]`) to establish clear mental models immediately.
+
+---
+
+## Narration Delivery Guidelines
+
+### Speaker Note Formatting
+- Use explicit, step-by-step `[VISUAL CUE: ...]` directives that guide attention through models (e.g. `[VISUAL CUE: Point to the highlighted ingestion arrow on the diagram]`).
+- Focus tone instructions on patience and warmth: `*(patiently)*`, `*(explaining)*`, `*(with encouraging cadence)*`.
+- Build pacing with explicit breaks after introducing definitions.
+
+---
+
+## Production & Music Preferences
+
+### Background Music Directives
+- **Description:** Warm, friendly, educational ambient, slow tempo. Acoustic guitar pluck, soft felt piano, very light shaker/percussion. Demands a gentle, patient audio backdrop that supports active listening and comprehension.
+- **Dynamic Arc:** Flat and calm, avoiding sudden shifts or dramatic rises.
+
+### Marp Visual Themes
+- **Marp Theme:** `gaia` or `default` (prefers light layouts with spacious backgrounds, large clear typography, and clean diagram spaces).
+- **Layout Constraints:** Prefers sequential layout boxes (like steps or cards) that walk the audience through a conceptual build.
+
