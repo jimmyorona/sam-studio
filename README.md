@@ -112,6 +112,39 @@ The Settings gear (⚙️) configures the Ollama URL, default model, theme
 (light/dark/mixed), review concurrency, and TTS provider/key. Settings persist
 to `localStorage`.
 
+## Running on Windows / Azure Virtual Desktop (WSL2)
+
+For Windows-based environments (like Azure Virtual Desktop), the recommended way to run this suite is via **WSL2 (Windows Subsystem for Linux)** with an Ubuntu distribution, which handles the Linux-native script executions and prerequisite checks:
+
+1. **Install WSL2:**
+   Open PowerShell as Administrator and run:
+   ```powershell
+   wsl --install
+   ```
+   Restart the virtual desktop if prompted.
+
+2. **Install Ubuntu dependencies:**
+   Open the Ubuntu terminal and run:
+   ```bash
+   sudo apt update
+   sudo apt install -y libreoffice poppler-utils ffmpeg python3-pip python3-venv nodejs npm
+   npm i -g @marp-team/marp-cli
+   ```
+
+3. **Install Ollama inside WSL:**
+   ```bash
+   curl -fsSL https://ollama.com/install.sh | sh
+   ```
+
+4. **Navigate and Run:**
+   WSL automatically mounts your Windows drives (e.g. `C:` is at `/mnt/c/`). Navigate to the cloned workspace and boot the server:
+   ```bash
+   cd /mnt/c/path/to/sam-studio/web
+   ./setup.sh
+   ./run.sh rpod  # Runs production mode on port 3001 for external access
+   ```
+   *Tip:* If your Azure Virtual Desktop VM uses a GPU-enabled size, ensure Windows host drivers are up to date. WSL2 will automatically pass through GPU acceleration to Ollama.
+
 ## Terminal interface
 
 The `/review` Claude Code skill runs the same multi-persona review from the
