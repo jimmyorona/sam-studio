@@ -42,6 +42,8 @@ this project is pre-1.0 and not yet versioned, so dated entries are used.
   (keeping the review reports it reads for findings).
 
 ### Added
+- **Windows / Azure WSL2 run documentation.** Added instructions to `README.md` for setting up and running the application suite on Windows Azure Virtual Desktop via WSL2.
+- **Prod / Rpod mode shortcuts and auto-build.** Added support for `prod`, `rpod`, and `--rpod` flags to `web/run.sh`. If the production `dist/` directory does not exist, the script automatically triggers a production build. It also provides port-forwarding documentation output on startup for easier external access.
 - **Docker package.** `docker/` ships a single, self-contained image
   (`docker/Dockerfile`, multi-stage: Vite build → slim runtime with
   libreoffice/poppler/ffmpeg/chromium, a Python venv, and Marp CLI) that also

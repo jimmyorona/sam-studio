@@ -14,7 +14,14 @@ case "${1:-}" in
   --build)
     npm run build
     ;;
-  --prod)
+  --prod|prod|--rpod|rpod)
+    if [[ ! -d dist ]]; then
+      echo "Production/Rpod build (dist/) not found. Building first..."
+      npm run build
+    fi
+    echo "Starting production server on port 3001..."
+    echo "For external access via port forward, forward port 3001:"
+    echo "  e.g., ssh -L 3001:localhost:3001 user@host"
     NODE_ENV=production npm run server
     ;;
   *)
