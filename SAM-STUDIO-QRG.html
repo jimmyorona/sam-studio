@@ -365,348 +365,570 @@ code {
           : 'default'
     });
   </script>
-<h1 id="scout-llm-persona-system--user-guide--cheat-sheet">Scout LLM Persona System — User Guide &amp; Cheat Sheet</h1>
-<h2 id="quick-start-two-prompts-endless-combinations">Quick Start: Two Prompts, Endless Combinations</h2>
-<p>You have <strong>19 expert personas</strong> and <strong>2 master prompts</strong>:</p>
-<ul>
-<li><code>REVIEW-DOCUMENT.md</code> — Get expert feedback on any document</li>
-<li><code>REWRITE-DOCUMENT.md</code> — Get a full rewrite in a persona's voice</li>
-</ul>
+<h1 id="sam-studio--user-guide--cheat-sheet">SAM Studio — User Guide &amp; Cheat Sheet</h1>
+<h2 id="before-you-start">Before You Start</h2>
+<p>Think about the last document you wrote that needed to land with a specific audience — executives, skeptics, new staff, a compliance team, a budget committee. Now imagine having 18 expert reviewers on call, each looking at that document through a different professional lens.</p>
+<p>That's what this system gives you. Two prompts. Eighteen perspectives. One workflow that adapts to any document, any audience, any stakes level.</p>
+<hr>
+<h2 id="your-first-review-start-here">Your First Review (Start Here)</h2>
+<p>Pick any document you're working on right now. Follow these three steps:</p>
+<pre class="hljs"><code><div>Step 1: Attach these files to Scout:
+        - 02-COMMANDER-SAM-PERSONA.md  (the reviewer)
+        - REVIEW-DOCUMENT.md           (the instruction prompt)
+        - Your document                (what gets reviewed)
+
+Step 2: Type: &quot;review this document&quot;
+
+Step 3: Read what comes back.
+</div></code></pre>
+<p>That's the system in action. Everything below builds on that first experience.</p>
+<hr>
+<h2 id="the-two-commands">The Two Commands</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>What It Does</th>
+<th>What You Get Back</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>REVIEW</strong></td>
+<td>Expert feedback through a persona's lens</td>
+<td>Structured report: verdict, strengths, findings, scorecard</td>
+</tr>
+<tr>
+<td><strong>REWRITE</strong></td>
+<td>Full document rewritten in a persona's voice</td>
+<td>Complete rewrite with speaker notes + structural change log</td>
+</tr>
+</tbody>
+</table>
 <hr>
 <h2 id="how-to-invoke-review-documentmd">How to Invoke: REVIEW-DOCUMENT.md</h2>
-<h3 id="basic-pattern">Basic Pattern</h3>
-<pre class="hljs"><code><div>Attach: [persona file] + [document to review] + REVIEW-DOCUMENT.md
-
-Type: &quot;review this document using [persona name]&quot;
+<h3 id="what-to-attach">What to Attach</h3>
+<pre class="hljs"><code><div>1. [Persona file]         — tells Scout which expert to become
+2. [REVIEW-DOCUMENT.md]   — tells Scout what task to perform
+3. [Your document]        — the content that gets reviewed
 </div></code></pre>
-<h3 id="what-happens">What Happens</h3>
-<ol>
-<li>Scout reads the persona file to understand the expert's standards</li>
-<li>Reviews your document through that lens</li>
-<li>Returns a structured markdown report with:
-<ul>
-<li>Overall verdict</li>
-<li>Strengths (2-5 bullets)</li>
-<li>Findings (ordered by severity: Critical → Major → Minor)</li>
-<li>Questions the persona would ask you</li>
-<li>Scorecard (persona-specific dimensions, 1-5 scale)</li>
-</ul>
-</li>
-</ol>
-<h3 id="example-invocation">Example Invocation</h3>
-<pre class="hljs"><code><div>Attachments:
-- 02-COMMANDER-SAM-PERSONA.md
-- project-proposal.pptx
-- REVIEW-DOCUMENT.md
-
-Prompt: &quot;review this proposal using Commander Sam&quot;
+<h3 id="what-to-type">What to Type</h3>
+<pre class="hljs"><code><div>&quot;Review this [document type] using [persona name]&quot;
 </div></code></pre>
 <h3 id="what-you-get-back">What You Get Back</h3>
-<pre class="hljs"><code><div><span class="hljs-section"># project-proposal.pptx — Review by Sam Steele</span>
+<pre class="hljs"><code><div><span class="hljs-section"># [Document name] — Review by [Persona name]</span>
 
-<span class="hljs-quote">&gt; [One-paragraph verdict in persona voice]</span>
+<span class="hljs-quote">&gt; One-paragraph verdict in the persona's voice</span>
 
 <span class="hljs-section">## Strengths</span>
-<span class="hljs-bullet">- </span>[What works, specifically]
+<span class="hljs-bullet">- </span>[2-5 bullets — what works, specifically]
 
 <span class="hljs-section">## Findings</span>
+<span class="hljs-section">### 1. [Issue title] — Slide X / Section Y</span>
+<span class="hljs-strong">**Severity:**</span> Critical / Major / Minor
+<span class="hljs-strong">**Issue:**</span> [What's wrong, from this persona's perspective]
+<span class="hljs-strong">**Recommendation:**</span> [Specific fix, with rewritten text]
 
-<span class="hljs-section">### 1. [Issue title] — Slide 3</span>
-<span class="hljs-strong">**Severity:**</span> Critical
-<span class="hljs-strong">**Issue:**</span> [What's wrong]
-<span class="hljs-strong">**Recommendation:**</span> [How to fix it, with rewritten text]
-
-[... more findings ...]
+<span class="hljs-section">## What this persona would ask the author</span>
+<span class="hljs-bullet">- </span>[2-4 pointed questions]
 
 <span class="hljs-section">## Scorecard</span>
-| Dimension | Score | Note |
-|-----------|-------|------|
-| Verdict placement | 2 | [Specific feedback] |
+| Dimension | Score (1-5) | Note |
+</div></code></pre>
+<h3 id="example">Example</h3>
+<pre class="hljs"><code><div>Attachments:
+- 11-SKEPTIC-PROOF-ANALYST-PERSONA.md
+- budget-proposal.pptx
+- REVIEW-DOCUMENT.md
+
+Prompt: &quot;Review this budget proposal using Skeptic-Proof Analyst&quot;
 </div></code></pre>
 <hr>
 <h2 id="how-to-invoke-rewrite-documentmd">How to Invoke: REWRITE-DOCUMENT.md</h2>
-<h3 id="basic-pattern">Basic Pattern</h3>
-<pre class="hljs"><code><div>Attach: [persona file] + [document to rewrite] + REWRITE-DOCUMENT.md
-
-Type: &quot;rewrite this document using [persona name]&quot;
+<h3 id="what-to-attach">What to Attach</h3>
+<pre class="hljs"><code><div>1. [Persona file]          — tells Scout which voice to write in
+2. [REWRITE-DOCUMENT.md]   — tells Scout what task to perform
+3. [Your document]         — the content that gets rewritten
 </div></code></pre>
-<h3 id="what-happens">What Happens</h3>
-<ol>
-<li>Scout reads the persona file to understand voice, structure, tone rules</li>
-<li>Rewrites your <strong>entire document</strong> in that persona's voice</li>
-<li>Preserves all facts/figures (never invents data)</li>
-<li>Inserts <code>[NEEDS: ...]</code> placeholders where source data is missing</li>
-<li>Returns rewritten content + notes on structural changes made</li>
-</ol>
-<h3 id="example-invocation">Example Invocation</h3>
-<pre class="hljs"><code><div>Attachments:
-- 10-ENERGETIC-COLLABORATIVE-PERSONA.md
-- technical-briefing.pptx
-- REWRITE-DOCUMENT.md
-
-Prompt: &quot;rewrite this deck using Energetic Collaborative persona&quot;
+<h3 id="what-to-type">What to Type</h3>
+<pre class="hljs"><code><div>&quot;Rewrite this [document type] using [persona name]&quot;
 </div></code></pre>
 <h3 id="what-you-get-back">What You Get Back</h3>
-<pre class="hljs"><code><div><span class="hljs-section"># technical-briefing.pptx — Rewritten by Sam Cruz</span>
+<pre class="hljs"><code><div><span class="hljs-section"># [Document name] — Rewritten by [Persona name]</span>
 
 <span class="hljs-section">## Slide 1: [New title in persona voice]</span>
-
-[On-slide content]
+[On-slide content — concise, shaped by persona]
 
 <span class="hljs-strong">**Speaker notes:**</span>
 [Full narration in persona voice]
 
 ---
-
 <span class="hljs-section">## Slide 2: [Title]</span>
-[Content]
-<span class="hljs-strong">**Speaker notes:**</span>
-[Narration]
-
-[... all slides rewritten ...]
+[Content + speaker notes continue...]
 
 ---
-
 <span class="hljs-section">## Rewrite notes</span>
-
 <span class="hljs-section">### Structural changes made and why:</span>
 <span class="hljs-bullet">1. </span>[What changed and rationale]
-<span class="hljs-bullet">2. </span>[What moved and why]
 
 <span class="hljs-section">### [NEEDS: ...] placeholders inserted:</span>
-<span class="hljs-bullet">- </span><span class="hljs-code">`[NEEDS: cost per month]`</span> — Slide 1
 <span class="hljs-bullet">- </span><span class="hljs-code">`[NEEDS: baseline metric]`</span> — Slide 3
 </div></code></pre>
+<h3 id="example">Example</h3>
+<pre class="hljs"><code><div>Attachments:
+- 15-SALES-PITCH-PERSONA.md
+- project-overview.pptx
+- REWRITE-DOCUMENT.md
+
+Prompt: &quot;Rewrite this deck using Sales/Pitch persona&quot;
+</div></code></pre>
 <hr>
-<h2 id="quick-persona-selection-guide">Quick Persona Selection Guide</h2>
+<blockquote>
+<p><strong>Checkpoint:</strong> You now understand the two core commands and what they produce. The next section helps you choose the right persona for your situation.</p>
+</blockquote>
+<hr>
+<h2 id="finding-your-persona">Finding Your Persona</h2>
+<h3 id="start-with-three-questions">Start With Three Questions</h3>
+<ol>
+<li><strong>Who is my audience?</strong> (Executives? Peers? New staff? Auditors? A funding committee?)</li>
+<li><strong>What do I need from them?</strong> (A decision? Buy-in? Understanding? Compliance sign-off? Budget approval?)</li>
+<li><strong>What's my biggest worry about this document?</strong> (Too long? Too technical? Not persuasive? Missing evidence? Ignoring the people affected?)</li>
+</ol>
+<p>Your answers point to the persona. Use the table below to match:</p>
+<hr>
+<h3 id="persona-selection-guide">Persona Selection Guide</h3>
 <table>
 <thead>
 <tr>
-<th>You Need</th>
+<th>Your Situation</th>
 <th>Use This Persona</th>
 <th>File</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>Fast executive decision</strong></td>
-<td>Executive Briefing</td>
+<td>C-suite briefing, 8 minutes max</td>
+<td><strong>Executive Briefing</strong> · Sam Page</td>
 <td><code>12-EXECUTIVE-BRIEFING-PERSONA.md</code></td>
 </tr>
 <tr>
-<td><strong>Skeptical board/audit</strong></td>
-<td>Skeptic-Proof Analyst</td>
+<td>Board review, skeptical audience</td>
+<td><strong>Skeptic-Proof Analyst</strong> · Sam Ledger</td>
 <td><code>11-SKEPTIC-PROOF-ANALYST-PERSONA.md</code></td>
 </tr>
 <tr>
-<td><strong>Win team buy-in</strong></td>
-<td>Energetic Collaborative</td>
+<td>Team demo, need shared momentum</td>
+<td><strong>Energetic Collaborative</strong> · Sam Cruz</td>
 <td><code>10-ENERGETIC-COLLABORATIVE-PERSONA.md</code></td>
 </tr>
 <tr>
-<td><strong>User adoption/change</strong></td>
-<td>Empathetic Holistic</td>
+<td>Adoption rollout, people are anxious</td>
+<td><strong>Empathetic Holistic</strong> · Sam Hart</td>
 <td><code>09-EMPATHETIC-HOLISTIC-PERSONA.md</code></td>
 </tr>
 <tr>
-<td><strong>Teach/onboard</strong></td>
-<td>Teacher/Explainer</td>
+<td>Onboarding, new audience to the topic</td>
+<td><strong>Teacher/Explainer</strong> · Sam Bell</td>
 <td><code>14-TEACHER-EXPLAINER-PERSONA.md</code></td>
 </tr>
 <tr>
-<td><strong>Funding/sales pitch</strong></td>
-<td>Sales/Pitch</td>
+<td>Funding pitch, vendor proposal</td>
+<td><strong>Sales/Pitch</strong> · Sam Archer</td>
 <td><code>15-SALES-PITCH-PERSONA.md</code></td>
 </tr>
 <tr>
-<td><strong>Compliance/legal</strong></td>
-<td>Legal/Compliance</td>
+<td>Policy or regulatory submission</td>
+<td><strong>Legal/Compliance</strong> · Sam Clarke</td>
 <td><code>18-LEGAL-COMPLIANCE-PERSONA.md</code></td>
 </tr>
 <tr>
-<td><strong>Neutral reporting</strong></td>
-<td>Journalist</td>
+<td>Post-mortem, incident report, audit</td>
+<td><strong>Journalist/Investigative</strong> · Sam Bradlee</td>
 <td><code>16-JOURNALIST-INVESTIGATIVE-PERSONA.md</code></td>
 </tr>
 <tr>
-<td><strong>Wake up the room</strong></td>
-<td>Commander</td>
+<td>Leadership needs a wake-up call</td>
+<td><strong>Commander</strong> · Sam Steele</td>
 <td><code>02-COMMANDER-SAM-PERSONA.md</code></td>
 </tr>
 <tr>
-<td><strong>Deep storytelling</strong></td>
-<td>Documentary Narrator</td>
+<td>Training video, org history</td>
+<td><strong>Documentary Narrator</strong> · Sam Atwood</td>
 <td><code>13-DOCUMENTARY-NARRATOR-PERSONA.md</code></td>
 </tr>
 <tr>
-<td><strong>Balanced technical</strong></td>
-<td>Classic SAM</td>
+<td>Balanced architecture review</td>
+<td><strong>Classic SAM</strong> · Sam Wright</td>
 <td><code>01-SAM-PERSONA.md</code></td>
 </tr>
 <tr>
-<td><strong>Workshop/training</strong></td>
-<td>Workshop Facilitator</td>
+<td>Interactive workshop, facilitated session</td>
+<td><strong>Workshop Facilitator</strong> · Sam Rowan</td>
 <td><code>17-WORKSHOP-FACILITATOR-PERSONA.md</code></td>
 </tr>
 <tr>
-<td><strong>Sprint/Agile docs</strong></td>
-<td>Scrum Master</td>
+<td>Sprint planning, retros, agile docs</td>
+<td><strong>Scrum Master</strong> · Sam Agile</td>
 <td><code>19-SCRUM-MASTER-PERSONA.md</code></td>
+</tr>
+<tr>
+<td>Product roadmap, user-value alignment</td>
+<td><strong>Product Manager</strong> · Sam Product</td>
+<td><code>20-PRODUCT-MANAGER-PERSONA.md</code></td>
+</tr>
+<tr>
+<td>Security audit, threat model</td>
+<td><strong>Security Auditor</strong> · Sam Shield</td>
+<td><code>21-SECURITY-AUDITOR-PERSONA.md</code></td>
+</tr>
+<tr>
+<td>Slide design, accessibility, visual clutter</td>
+<td><strong>Design Critique</strong> · Sam Pixel</td>
+<td><code>22-DESIGN-CRITIQUE-PERSONA.md</code></td>
+</tr>
+<tr>
+<td>Budget justification, ROI, cost model</td>
+<td><strong>Financial Controller</strong> · Sam Capital</td>
+<td><code>23-FINANCIAL-CONTROLLER-PERSONA.md</code></td>
+</tr>
+<tr>
+<td>Staff training plan, phased rollout</td>
+<td><strong>Change Manager</strong> · Sam People</td>
+<td><code>24-CHANGE-MANAGER-PERSONA.md</code></td>
 </tr>
 </tbody>
 </table>
 <hr>
-<h2 id="common-workflows">Common Workflows</h2>
-<h3 id="workflow-1-get-multiple-perspectives">Workflow 1: Get Multiple Perspectives</h3>
-<pre class="hljs"><code><div>Round 1: Review with Commander Sam (finds buried verdicts, weak asks)
-Round 2: Review with Skeptic-Proof Analyst (finds unsupported claims)
-Round 3: Review with Empathetic Holistic (finds dehumanizing language)
-
-Result: Three expert reviews, three different lenses
+<h3 id="still-not-sure">Still Not Sure?</h3>
+<p>Tell Scout your situation. It will recommend a persona:</p>
+<pre class="hljs"><code><div>&quot;I'm presenting a new automation tool to skeptical program directors 
+who've seen three prior projects fail. Which persona should I use?&quot;
 </div></code></pre>
+<hr>
+<blockquote>
+<p><strong>Checkpoint:</strong> You know the two commands and which persona fits your audience. The next section shows patterns for combining them.</p>
+</blockquote>
+<hr>
+<h2 id="workflows--when-to-use-which-pattern">Workflows — When to Use Which Pattern</h2>
+<h3 id="workflow-1-get-multiple-perspectives">Workflow 1: Get Multiple Perspectives</h3>
+<p><strong>Use when:</strong> Something feels off about your document, but you can't pinpoint what. You want blind spots surfaced before a high-stakes moment.</p>
+<pre class="hljs"><code><div>Round 1: Review with Commander Sam → finds buried verdicts, weak asks
+Round 2: Review with Skeptic-Proof Analyst → finds unsupported claims
+Round 3: Review with Empathetic Holistic → finds dehumanizing language
+
+Result: Three expert reviews, three different lenses, complete coverage
+</div></code></pre>
+<hr>
 <h3 id="workflow-2-review-%E2%86%92-rewrite-%E2%86%92-review-again">Workflow 2: Review → Rewrite → Review Again</h3>
-<pre class="hljs"><code><div>Step 1: Review with Executive Briefing persona
-Step 2: Fix critical findings manually
-Step 3: Rewrite entire deck with same persona
-Step 4: Review the rewrite with Skeptic-Proof Analyst (different lens)
+<p><strong>Use when:</strong> The document needs significant improvement and you want a structured path from draft to polished output.</p>
+<pre class="hljs"><code><div>Step 1: Review with Executive Briefing persona → identify critical findings
+Step 2: Fix critical findings manually (or ask Scout to fix specific ones)
+Step 3: Rewrite entire deck with same persona → get polished output
+Step 4: Review the rewrite with Skeptic-Proof Analyst → stress-test it
 
 Result: Polished deck that passes multiple expert standards
 </div></code></pre>
+<hr>
 <h3 id="workflow-3-audience-specific-versions">Workflow 3: Audience-Specific Versions</h3>
-<pre class="hljs"><code><div>Version A: Rewrite with Commander Sam (for skeptical leadership)
-Version B: Rewrite with Teacher/Explainer (for new staff onboarding)
-Version C: Rewrite with Sales/Pitch (for funding committee)
+<p><strong>Use when:</strong> The same content needs to reach different audiences — leadership, staff, compliance — and each group needs a different voice.</p>
+<pre class="hljs"><code><div>Version A: Rewrite with Commander Sam → for skeptical leadership
+Version B: Rewrite with Teacher/Explainer → for new staff onboarding
+Version C: Rewrite with Sales/Pitch → for the funding committee
 
-Same content, three different voices for three different audiences
-</div></code></pre>
-<h3 id="workflow-4-iterative-refinement">Workflow 4: Iterative Refinement</h3>
-<pre class="hljs"><code><div>Round 1: Review with [persona] → get findings
-Round 2: &quot;Fix finding #3 on slide 5&quot; → Scout rewrites just that section
-Round 3: &quot;Now review slide 5 again&quot; → Scout confirms fix works
-Round 4: Repeat for other findings
-
-Result: Surgical improvements without full rewrite
+Same facts, three voices, three audiences served
 </div></code></pre>
 <hr>
-<h2 id="pro-tips">Pro Tips</h2>
-<h3 id="tip-1-you-can-mix-and-match">Tip 1: You Can Mix and Match</h3>
-<pre class="hljs"><code><div>&quot;Review this deck using Commander Sam, 
-but also tell me what Empathetic Holistic would say about slide 3&quot;
+<h3 id="workflow-4-iterative-refinement">Workflow 4: Iterative Refinement</h3>
+<p><strong>Use when:</strong> The document is mostly there, but specific sections need surgical improvement without a full rewrite.</p>
+<pre class="hljs"><code><div>Round 1: Review with [persona] → get findings list
+Round 2: &quot;Fix finding #3 on slide 5&quot; → Scout rewrites just that section
+Round 3: &quot;Now review slide 5 again&quot; → Scout confirms fix works
+Round 4: Repeat for remaining findings
 
-Scout will give you both perspectives in one response
+Result: Surgical improvements, section by section
 </div></code></pre>
-<h3 id="tip-2-ask-follow-up-questions-stay-in-persona">Tip 2: Ask Follow-Up Questions (Stay in Persona)</h3>
+<hr>
+<h3 id="workflow-5-cross-discipline-stress-test">Workflow 5: Cross-Discipline Stress Test</h3>
+<p><strong>Use when:</strong> The document touches multiple concerns — security, budget, adoption, compliance — and each needs validation.</p>
+<pre class="hljs"><code><div>Pass 1: Security Auditor → flags data handling gaps
+Pass 2: Financial Controller → validates cost model
+Pass 3: Change Manager → checks adoption plan
+Pass 4: Legal/Compliance → verifies scope and claims
+
+Result: Document survives every review board in one session
+</div></code></pre>
+<hr>
+<blockquote>
+<p><strong>Checkpoint:</strong> You now have five workflow patterns. Before moving to advanced tips, ask yourself: do I already know which workflow fits my current project? If yes, skip to Command Templates below. If not, re-read the &quot;Use when&quot; triggers above.</p>
+</blockquote>
+<hr>
+<h2 id="pro-tips">Pro Tips</h2>
+<h3 id="tip-1-request-specific-sections">Tip 1: Request Specific Sections</h3>
+<pre class="hljs"><code><div>&quot;Rewrite just the opening slide using Energetic Collaborative&quot;
+&quot;Review only the cost section using Financial Controller&quot;
+</div></code></pre>
+<p>You don't always need to process the entire document.</p>
+<hr>
+<h3 id="tip-2-ask-follow-up-questions-scout-stays-in-persona">Tip 2: Ask Follow-Up Questions (Scout Stays in Persona)</h3>
 <pre class="hljs"><code><div>After a review:
 &quot;Why is finding #2 marked Critical instead of Major?&quot;
 &quot;Show me a rewrite of just slide 7 using your recommendations&quot;
 &quot;What would this look like if the audience were non-technical?&quot;
-
-Scout stays in the persona's voice and perspective
 </div></code></pre>
-<h3 id="tip-3-request-specific-sections">Tip 3: Request Specific Sections</h3>
-<pre class="hljs"><code><div>&quot;Rewrite just the opening slide using Energetic Collaborative&quot;
-&quot;Review only the cost section using Skeptic-Proof Analyst&quot;
-
-You don't always need to process the entire document
+<hr>
+<h3 id="tip-3-mix-perspectives-in-one-request">Tip 3: Mix Perspectives in One Request</h3>
+<pre class="hljs"><code><div>&quot;Review this deck using Commander Sam, but also tell me 
+what Empathetic Holistic would say about slide 3&quot;
 </div></code></pre>
+<p>Scout gives you both perspectives in one response.</p>
+<hr>
 <h3 id="tip-4-personas-can-review-other-personas-work">Tip 4: Personas Can Review Other Personas' Work</h3>
 <pre class="hljs"><code><div>Step 1: Rewrite with Sales/Pitch persona
 Step 2: Review that rewrite with Legal/Compliance persona
 
-Finds: &quot;This sales claim needs a documented basis&quot; (compliance lens)
+Finds: &quot;This sales claim needs a documented basis&quot;
 </div></code></pre>
-<h3 id="tip-5-use-needs--placeholders-as-todos">Tip 5: Use <code>[NEEDS: ...]</code> Placeholders as TODOs</h3>
+<p>This catches overreach and balances persuasion with rigor.</p>
+<hr>
+<h3 id="tip-5-use-needs--placeholders-as-a-todo-list">Tip 5: Use <code>[NEEDS: ...]</code> Placeholders as a TODO List</h3>
 <pre class="hljs"><code><div>After a rewrite, search the output for &quot;[NEEDS:&quot;
-Those are your action items — data you need to fill in
-Fill them in, paste back, ask Scout to review again
+Those are your action items — data you need to fill in.
+Fill them in, paste back, ask Scout to review again.
 </div></code></pre>
 <hr>
+<h3 id="tip-6-describe-your-audience-for-persona-recommendations">Tip 6: Describe Your Audience for Persona Recommendations</h3>
+<pre class="hljs"><code><div>&quot;I'm presenting to a program director who has 10 minutes 
+and cares about cost and compliance. Which persona?&quot;
+</div></code></pre>
+<p>Scout will recommend the right one and explain why.</p>
+<hr>
 <h2 id="command-templates-copy-paste-ready">Command Templates (Copy-Paste Ready)</h2>
-<h3 id="template-basic-review">Template: Basic Review</h3>
+<h3 id="basic-review">Basic Review</h3>
 <pre class="hljs"><code><div>Review this [document type] using [persona name] from [persona-file.md]
-
-[Paste document or attach file]
 </div></code></pre>
-<h3 id="template-basic-rewrite">Template: Basic Rewrite</h3>
+<h3 id="basic-rewrite">Basic Rewrite</h3>
 <pre class="hljs"><code><div>Rewrite this [document type] using [persona name] from [persona-file.md]
-
-[Paste document or attach file]
 </div></code></pre>
-<h3 id="template-review-specific-section">Template: Review Specific Section</h3>
+<h3 id="review-specific-section">Review Specific Section</h3>
 <pre class="hljs"><code><div>Using [persona name], review only [section/slide number] and tell me:
 1. What's the severity of issues here?
 2. How would you rewrite it?
 </div></code></pre>
-<h3 id="template-compare-two-personas">Template: Compare Two Personas</h3>
+<h3 id="compare-two-personas">Compare Two Personas</h3>
 <pre class="hljs"><code><div>Review this document from two perspectives:
-1. [Persona A name] — what are the critical findings?
-2. [Persona B name] — what would they flag that Persona A missed?
+1. [Persona A] — what are the critical findings?
+2. [Persona B] — what would they flag that Persona A missed?
 </div></code></pre>
-<h3 id="template-iterative-fix">Template: Iterative Fix</h3>
+<h3 id="iterative-fix">Iterative Fix</h3>
 <pre class="hljs"><code><div>I fixed finding #[number] on [slide/section].
 Here's the revised version: [paste revision]
 
 Using [persona name], does this fix work? What else needs attention?
 </div></code></pre>
+<h3 id="full-cross-discipline-review">Full Cross-Discipline Review</h3>
+<pre class="hljs"><code><div>Review this document using these four lenses in sequence:
+1. Security Auditor — data handling and trust boundaries
+2. Financial Controller — cost model and ROI
+3. Legal/Compliance — scope and claims
+4. Executive Briefing — structure and ask clarity
+</div></code></pre>
 <hr>
 <h2 id="what-scout-preserves-never-invents">What Scout Preserves (NEVER Invents)</h2>
-<p>✅ <strong>Always preserved exactly:</strong></p>
-<ul>
-<li>Numbers, metrics, percentages</li>
-<li>Dates, timelines, milestones</li>
-<li>Names (people, products, systems)</li>
-<li>Technical specifications</li>
-<li>Cost figures</li>
-<li>Source citations</li>
-</ul>
-<p>❌ <strong>Never invented:</strong></p>
-<ul>
-<li>Data Scout doesn't have</li>
-<li>Claims not in the source</li>
-<li>Numbers to &quot;make the story better&quot;</li>
-<li>Fake sources or citations</li>
-</ul>
-<p>🔧 <strong>When data is missing:</strong>
-Scout inserts: <code>[NEEDS: specific data description]</code>
-Example: <code>[NEEDS: baseline processing time before automation]</code></p>
+<table>
+<thead>
+<tr>
+<th>Always Preserved Exactly</th>
+<th>Never Invented</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Numbers, metrics, percentages</td>
+<td>Data Scout doesn't have</td>
+</tr>
+<tr>
+<td>Dates, timelines, milestones</td>
+<td>Claims not in the source</td>
+</tr>
+<tr>
+<td>Names (people, products, systems)</td>
+<td>Numbers to &quot;make the story better&quot;</td>
+</tr>
+<tr>
+<td>Technical specifications</td>
+<td>Fake sources or citations</td>
+</tr>
+<tr>
+<td>Cost figures</td>
+<td>Speculative outcomes</td>
+</tr>
+<tr>
+<td>Source citations</td>
+<td>Attribution not in the original</td>
+</tr>
+</tbody>
+</table>
+<p><strong>When data is missing:</strong> Scout inserts <code>[NEEDS: specific description]</code></p>
+<p>Example: <code>[NEEDS: baseline processing time before automation]</code></p>
+<hr>
+<h2 id="persona-quick-reference--what-each-expert-hunts-for">Persona Quick Reference — What Each Expert Hunts For</h2>
+<table>
+<thead>
+<tr>
+<th>Persona</th>
+<th>Primary Focus</th>
+<th>Key Question They Ask</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Classic SAM</strong> (Wright)</td>
+<td>Precision, signal-to-noise</td>
+<td>&quot;Is every claim exact?&quot;</td>
+</tr>
+<tr>
+<td><strong>Commander</strong> (Steele)</td>
+<td>Verdict placement, conviction</td>
+<td>&quot;Where's the decision?&quot;</td>
+</tr>
+<tr>
+<td><strong>Empathetic Holistic</strong> (Hart)</td>
+<td>Human impact, adoption safety</td>
+<td>&quot;What about the people?&quot;</td>
+</tr>
+<tr>
+<td><strong>Energetic Collaborative</strong> (Cruz)</td>
+<td>Momentum, win visibility</td>
+<td>&quot;Where's the celebration?&quot;</td>
+</tr>
+<tr>
+<td><strong>Skeptic-Proof Analyst</strong> (Ledger)</td>
+<td>Evidence, assumptions</td>
+<td>&quot;What's the proof?&quot;</td>
+</tr>
+<tr>
+<td><strong>Executive Briefing</strong> (Page)</td>
+<td>Economy, ask clarity</td>
+<td>&quot;What do I approve?&quot;</td>
+</tr>
+<tr>
+<td><strong>Documentary Narrator</strong> (Atwood)</td>
+<td>Through-line, context</td>
+<td>&quot;What's the story arc?&quot;</td>
+</tr>
+<tr>
+<td><strong>Teacher/Explainer</strong> (Bell)</td>
+<td>Concept sequencing, clarity</td>
+<td>&quot;Will they understand?&quot;</td>
+</tr>
+<tr>
+<td><strong>Sales/Pitch</strong> (Archer)</td>
+<td>Value anchoring, next step</td>
+<td>&quot;What's the payoff?&quot;</td>
+</tr>
+<tr>
+<td><strong>Journalist</strong> (Bradlee)</td>
+<td>Source coverage, neutrality</td>
+<td>&quot;Where's the evidence?&quot;</td>
+</tr>
+<tr>
+<td><strong>Workshop Facilitator</strong> (Rowan)</td>
+<td>Interaction, reflection</td>
+<td>&quot;What does the audience do?&quot;</td>
+</tr>
+<tr>
+<td><strong>Legal/Compliance</strong> (Clarke)</td>
+<td>Scope, quantifier precision</td>
+<td>&quot;Can this survive audit?&quot;</td>
+</tr>
+<tr>
+<td><strong>Scrum Master</strong> (Agile)</td>
+<td>Iteration, team empowerment</td>
+<td>&quot;Where's the feedback loop?&quot;</td>
+</tr>
+<tr>
+<td><strong>Product Manager</strong> (Product)</td>
+<td>User-value alignment, KPIs</td>
+<td>&quot;Who benefits and how?&quot;</td>
+</tr>
+<tr>
+<td><strong>Security Auditor</strong> (Shield)</td>
+<td>Trust boundaries, data lifecycle</td>
+<td>&quot;Where's the vulnerability?&quot;</td>
+</tr>
+<tr>
+<td><strong>Design Critique</strong> (Pixel)</td>
+<td>Visual hierarchy, cognitive load</td>
+<td>&quot;Can the eye find the point?&quot;</td>
+</tr>
+<tr>
+<td><strong>Financial Controller</strong> (Capital)</td>
+<td>ROI, cost basis, scaling</td>
+<td>&quot;What's the payback window?&quot;</td>
+</tr>
+<tr>
+<td><strong>Change Manager</strong> (People)</td>
+<td>Training footprint, phased rollout</td>
+<td>&quot;How does the team adopt this?&quot;</td>
+</tr>
+</tbody>
+</table>
 <hr>
 <h2 id="troubleshooting">Troubleshooting</h2>
-<h3 id="%22the-review-feels-generic%22">&quot;The review feels generic&quot;</h3>
-<p><strong>Fix:</strong> Make sure you attached the <strong>persona file</strong> and <strong>REVIEW-DOCUMENT.md</strong> prompt. Scout needs both to adopt the expert lens.</p>
-<h3 id="%22the-rewrite-changed-my-facts%22">&quot;The rewrite changed my facts&quot;</h3>
-<p><strong>Fix:</strong> Point out the specific fact that changed. Scout will correct it and explain what happened. Facts should never change.</p>
-<h3 id="%22i-only-wanted-slide-3-reviewed-but-got-the-whole-deck%22">&quot;I only wanted slide 3 reviewed, but got the whole deck&quot;</h3>
-<p><strong>Fix:</strong> Be explicit: &quot;Review only slide 3 using [persona]&quot; — Scout will focus there.</p>
-<h3 id="%22the-persona-feels-too-harshsoft%22">&quot;The persona feels too harsh/soft&quot;</h3>
-<p><strong>Fix:</strong> Pick a different persona. Commander Sam is blunt. Empathetic Holistic is gentle. Match persona to your tolerance for directness.</p>
-<h3 id="%22i-dont-know-which-persona-to-use%22">&quot;I don't know which persona to use&quot;</h3>
-<p><strong>Fix:</strong> Describe your audience and goal:
-&quot;I'm presenting to skeptical executives who hate fluff. Which persona?&quot;
-Scout will recommend the right one.</p>
+<table>
+<thead>
+<tr>
+<th>Problem</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Review feels generic</td>
+<td>Confirm you attached the <strong>persona file</strong> AND <strong>REVIEW-DOCUMENT.md</strong> — Scout needs both</td>
+</tr>
+<tr>
+<td>Rewrite changed my facts</td>
+<td>Point out the specific change — facts should never change; Scout will correct</td>
+</tr>
+<tr>
+<td>Got the whole deck, only wanted one slide</td>
+<td>Be explicit: &quot;Review only slide 3 using [persona]&quot;</td>
+</tr>
+<tr>
+<td>Persona feels too harsh</td>
+<td>Try Empathetic Holistic or Teacher/Explainer — match persona to your tolerance</td>
+</tr>
+<tr>
+<td>Persona feels too soft</td>
+<td>Try Commander or Skeptic-Proof Analyst — they don't soften</td>
+</tr>
+<tr>
+<td>Don't know which persona to use</td>
+<td>Describe your audience and goal — Scout will recommend</td>
+</tr>
+<tr>
+<td>Output is too long</td>
+<td>Ask: &quot;Summarize findings as a bullet list, top 3 only&quot;</td>
+</tr>
+<tr>
+<td>Need more detail on one finding</td>
+<td>Ask: &quot;Expand on finding #2 with a full rewrite of that section&quot;</td>
+</tr>
+</tbody>
+</table>
 <hr>
-<h2 id="file-checklist-for-each-session">File Checklist for Each Session</h2>
-<p>When starting a review or rewrite, attach:</p>
+<h2 id="file-checklist">File Checklist</h2>
+<p>Every session needs these three files:</p>
 <ul>
-<li><input type="checkbox" id="checkbox0"><label for="checkbox0"></label><strong>The persona file</strong> (e.g., <code>02-COMMANDER-SAM-PERSONA.md</code>)</li>
-<li><input type="checkbox" id="checkbox1"><label for="checkbox1"></label><strong>REVIEW-DOCUMENT.md</strong> or <strong>REWRITE-DOCUMENT.md</strong> (the master prompt)</li>
-<li><input type="checkbox" id="checkbox2"><label for="checkbox2"></label><strong>Your document</strong> (pptx, docx, md, pdf, or paste text directly)</li>
+<li><input type="checkbox" id="checkbox0"><label for="checkbox0"></label><strong>The persona file</strong> (e.g., <code>02-COMMANDER-SAM-PERSONA.md</code>) — tells Scout which expert to become</li>
+<li><input type="checkbox" id="checkbox1"><label for="checkbox1"></label><strong>REVIEW-DOCUMENT.md</strong> or <strong>REWRITE-DOCUMENT.md</strong> — tells Scout what task to perform</li>
+<li><input type="checkbox" id="checkbox2"><label for="checkbox2"></label><strong>Your document</strong> (pptx, docx, md, pdf, or paste text) — the content that gets reviewed or rewritten</li>
 </ul>
-<p>Optional but helpful:</p>
+<p>Optional:</p>
 <ul>
-<li><input type="checkbox" id="checkbox3"><label for="checkbox3">Context files (background docs, previous versions, audience description)</label></li>
+<li><input type="checkbox" id="checkbox3"><label for="checkbox3"></label><strong>Context files</strong> — background docs, prior versions, or audience description that helps Scout understand the bigger picture</li>
 </ul>
-<hr>
-<h2 id="remember">Remember</h2>
-<ul>
-<li><strong>Reviews</strong> tell you what's wrong and how to fix it</li>
-<li><strong>Rewrites</strong> give you a finished product in the persona's voice</li>
-<li><strong>Personas stay in character</strong> for follow-up questions</li>
-<li><strong>Facts are sacred</strong> — Scout never invents data</li>
-<li><strong>Iterate freely</strong> — &quot;fix this, then review again&quot; workflows are encouraged</li>
-</ul>
-<hr>
-<p><strong>Ready to start?</strong></p>
-<p>Pick a persona. Attach your document. Type &quot;review this&quot; or &quot;rewrite this.&quot; Scout handles the rest.</p>
 
 </body>
 </html>

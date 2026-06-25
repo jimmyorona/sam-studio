@@ -1,267 +1,353 @@
-# Scout LLM Persona System — User Guide & Cheat Sheet
+# SAM Studio — User Guide & Cheat Sheet
 
-## Quick Start: Two Prompts, Endless Combinations
+## Before You Start
 
-You have **19 expert personas** and **2 master prompts**:
-- `REVIEW-DOCUMENT.md` — Get expert feedback on any document
-- `REWRITE-DOCUMENT.md` — Get a full rewrite in a persona's voice
+Think about the last document you wrote that needed to land with a specific audience — executives, skeptics, new staff, a compliance team, a budget committee. Now imagine having 18 expert reviewers on call, each looking at that document through a different professional lens.
+
+That's what this system gives you. Two prompts. Eighteen perspectives. One workflow that adapts to any document, any audience, any stakes level.
+
+---
+
+## Your First Review (Start Here)
+
+Pick any document you're working on right now. Follow these three steps:
+
+```
+Step 1: Attach these files to Scout:
+        - 02-COMMANDER-SAM-PERSONA.md  (the reviewer)
+        - REVIEW-DOCUMENT.md           (the instruction prompt)
+        - Your document                (what gets reviewed)
+
+Step 2: Type: "review this document"
+
+Step 3: Read what comes back.
+```
+
+That's the system in action. Everything below builds on that first experience.
+
+---
+
+## The Two Commands
+
+| Command | What It Does | What You Get Back |
+|---------|--------------|-------------------|
+| **REVIEW** | Expert feedback through a persona's lens | Structured report: verdict, strengths, findings, scorecard |
+| **REWRITE** | Full document rewritten in a persona's voice | Complete rewrite with speaker notes + structural change log |
 
 ---
 
 ## How to Invoke: REVIEW-DOCUMENT.md
 
-### Basic Pattern
+### What to Attach
 ```
-Attach: [persona file] + [document to review] + REVIEW-DOCUMENT.md
-
-Type: "review this document using [persona name]"
+1. [Persona file]         — tells Scout which expert to become
+2. [REVIEW-DOCUMENT.md]   — tells Scout what task to perform
+3. [Your document]        — the content that gets reviewed
 ```
 
-### What Happens
-1. Scout reads the persona file to understand the expert's standards
-2. Reviews your document through that lens
-3. Returns a structured markdown report with:
-   - Overall verdict
-   - Strengths (2-5 bullets)
-   - Findings (ordered by severity: Critical → Major → Minor)
-   - Questions the persona would ask you
-   - Scorecard (persona-specific dimensions, 1-5 scale)
-
-### Example Invocation
+### What to Type
 ```
-Attachments:
-- 02-COMMANDER-SAM-PERSONA.md
-- project-proposal.pptx
-- REVIEW-DOCUMENT.md
-
-Prompt: "review this proposal using Commander Sam"
+"Review this [document type] using [persona name]"
 ```
 
 ### What You Get Back
 ```markdown
-# project-proposal.pptx — Review by Sam Steele
+# [Document name] — Review by [Persona name]
 
-> [One-paragraph verdict in persona voice]
+> One-paragraph verdict in the persona's voice
 
 ## Strengths
-- [What works, specifically]
+- [2-5 bullets — what works, specifically]
 
 ## Findings
+### 1. [Issue title] — Slide X / Section Y
+**Severity:** Critical / Major / Minor
+**Issue:** [What's wrong, from this persona's perspective]
+**Recommendation:** [Specific fix, with rewritten text]
 
-### 1. [Issue title] — Slide 3
-**Severity:** Critical
-**Issue:** [What's wrong]
-**Recommendation:** [How to fix it, with rewritten text]
-
-[... more findings ...]
+## What this persona would ask the author
+- [2-4 pointed questions]
 
 ## Scorecard
-| Dimension | Score | Note |
-|-----------|-------|------|
-| Verdict placement | 2 | [Specific feedback] |
+| Dimension | Score (1-5) | Note |
+```
+
+### Example
+```
+Attachments:
+- 11-SKEPTIC-PROOF-ANALYST-PERSONA.md
+- budget-proposal.pptx
+- REVIEW-DOCUMENT.md
+
+Prompt: "Review this budget proposal using Skeptic-Proof Analyst"
 ```
 
 ---
 
 ## How to Invoke: REWRITE-DOCUMENT.md
 
-### Basic Pattern
+### What to Attach
 ```
-Attach: [persona file] + [document to rewrite] + REWRITE-DOCUMENT.md
-
-Type: "rewrite this document using [persona name]"
+1. [Persona file]          — tells Scout which voice to write in
+2. [REWRITE-DOCUMENT.md]   — tells Scout what task to perform
+3. [Your document]         — the content that gets rewritten
 ```
 
-### What Happens
-1. Scout reads the persona file to understand voice, structure, tone rules
-2. Rewrites your **entire document** in that persona's voice
-3. Preserves all facts/figures (never invents data)
-4. Inserts `[NEEDS: ...]` placeholders where source data is missing
-5. Returns rewritten content + notes on structural changes made
-
-### Example Invocation
+### What to Type
 ```
-Attachments:
-- 10-ENERGETIC-COLLABORATIVE-PERSONA.md
-- technical-briefing.pptx
-- REWRITE-DOCUMENT.md
-
-Prompt: "rewrite this deck using Energetic Collaborative persona"
+"Rewrite this [document type] using [persona name]"
 ```
 
 ### What You Get Back
 ```markdown
-# technical-briefing.pptx — Rewritten by Sam Cruz
+# [Document name] — Rewritten by [Persona name]
 
 ## Slide 1: [New title in persona voice]
-
-[On-slide content]
+[On-slide content — concise, shaped by persona]
 
 **Speaker notes:**
 [Full narration in persona voice]
 
 ---
-
 ## Slide 2: [Title]
-[Content]
-**Speaker notes:**
-[Narration]
-
-[... all slides rewritten ...]
+[Content + speaker notes continue...]
 
 ---
-
 ## Rewrite notes
-
 ### Structural changes made and why:
 1. [What changed and rationale]
-2. [What moved and why]
 
 ### [NEEDS: ...] placeholders inserted:
-- `[NEEDS: cost per month]` — Slide 1
 - `[NEEDS: baseline metric]` — Slide 3
 ```
 
----
+### Example
+```
+Attachments:
+- 15-SALES-PITCH-PERSONA.md
+- project-overview.pptx
+- REWRITE-DOCUMENT.md
 
-## Quick Persona Selection Guide
-
-| You Need | Use This Persona | File |
-|----------|------------------|------|
-| **Fast executive decision** | Executive Briefing | `12-EXECUTIVE-BRIEFING-PERSONA.md` |
-| **Skeptical board/audit** | Skeptic-Proof Analyst | `11-SKEPTIC-PROOF-ANALYST-PERSONA.md` |
-| **Win team buy-in** | Energetic Collaborative | `10-ENERGETIC-COLLABORATIVE-PERSONA.md` |
-| **User adoption/change** | Empathetic Holistic | `09-EMPATHETIC-HOLISTIC-PERSONA.md` |
-| **Teach/onboard** | Teacher/Explainer | `14-TEACHER-EXPLAINER-PERSONA.md` |
-| **Funding/sales pitch** | Sales/Pitch | `15-SALES-PITCH-PERSONA.md` |
-| **Compliance/legal** | Legal/Compliance | `18-LEGAL-COMPLIANCE-PERSONA.md` |
-| **Neutral reporting** | Journalist | `16-JOURNALIST-INVESTIGATIVE-PERSONA.md` |
-| **Wake up the room** | Commander | `02-COMMANDER-SAM-PERSONA.md` |
-| **Deep storytelling** | Documentary Narrator | `13-DOCUMENTARY-NARRATOR-PERSONA.md` |
-| **Balanced technical** | Classic SAM | `01-SAM-PERSONA.md` |
-| **Workshop/training** | Workshop Facilitator | `17-WORKSHOP-FACILITATOR-PERSONA.md` |
-| **Sprint/Agile docs** | Scrum Master | `19-SCRUM-MASTER-PERSONA.md` |
+Prompt: "Rewrite this deck using Sales/Pitch persona"
+```
 
 ---
 
-## Common Workflows
+> **Checkpoint:** You now understand the two core commands and what they produce. The next section helps you choose the right persona for your situation.
+
+---
+
+## Finding Your Persona
+
+### Start With Three Questions
+
+1. **Who is my audience?** (Executives? Peers? New staff? Auditors? A funding committee?)
+2. **What do I need from them?** (A decision? Buy-in? Understanding? Compliance sign-off? Budget approval?)
+3. **What's my biggest worry about this document?** (Too long? Too technical? Not persuasive? Missing evidence? Ignoring the people affected?)
+
+Your answers point to the persona. Use the table below to match:
+
+---
+
+### Persona Selection Guide
+
+| Your Situation | Use This Persona | File |
+|----------------|------------------|------|
+| C-suite briefing, 8 minutes max | **Executive Briefing** · Sam Page | `12-EXECUTIVE-BRIEFING-PERSONA.md` |
+| Board review, skeptical audience | **Skeptic-Proof Analyst** · Sam Ledger | `11-SKEPTIC-PROOF-ANALYST-PERSONA.md` |
+| Team demo, need shared momentum | **Energetic Collaborative** · Sam Cruz | `10-ENERGETIC-COLLABORATIVE-PERSONA.md` |
+| Adoption rollout, people are anxious | **Empathetic Holistic** · Sam Hart | `09-EMPATHETIC-HOLISTIC-PERSONA.md` |
+| Onboarding, new audience to the topic | **Teacher/Explainer** · Sam Bell | `14-TEACHER-EXPLAINER-PERSONA.md` |
+| Funding pitch, vendor proposal | **Sales/Pitch** · Sam Archer | `15-SALES-PITCH-PERSONA.md` |
+| Policy or regulatory submission | **Legal/Compliance** · Sam Clarke | `18-LEGAL-COMPLIANCE-PERSONA.md` |
+| Post-mortem, incident report, audit | **Journalist/Investigative** · Sam Bradlee | `16-JOURNALIST-INVESTIGATIVE-PERSONA.md` |
+| Leadership needs a wake-up call | **Commander** · Sam Steele | `02-COMMANDER-SAM-PERSONA.md` |
+| Training video, org history | **Documentary Narrator** · Sam Atwood | `13-DOCUMENTARY-NARRATOR-PERSONA.md` |
+| Balanced architecture review | **Classic SAM** · Sam Wright | `01-SAM-PERSONA.md` |
+| Interactive workshop, facilitated session | **Workshop Facilitator** · Sam Rowan | `17-WORKSHOP-FACILITATOR-PERSONA.md` |
+| Sprint planning, retros, agile docs | **Scrum Master** · Sam Agile | `19-SCRUM-MASTER-PERSONA.md` |
+| Product roadmap, user-value alignment | **Product Manager** · Sam Product | `20-PRODUCT-MANAGER-PERSONA.md` |
+| Security audit, threat model | **Security Auditor** · Sam Shield | `21-SECURITY-AUDITOR-PERSONA.md` |
+| Slide design, accessibility, visual clutter | **Design Critique** · Sam Pixel | `22-DESIGN-CRITIQUE-PERSONA.md` |
+| Budget justification, ROI, cost model | **Financial Controller** · Sam Capital | `23-FINANCIAL-CONTROLLER-PERSONA.md` |
+| Staff training plan, phased rollout | **Change Manager** · Sam People | `24-CHANGE-MANAGER-PERSONA.md` |
+
+---
+
+### Still Not Sure?
+
+Tell Scout your situation. It will recommend a persona:
+```
+"I'm presenting a new automation tool to skeptical program directors 
+who've seen three prior projects fail. Which persona should I use?"
+```
+
+---
+
+> **Checkpoint:** You know the two commands and which persona fits your audience. The next section shows patterns for combining them.
+
+---
+
+## Workflows — When to Use Which Pattern
 
 ### Workflow 1: Get Multiple Perspectives
-```
-Round 1: Review with Commander Sam (finds buried verdicts, weak asks)
-Round 2: Review with Skeptic-Proof Analyst (finds unsupported claims)
-Round 3: Review with Empathetic Holistic (finds dehumanizing language)
+**Use when:** Something feels off about your document, but you can't pinpoint what. You want blind spots surfaced before a high-stakes moment.
 
-Result: Three expert reviews, three different lenses
 ```
+Round 1: Review with Commander Sam → finds buried verdicts, weak asks
+Round 2: Review with Skeptic-Proof Analyst → finds unsupported claims
+Round 3: Review with Empathetic Holistic → finds dehumanizing language
+
+Result: Three expert reviews, three different lenses, complete coverage
+```
+
+---
 
 ### Workflow 2: Review → Rewrite → Review Again
+**Use when:** The document needs significant improvement and you want a structured path from draft to polished output.
+
 ```
-Step 1: Review with Executive Briefing persona
-Step 2: Fix critical findings manually
-Step 3: Rewrite entire deck with same persona
-Step 4: Review the rewrite with Skeptic-Proof Analyst (different lens)
+Step 1: Review with Executive Briefing persona → identify critical findings
+Step 2: Fix critical findings manually (or ask Scout to fix specific ones)
+Step 3: Rewrite entire deck with same persona → get polished output
+Step 4: Review the rewrite with Skeptic-Proof Analyst → stress-test it
 
 Result: Polished deck that passes multiple expert standards
 ```
 
-### Workflow 3: Audience-Specific Versions
-```
-Version A: Rewrite with Commander Sam (for skeptical leadership)
-Version B: Rewrite with Teacher/Explainer (for new staff onboarding)
-Version C: Rewrite with Sales/Pitch (for funding committee)
+---
 
-Same content, three different voices for three different audiences
+### Workflow 3: Audience-Specific Versions
+**Use when:** The same content needs to reach different audiences — leadership, staff, compliance — and each group needs a different voice.
+
 ```
+Version A: Rewrite with Commander Sam → for skeptical leadership
+Version B: Rewrite with Teacher/Explainer → for new staff onboarding
+Version C: Rewrite with Sales/Pitch → for the funding committee
+
+Same facts, three voices, three audiences served
+```
+
+---
 
 ### Workflow 4: Iterative Refinement
+**Use when:** The document is mostly there, but specific sections need surgical improvement without a full rewrite.
+
 ```
-Round 1: Review with [persona] → get findings
+Round 1: Review with [persona] → get findings list
 Round 2: "Fix finding #3 on slide 5" → Scout rewrites just that section
 Round 3: "Now review slide 5 again" → Scout confirms fix works
-Round 4: Repeat for other findings
+Round 4: Repeat for remaining findings
 
-Result: Surgical improvements without full rewrite
+Result: Surgical improvements, section by section
 ```
+
+---
+
+### Workflow 5: Cross-Discipline Stress Test
+**Use when:** The document touches multiple concerns — security, budget, adoption, compliance — and each needs validation.
+
+```
+Pass 1: Security Auditor → flags data handling gaps
+Pass 2: Financial Controller → validates cost model
+Pass 3: Change Manager → checks adoption plan
+Pass 4: Legal/Compliance → verifies scope and claims
+
+Result: Document survives every review board in one session
+```
+
+---
+
+> **Checkpoint:** You now have five workflow patterns. Before moving to advanced tips, ask yourself: do I already know which workflow fits my current project? If yes, skip to Command Templates below. If not, re-read the "Use when" triggers above.
 
 ---
 
 ## Pro Tips
 
-### Tip 1: You Can Mix and Match
+### Tip 1: Request Specific Sections
 ```
-"Review this deck using Commander Sam, 
-but also tell me what Empathetic Holistic would say about slide 3"
-
-Scout will give you both perspectives in one response
+"Rewrite just the opening slide using Energetic Collaborative"
+"Review only the cost section using Financial Controller"
 ```
+You don't always need to process the entire document.
 
-### Tip 2: Ask Follow-Up Questions (Stay in Persona)
+---
+
+### Tip 2: Ask Follow-Up Questions (Scout Stays in Persona)
 ```
 After a review:
 "Why is finding #2 marked Critical instead of Major?"
 "Show me a rewrite of just slide 7 using your recommendations"
 "What would this look like if the audience were non-technical?"
-
-Scout stays in the persona's voice and perspective
 ```
 
-### Tip 3: Request Specific Sections
-```
-"Rewrite just the opening slide using Energetic Collaborative"
-"Review only the cost section using Skeptic-Proof Analyst"
+---
 
-You don't always need to process the entire document
+### Tip 3: Mix Perspectives in One Request
 ```
+"Review this deck using Commander Sam, but also tell me 
+what Empathetic Holistic would say about slide 3"
+```
+Scout gives you both perspectives in one response.
+
+---
 
 ### Tip 4: Personas Can Review Other Personas' Work
 ```
 Step 1: Rewrite with Sales/Pitch persona
 Step 2: Review that rewrite with Legal/Compliance persona
 
-Finds: "This sales claim needs a documented basis" (compliance lens)
+Finds: "This sales claim needs a documented basis"
 ```
+This catches overreach and balances persuasion with rigor.
 
-### Tip 5: Use `[NEEDS: ...]` Placeholders as TODOs
+---
+
+### Tip 5: Use `[NEEDS: ...]` Placeholders as a TODO List
 ```
 After a rewrite, search the output for "[NEEDS:"
-Those are your action items — data you need to fill in
-Fill them in, paste back, ask Scout to review again
+Those are your action items — data you need to fill in.
+Fill them in, paste back, ask Scout to review again.
 ```
+
+---
+
+### Tip 6: Describe Your Audience for Persona Recommendations
+```
+"I'm presenting to a program director who has 10 minutes 
+and cares about cost and compliance. Which persona?"
+```
+Scout will recommend the right one and explain why.
 
 ---
 
 ## Command Templates (Copy-Paste Ready)
 
-### Template: Basic Review
+### Basic Review
 ```
 Review this [document type] using [persona name] from [persona-file.md]
-
-[Paste document or attach file]
 ```
 
-### Template: Basic Rewrite
+### Basic Rewrite
 ```
 Rewrite this [document type] using [persona name] from [persona-file.md]
-
-[Paste document or attach file]
 ```
 
-### Template: Review Specific Section
+### Review Specific Section
 ```
 Using [persona name], review only [section/slide number] and tell me:
 1. What's the severity of issues here?
 2. How would you rewrite it?
 ```
 
-### Template: Compare Two Personas
+### Compare Two Personas
 ```
 Review this document from two perspectives:
-1. [Persona A name] — what are the critical findings?
-2. [Persona B name] — what would they flag that Persona A missed?
+1. [Persona A] — what are the critical findings?
+2. [Persona B] — what would they flag that Persona A missed?
 ```
 
-### Template: Iterative Fix
+### Iterative Fix
 ```
 I fixed finding #[number] on [slide/section].
 Here's the revised version: [paste revision]
@@ -269,74 +355,82 @@ Here's the revised version: [paste revision]
 Using [persona name], does this fix work? What else needs attention?
 ```
 
+### Full Cross-Discipline Review
+```
+Review this document using these four lenses in sequence:
+1. Security Auditor — data handling and trust boundaries
+2. Financial Controller — cost model and ROI
+3. Legal/Compliance — scope and claims
+4. Executive Briefing — structure and ask clarity
+```
+
 ---
 
 ## What Scout Preserves (NEVER Invents)
 
-✅ **Always preserved exactly:**
-- Numbers, metrics, percentages
-- Dates, timelines, milestones
-- Names (people, products, systems)
-- Technical specifications
-- Cost figures
-- Source citations
+| Always Preserved Exactly | Never Invented |
+|--------------------------|----------------|
+| Numbers, metrics, percentages | Data Scout doesn't have |
+| Dates, timelines, milestones | Claims not in the source |
+| Names (people, products, systems) | Numbers to "make the story better" |
+| Technical specifications | Fake sources or citations |
+| Cost figures | Speculative outcomes |
+| Source citations | Attribution not in the original |
 
-❌ **Never invented:**
-- Data Scout doesn't have
-- Claims not in the source
-- Numbers to "make the story better"
-- Fake sources or citations
+**When data is missing:** Scout inserts `[NEEDS: specific description]`
 
-🔧 **When data is missing:**
-Scout inserts: `[NEEDS: specific data description]`
 Example: `[NEEDS: baseline processing time before automation]`
+
+---
+
+## Persona Quick Reference — What Each Expert Hunts For
+
+| Persona | Primary Focus | Key Question They Ask |
+|---------|---------------|----------------------|
+| **Classic SAM** (Wright) | Precision, signal-to-noise | "Is every claim exact?" |
+| **Commander** (Steele) | Verdict placement, conviction | "Where's the decision?" |
+| **Empathetic Holistic** (Hart) | Human impact, adoption safety | "What about the people?" |
+| **Energetic Collaborative** (Cruz) | Momentum, win visibility | "Where's the celebration?" |
+| **Skeptic-Proof Analyst** (Ledger) | Evidence, assumptions | "What's the proof?" |
+| **Executive Briefing** (Page) | Economy, ask clarity | "What do I approve?" |
+| **Documentary Narrator** (Atwood) | Through-line, context | "What's the story arc?" |
+| **Teacher/Explainer** (Bell) | Concept sequencing, clarity | "Will they understand?" |
+| **Sales/Pitch** (Archer) | Value anchoring, next step | "What's the payoff?" |
+| **Journalist** (Bradlee) | Source coverage, neutrality | "Where's the evidence?" |
+| **Workshop Facilitator** (Rowan) | Interaction, reflection | "What does the audience do?" |
+| **Legal/Compliance** (Clarke) | Scope, quantifier precision | "Can this survive audit?" |
+| **Scrum Master** (Agile) | Iteration, team empowerment | "Where's the feedback loop?" |
+| **Product Manager** (Product) | User-value alignment, KPIs | "Who benefits and how?" |
+| **Security Auditor** (Shield) | Trust boundaries, data lifecycle | "Where's the vulnerability?" |
+| **Design Critique** (Pixel) | Visual hierarchy, cognitive load | "Can the eye find the point?" |
+| **Financial Controller** (Capital) | ROI, cost basis, scaling | "What's the payback window?" |
+| **Change Manager** (People) | Training footprint, phased rollout | "How does the team adopt this?" |
 
 ---
 
 ## Troubleshooting
 
-### "The review feels generic"
-**Fix:** Make sure you attached the **persona file** and **REVIEW-DOCUMENT.md** prompt. Scout needs both to adopt the expert lens.
-
-### "The rewrite changed my facts"
-**Fix:** Point out the specific fact that changed. Scout will correct it and explain what happened. Facts should never change.
-
-### "I only wanted slide 3 reviewed, but got the whole deck"
-**Fix:** Be explicit: "Review only slide 3 using [persona]" — Scout will focus there.
-
-### "The persona feels too harsh/soft"
-**Fix:** Pick a different persona. Commander Sam is blunt. Empathetic Holistic is gentle. Match persona to your tolerance for directness.
-
-### "I don't know which persona to use"
-**Fix:** Describe your audience and goal:
-"I'm presenting to skeptical executives who hate fluff. Which persona?"
-Scout will recommend the right one.
+| Problem | Fix |
+|---------|-----|
+| Review feels generic | Confirm you attached the **persona file** AND **REVIEW-DOCUMENT.md** — Scout needs both |
+| Rewrite changed my facts | Point out the specific change — facts should never change; Scout will correct |
+| Got the whole deck, only wanted one slide | Be explicit: "Review only slide 3 using [persona]" |
+| Persona feels too harsh | Try Empathetic Holistic or Teacher/Explainer — match persona to your tolerance |
+| Persona feels too soft | Try Commander or Skeptic-Proof Analyst — they don't soften |
+| Don't know which persona to use | Describe your audience and goal — Scout will recommend |
+| Output is too long | Ask: "Summarize findings as a bullet list, top 3 only" |
+| Need more detail on one finding | Ask: "Expand on finding #2 with a full rewrite of that section" |
 
 ---
 
-## File Checklist for Each Session
+## File Checklist
 
-When starting a review or rewrite, attach:
+Every session needs these three files:
 
-- [ ] **The persona file** (e.g., `02-COMMANDER-SAM-PERSONA.md`)
-- [ ] **REVIEW-DOCUMENT.md** or **REWRITE-DOCUMENT.md** (the master prompt)
-- [ ] **Your document** (pptx, docx, md, pdf, or paste text directly)
+- [ ] **The persona file** (e.g., `02-COMMANDER-SAM-PERSONA.md`) — tells Scout which expert to become
+- [ ] **REVIEW-DOCUMENT.md** or **REWRITE-DOCUMENT.md** — tells Scout what task to perform
+- [ ] **Your document** (pptx, docx, md, pdf, or paste text) — the content that gets reviewed or rewritten
 
-Optional but helpful:
-- [ ] Context files (background docs, previous versions, audience description)
+Optional:
+- [ ] **Context files** — background docs, prior versions, or audience description that helps Scout understand the bigger picture
 
----
-
-## Remember
-
-- **Reviews** tell you what's wrong and how to fix it
-- **Rewrites** give you a finished product in the persona's voice
-- **Personas stay in character** for follow-up questions
-- **Facts are sacred** — Scout never invents data
-- **Iterate freely** — "fix this, then review again" workflows are encouraged
-
----
-
-**Ready to start?**
-
-Pick a persona. Attach your document. Type "review this" or "rewrite this." Scout handles the rest.
