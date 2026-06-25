@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>SAM-STUDIO-SCOUT-SUMMARY.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> or <div class="page"></div> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="sam-studio--system-architecture-commentary">SAM Studio — System Architecture Commentary</h1>
+<h2 id="executive-assessment">Executive Assessment</h2>
+<p>This is a well-engineered prompt orchestration system that solves a real problem: transforming a single document into multiple audience-appropriate outputs without requiring the author to maintain expertise across eighteen professional domains. The architecture is local-first, persona-driven, and composable — three properties that make it both practical for government deployment and extensible for future growth.</p>
+<p>What follows is a professional assessment of the system's design patterns, strengths, structural risks, and opportunities.</p>
+<hr>
+<h2 id="1-persona-library-architecture">1. Persona Library Architecture</h2>
+<h3 id="design-pattern-structured-prompt-partitioning">Design Pattern: Structured Prompt Partitioning</h3>
+<p>The persona files follow a consistent schema that enables both human comprehension and machine consumption:</p>
+<pre class="hljs"><code><div>Character Profile → Voice Personality → Hybrid Tone Rules → 
+TTS Spec → SSML → Sample Lines → Guardrails → Review Lens → 
+Rewrite Guidelines → Narration Guidelines → Production Preferences
+</div></code></pre>
+<p><strong>Architectural strength:</strong> This schema serves as a single-source-of-truth for four distinct consumers:</p>
+<ol>
+<li>The review pipeline (reads <code>## Review Lens</code>)</li>
+<li>The rewrite pipeline (reads <code>## Rewrite &amp; Restructuring Guidelines</code>)</li>
+<li>The narration/TTS pipeline (reads ElevenLabs settings, SSML conventions)</li>
+<li>The video production pipeline (reads <code>## Production &amp; Music Preferences</code>)</li>
+</ol>
+<p>One file. Four workflows. Zero duplication across pipelines. That is sound information architecture.</p>
+<h3 id="schema-consistency-analysis">Schema Consistency Analysis</h3>
+<table>
+<thead>
+<tr>
+<th>Section</th>
+<th>Present in all 18?</th>
+<th>Function</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Character Profile</td>
+<td>✅</td>
+<td>Identity anchor for the LLM</td>
+</tr>
+<tr>
+<td>Voice Personality (table)</td>
+<td>✅</td>
+<td>Behavioral constraints</td>
+</tr>
+<tr>
+<td>Hybrid Tone Rules (table)</td>
+<td>✅</td>
+<td>Per-section modulation</td>
+</tr>
+<tr>
+<td>ElevenLabs Settings (JSON)</td>
+<td>✅</td>
+<td>TTS parameter control</td>
+</tr>
+<tr>
+<td>Sample Lines</td>
+<td>✅</td>
+<td>Few-shot style examples</td>
+</tr>
+<tr>
+<td>&quot;What SAM Never Does&quot;</td>
+<td>✅</td>
+<td>Hard negative constraints</td>
+</tr>
+<tr>
+<td>Review Lens</td>
+<td>✅</td>
+<td>Scoring rubric + hunt priorities</td>
+</tr>
+<tr>
+<td>Rewrite Guidelines</td>
+<td>✅</td>
+<td>Structural transformation rules</td>
+</tr>
+<tr>
+<td>Scorecard Calibration Rubric</td>
+<td>✅</td>
+<td>Grounds 1-5 scoring</td>
+</tr>
+<tr>
+<td>Known Blind Spots</td>
+<td>✅</td>
+<td>Self-aware limitation disclosure</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Commentary:</strong> The schema discipline is exceptional. Every persona file is a drop-in replacement for any other — no code changes, no pipeline modifications. The <code>PERSONA-README.md</code> explicitly notes this: <em>&quot;Any valid Markdown file works.&quot;</em> This is a hallmark of mature systems thinking: the interface is stable; the implementations vary.</p>
+<h3 id="persona-differentiation-analysis">Persona Differentiation Analysis</h3>
+<p>The 18 personas span a well-considered spectrum:</p>
+<table>
+<thead>
+<tr>
+<th>Axis</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Formality</strong></td>
+<td>Legal/Compliance (highest) ← → Energetic Collaborative (lowest)</td>
+</tr>
+<tr>
+<td><strong>Warmth</strong></td>
+<td>Empathetic Holistic (highest) ← → Security Auditor (lowest)</td>
+</tr>
+<tr>
+<td><strong>Speed/Economy</strong></td>
+<td>Executive Briefing (fastest) ← → Documentary Narrator (slowest)</td>
+</tr>
+<tr>
+<td><strong>Evidence Demand</strong></td>
+<td>Skeptic-Proof Analyst (highest) ← → Sales/Pitch (lowest)</td>
+</tr>
+<tr>
+<td><strong>Audience Assumption</strong></td>
+<td>Teacher/Explainer (novice) ← → Legal/Compliance (expert)</td>
+</tr>
+<tr>
+<td><strong>Action Orientation</strong></td>
+<td>Commander (verdict-first) ← → Journalist (finding-first, no recommendation)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key insight:</strong> The personas are not just tone variations — they encode fundamentally different <em>epistemic standards</em>. The Skeptic-Proof Analyst demands sourced evidence for every claim. The Sales/Pitch persona accepts strong claims at their defensible edge. The Legal/Compliance persona qualifies everything. These are different theories of what constitutes a &quot;good&quot; document, not different ways of saying the same thing.</p>
+<p><strong>Architectural implication:</strong> This means multi-persona review isn't redundant — it's structurally complementary. Each persona surfaces a different class of deficiency that the others are blind to by design. The <code>Known blind spots</code> section in each file makes this explicit, which is unusually self-aware system design.</p>
+<hr>
+<h2 id="2-prompt-action-analysis-review-documentmd">2. Prompt Action Analysis: REVIEW-DOCUMENT.md</h2>
+<h3 id="design-pattern-constrained-output-templating-with-persona-injection">Design Pattern: Constrained Output Templating with Persona Injection</h3>
+<p>The review prompt establishes:</p>
+<ol>
+<li><strong>Role assignment</strong> — &quot;You are an expert document reviewer&quot;</li>
+<li><strong>Identity source</strong> — persona brief as the authoritative definition of &quot;who you are&quot;</li>
+<li><strong>Interpretation rules</strong> — which persona sections to obey, which to ignore</li>
+<li><strong>Output schema</strong> — exact markdown structure (verdict → strengths → findings → questions → scorecard)</li>
+<li><strong>Behavioral constraints</strong> — cite locations, stay actionable, don't rewrite wholesale</li>
+</ol>
+<h3 id="strengths">Strengths</h3>
+<p><strong>Explicit interpretation hierarchy:</strong></p>
+<pre class="hljs"><code><div>AUTHORITATIVE: ## Review Lens section
+ADOPT: Character Profile, tone, guardrails
+IGNORE: TTS mechanics (ElevenLabs, SSML, voices)
+</div></code></pre>
+<p>This solves a real problem: the persona files were designed for TTS narration, but the review pipeline needs only the analytical framework. The prompt explicitly tells the model which sections carry authority for <em>this</em> task. Without this instruction, the LLM might attempt to produce SSML tags or voice settings in a text review — a common failure mode in multi-purpose prompt systems.</p>
+<p><strong>Fixed output schema:</strong> The markdown template eliminates structural variance between runs. Whether you use Commander Sam or Empathetic Holistic, the output follows the same bones:</p>
+<ul>
+<li>Verdict → Strengths → Findings → Questions → Scorecard</li>
+</ul>
+<p>This makes outputs comparable across personas and enables the synthesis pass described in <code>README.md</code> (where multiple persona reviews are merged into consensus findings).</p>
+<p><strong>Fallback behavior defined:</strong> <em>&quot;If the persona brief has no Review Lens section, infer the review priorities from the archetype and guardrails.&quot;</em> This graceful degradation means new persona files work immediately without requiring a Review Lens section — they just won't be as precisely targeted.</p>
+<h3 id="structural-risks">Structural Risks</h3>
+<p><strong>Risk 1: Scorecard dimension anchoring</strong></p>
+<p>The prompt says: <em>&quot;Use the dimensions from the persona's Review Lens section.&quot;</em> Each persona defines 5-7 unique scorecard dimensions. This means scores are <strong>not comparable across personas</strong> — a 4/5 on &quot;Verdict placement&quot; (Commander) has no relationship to a 4/5 on &quot;Trust Boundary Separation&quot; (Security Auditor).</p>
+<p><strong>Implication:</strong> The synthesis pass in <code>reviewer_synth.py</code> must handle heterogeneous scorecards. If it attempts to average scores across personas, the result is meaningless. The <code>README.md</code> describes &quot;consensus findings&quot; and &quot;conflicts&quot; — which suggests the synthesis operates on findings (comparable) rather than scores (incomparable). That's the correct design choice.</p>
+<p><strong>Risk 2: Severity calibration drift</strong></p>
+<p>Each persona defines its own severity calibration:</p>
+<ul>
+<li>Commander: Critical = &quot;an unresolved maybe on a load-bearing claim&quot;</li>
+<li>Legal/Compliance: Critical = &quot;a statement that creates legal or regulatory exposure&quot;</li>
+<li>Design Critique: Critical = &quot;illegible slides due to low contrast&quot;</li>
+</ul>
+<p>These are <strong>fundamentally different risk domains</strong>. A &quot;Critical&quot; from Legal/Compliance carries different organizational weight than a &quot;Critical&quot; from Design Critique. The system does not normalize severity across personas — which is arguably correct (each expert's &quot;critical&quot; means something different), but users should understand this.</p>
+<p><strong>Risk 3: Context window pressure</strong></p>
+<p>The prompt requires: persona file (~3-5K tokens) + REVIEW-DOCUMENT.md (~1.5K tokens) + full document content (variable). For a 20-slide PPTX extracted to markdown, the total input may reach 15-25K tokens. The <code>README.md</code> notes &quot;automatic context sizing&quot; — the model's full window is used. This is sound engineering, but the quality of findings on slide 18 may degrade if the persona + document + prompt exceeds the model's effective attention span.</p>
+<hr>
+<h2 id="3-prompt-action-analysis-rewrite-documentmd">3. Prompt Action Analysis: REWRITE-DOCUMENT.md</h2>
+<h3 id="design-pattern-voice-transformation-with-structural-license">Design Pattern: Voice Transformation with Structural License</h3>
+<p>The rewrite prompt establishes:</p>
+<ol>
+<li><strong>Identity assignment</strong> — &quot;You are an expert writer&quot;</li>
+<li><strong>Quality bar</strong> — &quot;the rewrite must be something THIS persona's own review would score 5/5&quot;</li>
+<li><strong>Structural freedom</strong> — may reorder, merge, split slides when persona demands it</li>
+<li><strong>Fact preservation</strong> — &quot;NEVER invent data, numbers, sources, or claims&quot;</li>
+<li><strong>Gap handling</strong> — <code>[NEEDS: ...]</code> placeholders instead of fabrication</li>
+<li><strong>Output schema</strong> — <code>## Slide N: &lt;title&gt;</code> + content + <code>**Speaker notes:**</code> + <code>## Rewrite notes</code></li>
+</ol>
+<h3 id="strengths-1">Strengths</h3>
+<p><strong>Self-referential quality constraint:</strong> <em>&quot;The rewrite must be something THIS persona's own review would score 5/5 on every scorecard dimension.&quot;</em> This is elegant — it creates a closed-loop quality definition without requiring a separate rubric. The persona's Review Lens <em>is</em> the rubric. The rewrite pipeline is implicitly guided by the same standards the review pipeline would apply.</p>
+<p><strong>Structural license with provenance:</strong> <em>&quot;When content moves, append the source in the heading: <code>## Slide 1: &lt;title&gt; (source: slide 5)</code>.&quot;</em> This preserves traceability. An author receiving a rewrite can see exactly what moved and from where — critical for maintaining editorial control over AI-generated restructuring.</p>
+<p><strong>Fact preservation as a hard constraint:</strong> The ALL-CAPS emphasis — <em>&quot;NEVER invent data&quot;</em> — signals that this rule overrides persona behavior. Even a Sales/Pitch persona that wants stronger claims cannot fabricate numbers. The <code>[NEEDS: ...]</code> mechanism provides an escape valve: the persona signals what's missing without filling the gap with fiction.</p>
+<p><strong>Format-aware behavior:</strong> The prompt distinguishes between presentations (slide structure + speaker notes) and prose documents (heading structure, no speaker notes). This prevents the common failure of generating speaker notes for a memo or treating an email like a slide deck.</p>
+<h3 id="structural-risks-1">Structural Risks</h3>
+<p><strong>Risk 1: Persona-driven structural decisions may be unwelcome</strong></p>
+<p>The prompt grants full restructuring authority: <em>&quot;You may reorder, merge, or split slides when the persona's structure demands it.&quot;</em> Commander Sam will delete agenda slides. Executive Briefing will move the conclusion to slide 1. Documentary Narrator will add bridge slides.</p>
+<p>For users who want voice transformation <em>without</em> structural changes, there is no constraint mechanism. The prompt does not offer a &quot;preserve structure, transform voice only&quot; mode.</p>
+<p><strong>Recommendation:</strong> Consider adding an optional user instruction: <em>&quot;Preserve the existing slide order; rewrite content and speaker notes only.&quot;</em></p>
+<p><strong>Risk 2: Speaker notes length variance</strong></p>
+<p>Different personas produce radically different speaker note lengths:</p>
+<ul>
+<li>Executive Briefing: 2-3 sentences per slide (economy)</li>
+<li>Documentary Narrator: 6-8 sentences per slide (scene-setting)</li>
+<li>Teacher/Explainer: 8-12 sentences per slide (scaffolding)</li>
+</ul>
+<p>For video production (where narration length determines slide duration), this variance is a feature. For PPTX export (where speaker notes appear in a fixed panel), long notes may be unwieldy. The system handles this implicitly — but users should understand that persona choice directly affects output verbosity.</p>
+<p><strong>Risk 3: <code>[NEEDS: ...]</code> density in sparse source documents</strong></p>
+<p>If the source document is thin (e.g., a 4-slide architecture diagram with minimal text), a persona with high evidentiary standards (Skeptic-Proof Analyst, Legal/Compliance, Financial Controller) will produce a rewrite that is mostly placeholders. The output may contain more <code>[NEEDS: ...]</code> markers than actual content — which is <em>correct behavior</em> (the persona won't fabricate) but may frustrate users expecting a complete draft.</p>
+<p>The persona files handle this through their <code>## Placeholder &amp; Draft Behavior</code> section:</p>
+<ul>
+<li>Some personas prefer strict placeholders (Legal, Journalist, Security)</li>
+<li>Some prefer draft proposals (Energetic Collaborative, Sales/Pitch, Change Manager)</li>
+</ul>
+<p>This is well-designed differentiation — but users may not realize that persona choice determines placeholder-vs-draft behavior.</p>
+<hr>
+<h2 id="4-system-level-architecture-assessment">4. System-Level Architecture Assessment</h2>
+<h3 id="what-works-exceptionally-well">What Works Exceptionally Well</h3>
+<p><strong>1. Single persona file, multiple consumers</strong></p>
+<p>The decision to encode TTS, review, rewrite, and production preferences in one file eliminates synchronization problems. When a persona is updated, all four pipelines pick up the change simultaneously. No deployment coordination required.</p>
+<p><strong>2. Local-first with no vendor lock-in</strong></p>
+<p>Ollama backend, Edge TTS (free), optional ElevenLabs. The system runs entirely on-premises if needed — critical for government data handling. No document content traverses external boundaries unless the user explicitly configures a cloud LLM.</p>
+<p><strong>3. Composable pipeline stages</strong></p>
+<p>Review → Rewrite → Narrate → Produce are independent stages. A user can stop at any point. This respects different use cases: some users only need a review; some need a full video. The architecture doesn't force traversal of the entire pipeline.</p>
+<p><strong>4. Self-aware personas with declared blind spots</strong></p>
+<p>Every persona file ends with <code>Known blind spots</code> and recommends pairing with a complementary persona. This is unusually mature prompt engineering — most systems pretend their prompts have no weaknesses. Here, the limitations are first-class design elements that guide multi-persona composition.</p>
+<p><strong>5. Graceful degradation</strong></p>
+<ul>
+<li>No Review Lens? → Infer from archetype</li>
+<li>No persona file? → Scout asks for one</li>
+<li>Missing data in source? → <code>[NEEDS: ...]</code> placeholder</li>
+<li>Single persona selected? → Skip synthesis pass</li>
+</ul>
+<p>The system handles partial inputs without failing.</p>
+<h3 id="architectural-concerns">Architectural Concerns</h3>
+<p><strong>1. Prompt-persona coupling</strong></p>
+<p>The REVIEW and REWRITE prompts contain interpretation rules that assume a specific persona file schema. If a persona file omits <code>## Review Lens</code> or uses non-standard section headers, the prompt's interpretation hierarchy breaks silently. There is no schema validation — the system relies on author discipline.</p>
+<p><strong>Mitigation (current):</strong> <code>PERSONA-README.md</code> documents the expected schema. The consistent structure across 18 files demonstrates that discipline is holding.</p>
+<p><strong>Mitigation (future):</strong> A lightweight schema validator (even a grep for required section headers) could catch malformed persona files at upload time.</p>
+<p><strong>2. No versioning or change tracking on persona files</strong></p>
+<p>Persona files are plain markdown in a directory. If a persona's Review Lens is updated (e.g., new scorecard dimensions added), prior reviews generated with the old lens become incomparable to new reviews. There is no mechanism to record which persona version produced which output.</p>
+<p><strong>3. Synthesis pass is a single point of interpretation risk</strong></p>
+<p>The <code>reviewer_synth.py</code> merge logic takes N heterogeneous persona reviews and produces one synthesis. This is the most complex reasoning step in the system — and the one with the least structural scaffolding. The prompt for synthesis must handle:</p>
+<ul>
+<li>Different severity definitions across personas</li>
+<li>Conflicting recommendations (Commander says &quot;cut slide 3&quot;; Teacher says &quot;expand slide 3&quot;)</li>
+<li>Weighting by declared blind spots</li>
+</ul>
+<p>The README describes this as &quot;consensus findings, conflicts (weighted by each persona's known blind spots), and a top-5 priority-fix list.&quot; That's an ambitious synthesis task. Its quality depends heavily on the synthesis prompt — which is not visible in the provided files.</p>
+<hr>
+<h2 id="5-comparison-to-industry-patterns">5. Comparison to Industry Patterns</h2>
+<table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>SAM Studio Implementation</th>
+<th>Industry Standard</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Multi-agent review</td>
+<td>Parallel persona fan-out + synthesis</td>
+<td>LangChain multi-agent, CrewAI</td>
+</tr>
+<tr>
+<td>Persona injection</td>
+<td>Full markdown file prepended to prompt</td>
+<td>System messages, few-shot examples</td>
+</tr>
+<tr>
+<td>Output templating</td>
+<td>Fixed markdown schema in prompt</td>
+<td>JSON schema, function calling</td>
+</tr>
+<tr>
+<td>Quality grounding</td>
+<td>Self-referential scorecard (&quot;what 5 looks like&quot;)</td>
+<td>RLHF reward models, rubric-based eval</td>
+</tr>
+<tr>
+<td>Fact preservation</td>
+<td>Hard constraint + <code>[NEEDS: ...]</code> escape valve</td>
+<td>RAG grounding, citation requirements</td>
+</tr>
+<tr>
+<td>Pipeline orchestration</td>
+<td>Express + Python subprocess bridge</td>
+<td>LangGraph, Semantic Kernel</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Assessment:</strong> The system uses a simpler orchestration layer (Express + subprocess) than framework-heavy alternatives (LangChain, LangGraph), but achieves comparable compositional power through well-structured prompts. The trade-off is intentional: fewer dependencies, more portable, easier to audit for government compliance. The prompt engineering carries load that other systems push to framework code.</p>
+<hr>
+<h2 id="6-recommendations">6. Recommendations</h2>
+<h3 id="near-term-low-effort-high-value">Near-Term (Low Effort, High Value)</h3>
+<ol>
+<li><strong>Add a &quot;structure-preserving&quot; flag to REWRITE-DOCUMENT.md</strong> — let users opt out of structural changes when they only want voice transformation</li>
+<li><strong>Document the synthesis prompt</strong> — the merge logic in <code>reviewer_synth.py</code> is the highest-risk reasoning step; its prompt should be visible and versioned alongside the persona files</li>
+<li><strong>Add persona file version headers</strong> — a simple <code>Version: 1.2 | Last updated: 2026-06-15</code> in the YAML front matter enables output provenance tracking</li>
+</ol>
+<h3 id="medium-term-moderate-effort">Medium-Term (Moderate Effort)</h3>
+<ol start="4">
+<li><strong>Build a persona compatibility matrix</strong> — document which persona pairs produce the most useful multi-lens reviews (e.g., Security + Legal for compliance; Sales + Skeptic for balanced pitches)</li>
+<li><strong>Add a &quot;review the rewrite&quot; auto-pass</strong> — after a rewrite completes, automatically run the same persona's review against its own output to verify it meets the 5/5 scorecard standard it claims</li>
+<li><strong>Create a lightweight persona schema validator</strong> — check for required sections at upload time; surface warnings for missing <code>## Review Lens</code> or <code>## Rewrite &amp; Restructuring Guidelines</code></li>
+</ol>
+<h3 id="long-term-strategic">Long-Term (Strategic)</h3>
+<ol start="7">
+<li><strong>Parameterize persona intensity</strong> — allow users to dial a persona's severity between 1 (gentle) and 5 (uncompromising) without switching personas entirely</li>
+<li><strong>Build a review history layer</strong> — track which documents were reviewed by which personas at which versions, enabling trend analysis (&quot;our decks consistently fail on Evidence Coverage&quot;)</li>
+<li><strong>Consider persona specialization forks</strong> — the current 18 are domain-general; specialized forks (e.g., &quot;Security Auditor — Cloud Migration&quot; or &quot;Financial Controller — SaaS Procurement&quot;) could deepen expertise without expanding the core library</li>
+</ol>
+<hr>
+<h2 id="summary-verdict">Summary Verdict</h2>
+<p>This is a thoughtfully designed prompt orchestration system that punches above its architectural weight class. The persona library is the strongest element — consistently structured, genuinely differentiated, self-aware about limitations, and composable across four pipeline stages from a single source file.</p>
+<p>The REVIEW and REWRITE prompts are well-constrained, with clear interpretation hierarchies, fixed output schemas, and appropriate escape valves for missing data. The main risks are in the synthesis layer (complex reasoning with limited structural scaffolding) and in the implicit coupling between prompt interpretation rules and persona file schema.</p>
+<p>For a government agency context — where data residency, auditability, and local-first deployment matter — this architecture makes sound trade-offs. It avoids heavy framework dependencies, runs entirely on-premises, and produces outputs that are human-readable, editable, and exportable at every stage.</p>
+<p>The system's fundamental insight is correct: <strong>the persona file is the interface contract, and everything else is pipeline.</strong> That separation of concerns is what makes it work.</p>
+
+</body>
+</html>

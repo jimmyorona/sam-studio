@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAM Studio — System Architecture Summary</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #e8f4fd;
+            color: #1a2a3a;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .slide {
+            display: none;
+            width: 90%;
+            max-width: 1100px;
+            min-height: 70vh;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f8ff 100%);
+            border-radius: 16px;
+            padding: 60px 70px;
+            box-shadow: 0 20px 60px rgba(44, 120, 180, 0.12), 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(135, 196, 232, 0.3);
+            position: relative;
+            overflow-y: auto;
+            max-height: 85vh;
+        }
+
+        .slide.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-number {
+            position: absolute;
+            top: 24px;
+            right: 32px;
+            font-size: 13px;
+            color: #7badc4;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .slide-tag {
+            display: inline-block;
+            background: linear-gradient(135deg, #3a9fd8, #2980b9);
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            padding: 5px 14px;
+            border-radius: 20px;
+            margin-bottom: 18px;
+        }
+
+        h1 {
+            font-size: 2.4em;
+            color: #1a5276;
+            margin-bottom: 12px;
+            line-height: 1.2;
+            font-weight: 700;
+        }
+
+        h2 {
+            font-size: 1.6em;
+            color: #1a5276;
+            margin-bottom: 10px;
+            margin-top: 28px;
+            font-weight: 700;
+        }
+
+        h3 {
+            font-size: 1.15em;
+            color: #2471a3;
+            margin-bottom: 8px;
+            margin-top: 20px;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            font-size: 1.15em;
+            color: #5a8fa8;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        p {
+            font-size: 1.02em;
+            line-height: 1.7;
+            color: #2c3e50;
+            margin-bottom: 14px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 16px 0;
+        }
+
+        ul li {
+            padding: 10px 0 10px 32px;
+            position: relative;
+            font-size: 1.02em;
+            line-height: 1.6;
+            color: #2c3e50;
+        }
+
+        ul li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 16px;
+            width: 10px;
+            height: 10px;
+            background: linear-gradient(135deg, #3a9fd8, #5dade2);
+            border-radius: 50%;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin: 20px 0;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        .card {
+            background: linear-gradient(135deg, #eaf6fd, #d6eef9);
+            border-radius: 12px;
+            padding: 22px 24px;
+            border: 1px solid rgba(93, 173, 226, 0.25);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: #1a5276;
+            font-size: 1.05em;
+        }
+
+        .card p {
+            font-size: 0.92em;
+            color: #34495e;
+            margin-bottom: 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #1a5276, #2980b9);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            color: white;
+        }
+
+        .stat-card .stat-number {
+            font-size: 2.6em;
+            font-weight: 800;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .stat-card .stat-label {
+            font-size: 0.85em;
+            opacity: 0.85;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-weight: 600;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.92em;
+        }
+
+        table th {
+            background: linear-gradient(135deg, #2980b9, #3498db);
+            color: white;
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.88em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        table th:first-child { border-radius: 8px 0 0 0; }
+        table th:last-child { border-radius: 0 8px 0 0; }
+
+        table td {
+            padding: 11px 16px;
+            border-bottom: 1px solid #d6eef9;
+            color: #2c3e50;
+        }
+
+        table tr:nth-child(even) { background: #f5fafd; }
+        table tr:hover { background: #eaf6fd; }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #d4efdf, #a9dfbf);
+            border-left: 4px solid #27ae60;
+            border-radius: 0 10px 10px 0;
+            padding: 18px 24px;
+            margin: 20px 0;
+        }
+
+        .highlight-box p {
+            color: #1e6b3a;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #fef9e7, #fdebd0);
+            border-left: 4px solid #f39c12;
+            border-radius: 0 10px 10px 0;
+            padding: 18px 24px;
+            margin: 20px 0;
+        }
+
+        .warning-box p {
+            color: #7d6608;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        .code-block {
+            background: #1a2a3a;
+            color: #a8d8ea;
+            border-radius: 10px;
+            padding: 18px 24px;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 0.88em;
+            line-height: 1.7;
+            overflow-x: auto;
+            margin: 16px 0;
+        }
+
+        .flow-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 28px 0;
+            flex-wrap: wrap;
+        }
+
+        .flow-step {
+            background: linear-gradient(135deg, #2980b9, #3498db);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9em;
+            text-align: center;
+        }
+
+        .flow-arrow {
+            color: #7badc4;
+            font-size: 1.4em;
+            font-weight: bold;
+        }
+
+        /* Navigation */
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #1a5276, #2471a3);
+            padding: 14px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 100;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-btn {
+            width: 44px;
+            height: 44px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: white;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.6);
+            transform: scale(1.08);
+        }
+
+        .nav-btn:active {
+            transform: scale(0.95);
+        }
+
+        .nav-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        .nav-progress {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.25);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .nav-dot.active {
+            background: #5dade2;
+            transform: scale(1.3);
+            box-shadow: 0 0 8px rgba(93, 173, 226, 0.6);
+        }
+
+        .nav-dot:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .nav-info {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.85em;
+            font-weight: 500;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .nav-title {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.75em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Keyboard hint */
+        .keyboard-hint {
+            position: fixed;
+            top: 16px;
+            right: 20px;
+            background: rgba(26, 82, 118, 0.85);
+            color: rgba(255, 255, 255, 0.7);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.72em;
+            letter-spacing: 0.5px;
+            z-index: 100;
+        }
+
+        .keyboard-hint kbd {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .slide { padding: 40px 30px; }
+            h1 { font-size: 1.8em; }
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            .nav-progress { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="keyboard-hint"><kbd>←</kbd> <kbd>→</kbd> or click arrows to navigate</div>
+
+<div class="slide-container">
+
+    <!-- Slide 1: Title -->
+    <div class="slide active" id="slide-1">
+        <span class="slide-number">1 / 14</span>
+        <span class="slide-tag">Overview</span>
+        <h1>SAM Studio Suite</h1>
+        <p class="subtitle">A unified, local-first platform for reviewing, rewriting, narrating, and producing presentation content — powered by 18 expert personas and a composable prompt architecture.</p>
+
+        <div class="grid-3" style="margin-top: 36px;">
+            <div class="stat-card">
+                <span class="stat-number">18</span>
+                <span class="stat-label">Expert Personas</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">4</span>
+                <span class="stat-label">Pipeline Modes</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">1</span>
+                <span class="stat-label">Persona File = 4 Consumers</span>
+            </div>
+        </div>
+
+        <div class="highlight-box" style="margin-top: 32px;">
+            <p><strong>Core Insight:</strong> The persona file is the interface contract, and everything else is pipeline. That separation of concerns is what makes it work.</p>
+        </div>
+    </div>
+
+    <!-- Slide 2: Four Modes -->
+    <div class="slide" id="slide-2">
+        <span class="slide-number">2 / 14</span>
+        <span class="slide-tag">Platform</span>
+        <h1>Four Modes, One Platform</h1>
+        <p class="subtitle">Each mode operates independently. Users stop at any stage — no forced pipeline traversal.</p>
+
+        <table>
+            <tr><th>Mode</th><th>What It Does</th><th>Input</th></tr>
+            <tr><td><strong>Review</strong></td><td>Multi-persona critique with synthesis pass</td><td>PPTX, PDF, DOCX, MD, TXT</td></tr>
+            <tr><td><strong>Rewrite</strong></td><td>Full document rewritten in persona voice</td><td>PPTX, PDF, DOCX, MD, TXT</td></tr>
+            <tr><td><strong>Narrate</strong></td><td>Per-slide narration script with directorial cues</td><td>PPTX, MD</td></tr>
+            <tr><td><strong>Produce</strong></td><td>TTS + ffmpeg assembly → 1920×1080 H.264/AAC MP4</td><td>PPTX, MD</td></tr>
+        </table>
+
+        <div class="flow-diagram">
+            <div class="flow-step">📄 Document</div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-step">🔍 Review</div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-step">✍️ Rewrite</div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-step">🎙️ Narrate</div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-step">🎬 Produce</div>
+        </div>
+    </div>
+
+    <!-- Slide 3: Architecture -->
+    <div class="slide" id="slide-3">
+        <span class="slide-number">3 / 14</span>
+        <span class="slide-tag">Architecture</span>
+        <h1>System Architecture</h1>
+        <p class="subtitle">Express + Vue SPA with Python subprocess helpers. Local Ollama model backend. No external dependencies required.</p>
+
+        <div class="code-block">
+sam-studio/
+├── personas/              → 18 canonical persona files (.md)
+├── scripts/
+│   ├── pptx_to_video.py   → narration + TTS + video assembly
+│   ├── reviewer_synth.py  → review/rewrite fan-out + export
+│   └── extract.py         → PPTX/PDF/DOCX/MD/TXT → markdown
+├── web/
+│   ├── server/index.js    → Express :3001 (all modes, SSE progress)
+│   └── src/               → Vue 3 SPA (4-tab UI)
+└── reviews/               → generated reports (gitignored)
+        </div>
+
+        <div class="grid-2" style="margin-top: 20px;">
+            <div class="card">
+                <h3>🔒 Local-First</h3>
+                <p>All generation against local Ollama model. No document content traverses external boundaries unless explicitly configured.</p>
+            </div>
+            <div class="card">
+                <h3>🔊 TTS Options</h3>
+                <p>Edge TTS (free), ElevenLabs (premium), or offline Supertonic. Per-persona voice recommendations included.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 4: Persona Library -->
+    <div class="slide" id="slide-4">
+        <span class="slide-number">4 / 14</span>
+        <span class="slide-tag">Personas</span>
+        <h1>Persona Library Design</h1>
+        <p class="subtitle">18 expert personas, consistent schema, drop-in replaceable. One file serves four pipeline stages.</p>
+
+        <h3>Schema (every persona file follows this structure):</h3>
+        <div class="flow-diagram">
+            <div class="flow-step">Character Profile</div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-step">Voice Personality</div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-step">Tone Rules</div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-step">TTS Spec</div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-step">Review Lens</div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-step">Rewrite Rules</div>
+        </div>
+
+        <h3>Four consumers, one source file:</h3>
+        <table>
+            <tr><th>Consumer</th><th>Reads Section</th></tr>
+            <tr><td>Review Pipeline</td><td><code>## Review Lens</code> — scorecard, severity, hunt priorities</td></tr>
+            <tr><td>Rewrite Pipeline</td><td><code>## Rewrite & Restructuring Guidelines</code></td></tr>
+            <tr><td>Narration Pipeline</td><td>ElevenLabs settings, SSML conventions</td></tr>
+            <tr><td>Video Production</td><td><code>## Production & Music Preferences</code></td></tr>
+        </table>
+
+        <div class="highlight-box">
+            <p><strong>Zero duplication:</strong> Update one persona file → all four pipelines pick up the change simultaneously. No deployment coordination required.</p>
+        </div>
+    </div>
+
+    <!-- Slide 5: Persona Spectrum -->
+    <div class="slide" id="slide-5">
+        <span class="slide-number">5 / 14</span>
+        <span class="slide-tag">Personas</span>
+        <h1>Persona Differentiation</h1>
+        <p class="subtitle">Not just tone variations — fundamentally different epistemic standards.</p>
+
+        <table>
+            <tr><th>Axis</th><th>High End</th><th>Low End</th></tr>
+            <tr><td>Formality</td><td>Legal/Compliance (Clarke)</td><td>Energetic Collaborative (Cruz)</td></tr>
+            <tr><td>Warmth</td><td>Empathetic Holistic (Hart)</td><td>Security Auditor (Shield)</td></tr>
+            <tr><td>Economy</td><td>Executive Briefing (Page)</td><td>Documentary Narrator (Atwood)</td></tr>
+            <tr><td>Evidence Demand</td><td>Skeptic-Proof Analyst (Ledger)</td><td>Sales/Pitch (Archer)</td></tr>
+            <tr><td>Audience Level</td><td>Teacher/Explainer (Bell) — novice</td><td>Legal/Compliance (Clarke) — expert</td></tr>
+            <tr><td>Action Orientation</td><td>Commander (Steele) — verdict-first</td><td>Journalist (Bradlee) — no recommendation</td></tr>
+        </table>
+
+        <div class="warning-box">
+            <p><strong>Key insight:</strong> Multi-persona review isn't redundant — each persona surfaces a different class of deficiency the others are blind to by design.</p>
+        </div>
+    </div>
+
+    <!-- Slide 6: The 18 Personas -->
+    <div class="slide" id="slide-6">
+        <span class="slide-number">6 / 14</span>
+        <span class="slide-tag">Personas</span>
+        <h1>The 18 Expert Personas</h1>
+
+        <table>
+            <tr><th>Persona</th><th>Archetype</th><th>Primary Hunt</th></tr>
+            <tr><td><strong>Sam Wright</strong> — Classic SAM</td><td>Senior Systems Architect</td><td>Imprecise claims, hype</td></tr>
+            <tr><td><strong>Sam Steele</strong> — Commander</td><td>Battle-tested Veteran</td><td>Buried verdicts, hedging</td></tr>
+            <tr><td><strong>Sam Hart</strong> — Empathetic</td><td>Compassionate Guide</td><td>Dehumanizing language</td></tr>
+            <tr><td><strong>Sam Cruz</strong> — Energetic</td><td>High-Energy Teammate</td><td>Momentum-killers, buried wins</td></tr>
+            <tr><td><strong>Sam Ledger</strong> — Skeptic-Proof</td><td>Evidence-First Analyst</td><td>Unsupported claims</td></tr>
+            <tr><td><strong>Sam Page</strong> — Executive</td><td>Time-Compressed Briefer</td><td>Buried ledes, missing asks</td></tr>
+            <tr><td><strong>Sam Atwood</strong> — Documentary</td><td>Cinematic Narrator</td><td>Missing through-line</td></tr>
+            <tr><td><strong>Sam Bell</strong> — Teacher</td><td>Patient Explainer</td><td>Jargon before definition</td></tr>
+            <tr><td><strong>Sam Archer</strong> — Sales/Pitch</td><td>Confident Persuader</td><td>Feature-first openings</td></tr>
+            <tr><td><strong>Sam Bradlee</strong> — Journalist</td><td>Neutral Fact-Presenter</td><td>Unsourced figures</td></tr>
+            <tr><td><strong>Sam Rowan</strong> — Facilitator</td><td>Reflective Guide</td><td>One-way info dumps</td></tr>
+            <tr><td><strong>Sam Clarke</strong> — Legal</td><td>Compliance Officer</td><td>Undefined scope, overclaims</td></tr>
+            <tr><td><strong>Sam Agile</strong> — Scrum Master</td><td>Agile Coach</td><td>Command-and-control language</td></tr>
+            <tr><td><strong>Sam Product</strong> — Product Mgr</td><td>Product Strategist</td><td>Features without user pain</td></tr>
+            <tr><td><strong>Sam Shield</strong> — Security</td><td>Threat Modeler</td><td>Implicit trust assumptions</td></tr>
+            <tr><td><strong>Sam Pixel</strong> — Design</td><td>Product Designer</td><td>Cognitive overload, contrast</td></tr>
+            <tr><td><strong>Sam Capital</strong> — Financial</td><td>Cost Analyst</td><td>Unanchored cost figures</td></tr>
+            <tr><td><strong>Sam People</strong> — Change Mgr</td><td>Transition Coach</td><td>Big-bang rollout plans</td></tr>
+        </table>
+    </div>
+
+    <!-- Slide 7: REVIEW Prompt -->
+    <div class="slide" id="slide-7">
+        <span class="slide-number">7 / 14</span>
+        <span class="slide-tag">Prompt Actions</span>
+        <h1>REVIEW-DOCUMENT.md</h1>
+        <p class="subtitle">Constrained output templating with persona injection.</p>
+
+        <h3>Design Pattern</h3>
+        <div class="grid-2">
+            <div class="card">
+                <h3>Interpretation Hierarchy</h3>
+                <p><strong>AUTHORITATIVE:</strong> ## Review Lens section<br>
+                <strong>ADOPT:</strong> Character Profile, tone, guardrails<br>
+                <strong>IGNORE:</strong> TTS mechanics (ElevenLabs, SSML)</p>
+            </div>
+            <div class="card">
+                <h3>Fixed Output Schema</h3>
+                <p>Verdict → Strengths → Findings (with severity) → Questions → Scorecard — same bones regardless of persona.</p>
+            </div>
+        </div>
+
+        <h3>Architectural Strengths</h3>
+        <ul>
+            <li><strong>Self-referential quality bar:</strong> Each persona's scorecard defines what "good" means for that lens</li>
+            <li><strong>Comparable outputs across personas:</strong> Fixed structure enables synthesis of multiple reviews</li>
+            <li><strong>Graceful degradation:</strong> Missing Review Lens → infer from archetype; never fails</li>
+            <li><strong>Severity calibration per persona:</strong> Different experts define "Critical" differently — by design</li>
+        </ul>
+    </div>
+
+    <!-- Slide 8: REWRITE Prompt -->
+    <div class="slide" id="slide-8">
+        <span class="slide-number">8 / 14</span>
+        <span class="slide-tag">Prompt Actions</span>
+        <h1>REWRITE-DOCUMENT.md</h1>
+        <p class="subtitle">Voice transformation with structural license and fact preservation.</p>
+
+        <h3>Design Pattern</h3>
+        <div class="grid-2">
+            <div class="card">
+                <h3>Quality Constraint</h3>
+                <p>"The rewrite must score 5/5 on the persona's own scorecard." Self-referential closed-loop quality definition.</p>
+            </div>
+            <div class="card">
+                <h3>Fact Preservation</h3>
+                <p><strong>NEVER</strong> invent data. Missing info → <code>[NEEDS: ...]</code> placeholder. Escape valve without fabrication.</p>
+            </div>
+        </div>
+
+        <h3>Key Capabilities</h3>
+        <ul>
+            <li><strong>Structural freedom:</strong> May reorder, merge, split slides — with provenance tracking</li>
+            <li><strong>Format-aware:</strong> Presentations get speaker notes; prose stays prose</li>
+            <li><strong>Persona-driven placeholders:</strong> Some personas draft proposals; some insert strict markers</li>
+            <li><strong>Rewrite notes section:</strong> Documents all structural changes and lists all [NEEDS] gaps</li>
+        </ul>
+
+        <div class="highlight-box">
+            <p><strong>Provenance:</strong> When content moves: <code>## Slide 1: Title (source: slide 5)</code> — author sees exactly what changed and from where.</p>
+        </div>
+    </div>
+
+    <!-- Slide 9: Multi-Persona Review -->
+    <div class="slide" id="slide-9">
+        <span class="slide-number">9 / 14</span>
+        <span class="slide-tag">Workflows</span>
+        <h1>Multi-Persona Review & Synthesis</h1>
+        <p class="subtitle">Parallel fan-out to N personas, merged into consensus findings and conflicts.</p>
+
+        <div class="flow-diagram">
+            <div class="flow-step">📄 Document</div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-step">🔀 Fan-Out</div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-step">👤👤👤 N Persona Reviews</div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-step">🔄 Synthesis Pass</div>
+            <span class="flow-arrow">→</span>
+            <div class="flow-step">📋 Merged Report</div>
+        </div>
+
+        <h3>Synthesis produces:</h3>
+        <ul>
+            <li><strong>Consensus findings</strong> — issues flagged by multiple personas</li>
+            <li><strong>Conflicts</strong> — weighted by each persona's known blind spots</li>
+            <li><strong>Top-5 priority fix list</strong> — actionable next steps</li>
+        </ul>
+
+        <h3>Smart behaviors:</h3>
+        <ul>
+            <li>Single persona selected → synthesis pass skipped automatically</li>
+            <li>Review-informed rewrite → prior findings folded into rewrite prompt</li>
+            <li>"Advise" mode → draft proposals for each [NEEDS] gap</li>
+        </ul>
+    </div>
+
+    <!-- Slide 10: Self-Aware Design -->
+    <div class="slide" id="slide-10">
+        <span class="slide-number">10 / 14</span>
+        <span class="slide-tag">Design Pattern</span>
+        <h1>Self-Aware Personas</h1>
+        <p class="subtitle">Every persona declares its own limitations — and recommends its complement.</p>
+
+        <table>
+            <tr><th>Persona</th><th>Known Blind Spot</th><th>Recommended Pairing</th></tr>
+            <tr><td>Commander</td><td>Punishes honest uncertainty</td><td>+ Empathetic or Teacher</td></tr>
+            <tr><td>Skeptic-Proof</td><td>Over-indexes on rigor; deck may be boring</td><td>+ Sales/Pitch or Energetic</td></tr>
+            <tr><td>Executive Briefing</td><td>Compression cuts context readers need</td><td>+ Teacher/Explainer</td></tr>
+            <tr><td>Sales/Pitch</td><td>Pushes claims to strongest edge</td><td>+ Skeptic-Proof or Legal</td></tr>
+            <tr><td>Legal/Compliance</td><td>Precision maximalism buries readability</td><td>+ Executive Briefing</td></tr>
+            <tr><td>Documentary</td><td>Favors story over speed</td><td>+ Executive Briefing</td></tr>
+            <tr><td>Workshop</td><td>Adds pauses to solo-read material</td><td>+ Executive Briefing</td></tr>
+            <tr><td>Energetic</td><td>May underweight rigor and risk</td><td>+ Skeptic-Proof Analyst</td></tr>
+        </table>
+
+        <div class="highlight-box">
+            <p><strong>Design principle:</strong> Limitations are first-class elements that guide multi-persona composition — not hidden weaknesses.</p>
+        </div>
+    </div>
+
+    <!-- Slide 11: Technical Strengths -->
+    <div class="slide" id="slide-11">
+        <span class="slide-number">11 / 14</span>
+        <span class="slide-tag">Assessment</span>
+        <h1>Architectural Strengths</h1>
+
+        <div class="grid-2">
+            <div class="card">
+                <h3>🎯 Single Source of Truth</h3>
+                <p>One persona file → four consumers. Update once, propagate everywhere. No sync problems.</p>
+            </div>
+            <div class="card">
+                <h3>🔒 Local-First / No Lock-In</h3>
+                <p>Ollama backend, Edge TTS. Runs entirely on-premises. No document content crosses external boundaries.</p>
+            </div>
+            <div class="card">
+                <h3>🔀 Composable Stages</h3>
+                <p>Review → Rewrite → Narrate → Produce are independent. Stop at any point. No forced traversal.</p>
+            </div>
+            <div class="card">
+                <h3>🛡️ Graceful Degradation</h3>
+                <p>No Review Lens? Infer. No persona? Ask. Missing data? [NEEDS:...]. Single reviewer? Skip synthesis.</p>
+            </div>
+            <div class="card">
+                <h3>📐 Consistent Schema</h3>
+                <p>All 18 persona files are drop-in replaceable. No code changes. Web UI auto-discovers new files.</p>
+            </div>
+            <div class="card">
+                <h3>⚖️ Prompt Over Framework</h3>
+                <p>Well-structured prompts carry load other systems push to LangChain/LangGraph code. Fewer dependencies, easier audit.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 12: Risks & Concerns -->
+    <div class="slide" id="slide-12">
+        <span class="slide-number">12 / 14</span>
+        <span class="slide-tag">Assessment</span>
+        <h1>Architectural Concerns</h1>
+
+        <div class="grid-2">
+            <div class="card" style="border-left: 4px solid #e74c3c;">
+                <h3>⚠️ Scorecard Incomparability</h3>
+                <p>Scores not comparable across personas. A 4/5 on "Verdict placement" ≠ a 4/5 on "Trust Boundary Separation." Synthesis must operate on findings, not scores.</p>
+            </div>
+            <div class="card" style="border-left: 4px solid #e74c3c;">
+                <h3>⚠️ Severity Definition Drift</h3>
+                <p>"Critical" means different things per persona. Legal = regulatory exposure. Design = illegibility. Security = data leak. Users must understand this.</p>
+            </div>
+            <div class="card" style="border-left: 4px solid #f39c12;">
+                <h3>⚡ Context Window Pressure</h3>
+                <p>Persona (~4K) + prompt (~1.5K) + document (variable). Large decks may hit attention limits on later slides.</p>
+            </div>
+            <div class="card" style="border-left: 4px solid #f39c12;">
+                <h3>⚡ Schema Coupling</h3>
+                <p>Prompts assume persona file schema. No validation at upload. Relies on author discipline (currently holding across 18 files).</p>
+            </div>
+            <div class="card" style="border-left: 4px solid #95a5a6;">
+                <h3>📝 No Version Tracking</h3>
+                <p>Persona files are plain markdown. No mechanism to record which version produced which output.</p>
+            </div>
+            <div class="card" style="border-left: 4px solid #95a5a6;">
+                <h3>📝 Synthesis Complexity</h3>
+                <p>The merge of N heterogeneous reviews is the most complex reasoning step — with the least structural scaffolding.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 13: Recommendations -->
+    <div class="slide" id="slide-13">
+        <span class="slide-number">13 / 14</span>
+        <span class="slide-tag">Recommendations</span>
+        <h1>Recommendations</h1>
+
+        <h3>Near-Term (Low Effort, High Value)</h3>
+        <ul>
+            <li>Add a "structure-preserving" flag to REWRITE — voice transformation without structural changes</li>
+            <li>Document the synthesis prompt — highest-risk reasoning step deserves visibility</li>
+            <li>Add persona file version headers — enables output provenance tracking</li>
+        </ul>
+
+        <h3>Medium-Term (Moderate Effort)</h3>
+        <ul>
+            <li>Build a persona compatibility matrix — document which pairs produce the best multi-lens reviews</li>
+            <li>Add "review the rewrite" auto-pass — verify rewrite meets 5/5 scorecard standard</li>
+            <li>Create lightweight schema validator — check required sections at upload time</li>
+        </ul>
+
+        <h3>Long-Term (Strategic)</h3>
+        <ul>
+            <li>Parameterize persona intensity — dial severity between 1 (gentle) and 5 (uncompromising)</li>
+            <li>Build review history layer — track trends across documents and teams</li>
+            <li>Consider domain-specialized persona forks — deeper expertise without expanding core library</li>
+        </ul>
+    </div>
+
+    <!-- Slide 14: Verdict -->
+    <div class="slide" id="slide-14">
+        <span class="slide-number">14 / 14</span>
+        <span class="slide-tag">Summary</span>
+        <h1>Summary Verdict</h1>
+        <p class="subtitle">A thoughtfully designed prompt orchestration system that punches above its architectural weight class.</p>
+
+        <div class="grid-2" style="margin-top: 24px;">
+            <div class="card">
+                <h3>✅ Strongest Element</h3>
+                <p>The persona library — consistently structured, genuinely differentiated, self-aware about limitations, composable across four pipeline stages from a single source file.</p>
+            </div>
+            <div class="card">
+                <h3>✅ Key Trade-Off</h3>
+                <p>Simpler orchestration (Express + subprocess) vs. framework-heavy alternatives. Fewer dependencies, more portable, easier to audit for government compliance.</p>
+            </div>
+        </div>
+
+        <div class="highlight-box" style="margin-top: 28px;">
+            <p><strong>The fundamental insight is correct:</strong> The persona file is the interface contract. The prompts define the task. The pipeline is just plumbing. That separation of concerns — stable interface, variable implementation — is what makes the system work and what will make it scale.</p>
+        </div>
+
+        <div class="grid-3" style="margin-top: 24px;">
+            <div class="stat-card">
+                <span class="stat-number">18</span>
+                <span class="stat-label">Personas</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">2</span>
+                <span class="stat-label">Master Prompts</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">∞</span>
+                <span class="stat-label">Combinations</span>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Navigation Bar -->
+<nav class="nav-bar">
+    <div class="nav-controls">
+        <div class="nav-btn" onclick="firstSlide()" title="First slide">
+            <svg viewBox="0 0 24 24"><path d="M18.41 16.59L13.82 12l4.59-4.59L17 6l-6 6 6 6 1.41-1.41zM6 6h2v12H6V6z"/></svg>
+        </div>
+        <div class="nav-btn" onclick="prevSlide()" title="Previous slide">
+            <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+        </div>
+    </div>
+
+    <div class="nav-progress" id="nav-progress"></div>
+
+    <div>
+        <div class="nav-info" id="nav-info">1 / 14</div>
+        <div class="nav-title" id="nav-title">SAM Studio Suite</div>
+    </div>
+
+    <div class="nav-controls">
+        <div class="nav-btn" onclick="nextSlide()" title="Next slide">
+            <svg viewBox="0 0 24 24"><path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg>
+        </div>
+        <div class="nav-btn" onclick="lastSlide()" title="Last slide">
+            <svg viewBox="0 0 24 24"><path d="M5.59 7.41L10.18 12l-4.59 4.59L7 18l6-6-6-6-1.41 1.41zM16 6h2v12h-2V6z"/></svg>
+        </div>
+    </div>
+</nav>
+
+<script>
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    let currentSlide = 0;
+
+    const slideTitles = [
+        'Overview', 'Four Modes', 'Architecture', 'Persona Library',
+        'Differentiation', '18 Personas', 'REVIEW Prompt', 'REWRITE Prompt',
+        'Multi-Persona Synthesis', 'Self-Aware Design', 'Strengths',
+        'Concerns', 'Recommendations', 'Summary Verdict'
+    ];
+
+    // Build progress dots
+    const progressEl = document.getElementById('nav-progress');
+    for (let i = 0; i < totalSlides; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+        dot.onclick = () => goToSlide(i);
+        dot.title = slideTitles[i];
+        progressEl.appendChild(dot);
+    }
+
+    function goToSlide(n) {
+        slides[currentSlide].classList.remove('active');
+        currentSlide = Math.max(0, Math.min(n, totalSlides - 1));
+        slides[currentSlide].classList.add('active');
+        updateNav();
+    }
+
+    function nextSlide() { goToSlide(currentSlide + 1); }
+    function prevSlide() { goToSlide(currentSlide - 1); }
+    function firstSlide() { goToSlide(0); }
+    function lastSlide() { goToSlide(totalSlides - 1); }
+
+    function updateNav() {
+        document.getElementById('nav-info').textContent = `${currentSlide + 1} / ${totalSlides}`;
+        document.getElementById('nav-title').textContent = slideTitles[currentSlide];
+        document.querySelectorAll('.nav-dot').forEach((dot, i) => {
+            dot.classList.toggle('active', i === currentSlide);
+        });
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextSlide(); }
+        if (e.key === 'ArrowLeft') { e.preventDefault(); prevSlide(); }
+        if (e.key === 'Home') { e.preventDefault(); firstSlide(); }
+        if (e.key === 'End') { e.preventDefault(); lastSlide(); }
+    });
+
+    // Touch/swipe support
+    let touchStartX = 0;
+    document.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; });
+    document.addEventListener('touchend', (e) => {
+        const diff = e.changedTouches[0].screenX - touchStartX;
+        if (Math.abs(diff) > 50) { diff > 0 ? prevSlide() : nextSlide(); }
+    });
+</script>
+
+</body>
+</html>
