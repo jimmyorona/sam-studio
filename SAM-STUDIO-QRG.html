@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>SAM-STUDIO-QRG.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="scout-llm-persona-system--user-guide--cheat-sheet">Scout LLM Persona System — User Guide &amp; Cheat Sheet</h1>
+<h2 id="quick-start-two-prompts-endless-combinations">Quick Start: Two Prompts, Endless Combinations</h2>
+<p>You have <strong>19 expert personas</strong> and <strong>2 master prompts</strong>:</p>
+<ul>
+<li><code>REVIEW-DOCUMENT.md</code> — Get expert feedback on any document</li>
+<li><code>REWRITE-DOCUMENT.md</code> — Get a full rewrite in a persona's voice</li>
+</ul>
+<hr>
+<h2 id="how-to-invoke-review-documentmd">How to Invoke: REVIEW-DOCUMENT.md</h2>
+<h3 id="basic-pattern">Basic Pattern</h3>
+<pre class="hljs"><code><div>Attach: [persona file] + [document to review] + REVIEW-DOCUMENT.md
+
+Type: &quot;review this document using [persona name]&quot;
+</div></code></pre>
+<h3 id="what-happens">What Happens</h3>
+<ol>
+<li>Scout reads the persona file to understand the expert's standards</li>
+<li>Reviews your document through that lens</li>
+<li>Returns a structured markdown report with:
+<ul>
+<li>Overall verdict</li>
+<li>Strengths (2-5 bullets)</li>
+<li>Findings (ordered by severity: Critical → Major → Minor)</li>
+<li>Questions the persona would ask you</li>
+<li>Scorecard (persona-specific dimensions, 1-5 scale)</li>
+</ul>
+</li>
+</ol>
+<h3 id="example-invocation">Example Invocation</h3>
+<pre class="hljs"><code><div>Attachments:
+- 02-COMMANDER-SAM-PERSONA.md
+- project-proposal.pptx
+- REVIEW-DOCUMENT.md
+
+Prompt: &quot;review this proposal using Commander Sam&quot;
+</div></code></pre>
+<h3 id="what-you-get-back">What You Get Back</h3>
+<pre class="hljs"><code><div><span class="hljs-section"># project-proposal.pptx — Review by Sam Steele</span>
+
+<span class="hljs-quote">&gt; [One-paragraph verdict in persona voice]</span>
+
+<span class="hljs-section">## Strengths</span>
+<span class="hljs-bullet">- </span>[What works, specifically]
+
+<span class="hljs-section">## Findings</span>
+
+<span class="hljs-section">### 1. [Issue title] — Slide 3</span>
+<span class="hljs-strong">**Severity:**</span> Critical
+<span class="hljs-strong">**Issue:**</span> [What's wrong]
+<span class="hljs-strong">**Recommendation:**</span> [How to fix it, with rewritten text]
+
+[... more findings ...]
+
+<span class="hljs-section">## Scorecard</span>
+| Dimension | Score | Note |
+|-----------|-------|------|
+| Verdict placement | 2 | [Specific feedback] |
+</div></code></pre>
+<hr>
+<h2 id="how-to-invoke-rewrite-documentmd">How to Invoke: REWRITE-DOCUMENT.md</h2>
+<h3 id="basic-pattern">Basic Pattern</h3>
+<pre class="hljs"><code><div>Attach: [persona file] + [document to rewrite] + REWRITE-DOCUMENT.md
+
+Type: &quot;rewrite this document using [persona name]&quot;
+</div></code></pre>
+<h3 id="what-happens">What Happens</h3>
+<ol>
+<li>Scout reads the persona file to understand voice, structure, tone rules</li>
+<li>Rewrites your <strong>entire document</strong> in that persona's voice</li>
+<li>Preserves all facts/figures (never invents data)</li>
+<li>Inserts <code>[NEEDS: ...]</code> placeholders where source data is missing</li>
+<li>Returns rewritten content + notes on structural changes made</li>
+</ol>
+<h3 id="example-invocation">Example Invocation</h3>
+<pre class="hljs"><code><div>Attachments:
+- 10-ENERGETIC-COLLABORATIVE-PERSONA.md
+- technical-briefing.pptx
+- REWRITE-DOCUMENT.md
+
+Prompt: &quot;rewrite this deck using Energetic Collaborative persona&quot;
+</div></code></pre>
+<h3 id="what-you-get-back">What You Get Back</h3>
+<pre class="hljs"><code><div><span class="hljs-section"># technical-briefing.pptx — Rewritten by Sam Cruz</span>
+
+<span class="hljs-section">## Slide 1: [New title in persona voice]</span>
+
+[On-slide content]
+
+<span class="hljs-strong">**Speaker notes:**</span>
+[Full narration in persona voice]
+
+---
+
+<span class="hljs-section">## Slide 2: [Title]</span>
+[Content]
+<span class="hljs-strong">**Speaker notes:**</span>
+[Narration]
+
+[... all slides rewritten ...]
+
+---
+
+<span class="hljs-section">## Rewrite notes</span>
+
+<span class="hljs-section">### Structural changes made and why:</span>
+<span class="hljs-bullet">1. </span>[What changed and rationale]
+<span class="hljs-bullet">2. </span>[What moved and why]
+
+<span class="hljs-section">### [NEEDS: ...] placeholders inserted:</span>
+<span class="hljs-bullet">- </span><span class="hljs-code">`[NEEDS: cost per month]`</span> — Slide 1
+<span class="hljs-bullet">- </span><span class="hljs-code">`[NEEDS: baseline metric]`</span> — Slide 3
+</div></code></pre>
+<hr>
+<h2 id="quick-persona-selection-guide">Quick Persona Selection Guide</h2>
+<table>
+<thead>
+<tr>
+<th>You Need</th>
+<th>Use This Persona</th>
+<th>File</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Fast executive decision</strong></td>
+<td>Executive Briefing</td>
+<td><code>12-EXECUTIVE-BRIEFING-PERSONA.md</code></td>
+</tr>
+<tr>
+<td><strong>Skeptical board/audit</strong></td>
+<td>Skeptic-Proof Analyst</td>
+<td><code>11-SKEPTIC-PROOF-ANALYST-PERSONA.md</code></td>
+</tr>
+<tr>
+<td><strong>Win team buy-in</strong></td>
+<td>Energetic Collaborative</td>
+<td><code>10-ENERGETIC-COLLABORATIVE-PERSONA.md</code></td>
+</tr>
+<tr>
+<td><strong>User adoption/change</strong></td>
+<td>Empathetic Holistic</td>
+<td><code>09-EMPATHETIC-HOLISTIC-PERSONA.md</code></td>
+</tr>
+<tr>
+<td><strong>Teach/onboard</strong></td>
+<td>Teacher/Explainer</td>
+<td><code>14-TEACHER-EXPLAINER-PERSONA.md</code></td>
+</tr>
+<tr>
+<td><strong>Funding/sales pitch</strong></td>
+<td>Sales/Pitch</td>
+<td><code>15-SALES-PITCH-PERSONA.md</code></td>
+</tr>
+<tr>
+<td><strong>Compliance/legal</strong></td>
+<td>Legal/Compliance</td>
+<td><code>18-LEGAL-COMPLIANCE-PERSONA.md</code></td>
+</tr>
+<tr>
+<td><strong>Neutral reporting</strong></td>
+<td>Journalist</td>
+<td><code>16-JOURNALIST-INVESTIGATIVE-PERSONA.md</code></td>
+</tr>
+<tr>
+<td><strong>Wake up the room</strong></td>
+<td>Commander</td>
+<td><code>02-COMMANDER-SAM-PERSONA.md</code></td>
+</tr>
+<tr>
+<td><strong>Deep storytelling</strong></td>
+<td>Documentary Narrator</td>
+<td><code>13-DOCUMENTARY-NARRATOR-PERSONA.md</code></td>
+</tr>
+<tr>
+<td><strong>Balanced technical</strong></td>
+<td>Classic SAM</td>
+<td><code>01-SAM-PERSONA.md</code></td>
+</tr>
+<tr>
+<td><strong>Workshop/training</strong></td>
+<td>Workshop Facilitator</td>
+<td><code>17-WORKSHOP-FACILITATOR-PERSONA.md</code></td>
+</tr>
+<tr>
+<td><strong>Sprint/Agile docs</strong></td>
+<td>Scrum Master</td>
+<td><code>19-SCRUM-MASTER-PERSONA.md</code></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="common-workflows">Common Workflows</h2>
+<h3 id="workflow-1-get-multiple-perspectives">Workflow 1: Get Multiple Perspectives</h3>
+<pre class="hljs"><code><div>Round 1: Review with Commander Sam (finds buried verdicts, weak asks)
+Round 2: Review with Skeptic-Proof Analyst (finds unsupported claims)
+Round 3: Review with Empathetic Holistic (finds dehumanizing language)
+
+Result: Three expert reviews, three different lenses
+</div></code></pre>
+<h3 id="workflow-2-review-%E2%86%92-rewrite-%E2%86%92-review-again">Workflow 2: Review → Rewrite → Review Again</h3>
+<pre class="hljs"><code><div>Step 1: Review with Executive Briefing persona
+Step 2: Fix critical findings manually
+Step 3: Rewrite entire deck with same persona
+Step 4: Review the rewrite with Skeptic-Proof Analyst (different lens)
+
+Result: Polished deck that passes multiple expert standards
+</div></code></pre>
+<h3 id="workflow-3-audience-specific-versions">Workflow 3: Audience-Specific Versions</h3>
+<pre class="hljs"><code><div>Version A: Rewrite with Commander Sam (for skeptical leadership)
+Version B: Rewrite with Teacher/Explainer (for new staff onboarding)
+Version C: Rewrite with Sales/Pitch (for funding committee)
+
+Same content, three different voices for three different audiences
+</div></code></pre>
+<h3 id="workflow-4-iterative-refinement">Workflow 4: Iterative Refinement</h3>
+<pre class="hljs"><code><div>Round 1: Review with [persona] → get findings
+Round 2: &quot;Fix finding #3 on slide 5&quot; → Scout rewrites just that section
+Round 3: &quot;Now review slide 5 again&quot; → Scout confirms fix works
+Round 4: Repeat for other findings
+
+Result: Surgical improvements without full rewrite
+</div></code></pre>
+<hr>
+<h2 id="pro-tips">Pro Tips</h2>
+<h3 id="tip-1-you-can-mix-and-match">Tip 1: You Can Mix and Match</h3>
+<pre class="hljs"><code><div>&quot;Review this deck using Commander Sam, 
+but also tell me what Empathetic Holistic would say about slide 3&quot;
+
+Scout will give you both perspectives in one response
+</div></code></pre>
+<h3 id="tip-2-ask-follow-up-questions-stay-in-persona">Tip 2: Ask Follow-Up Questions (Stay in Persona)</h3>
+<pre class="hljs"><code><div>After a review:
+&quot;Why is finding #2 marked Critical instead of Major?&quot;
+&quot;Show me a rewrite of just slide 7 using your recommendations&quot;
+&quot;What would this look like if the audience were non-technical?&quot;
+
+Scout stays in the persona's voice and perspective
+</div></code></pre>
+<h3 id="tip-3-request-specific-sections">Tip 3: Request Specific Sections</h3>
+<pre class="hljs"><code><div>&quot;Rewrite just the opening slide using Energetic Collaborative&quot;
+&quot;Review only the cost section using Skeptic-Proof Analyst&quot;
+
+You don't always need to process the entire document
+</div></code></pre>
+<h3 id="tip-4-personas-can-review-other-personas-work">Tip 4: Personas Can Review Other Personas' Work</h3>
+<pre class="hljs"><code><div>Step 1: Rewrite with Sales/Pitch persona
+Step 2: Review that rewrite with Legal/Compliance persona
+
+Finds: &quot;This sales claim needs a documented basis&quot; (compliance lens)
+</div></code></pre>
+<h3 id="tip-5-use-needs--placeholders-as-todos">Tip 5: Use <code>[NEEDS: ...]</code> Placeholders as TODOs</h3>
+<pre class="hljs"><code><div>After a rewrite, search the output for &quot;[NEEDS:&quot;
+Those are your action items — data you need to fill in
+Fill them in, paste back, ask Scout to review again
+</div></code></pre>
+<hr>
+<h2 id="command-templates-copy-paste-ready">Command Templates (Copy-Paste Ready)</h2>
+<h3 id="template-basic-review">Template: Basic Review</h3>
+<pre class="hljs"><code><div>Review this [document type] using [persona name] from [persona-file.md]
+
+[Paste document or attach file]
+</div></code></pre>
+<h3 id="template-basic-rewrite">Template: Basic Rewrite</h3>
+<pre class="hljs"><code><div>Rewrite this [document type] using [persona name] from [persona-file.md]
+
+[Paste document or attach file]
+</div></code></pre>
+<h3 id="template-review-specific-section">Template: Review Specific Section</h3>
+<pre class="hljs"><code><div>Using [persona name], review only [section/slide number] and tell me:
+1. What's the severity of issues here?
+2. How would you rewrite it?
+</div></code></pre>
+<h3 id="template-compare-two-personas">Template: Compare Two Personas</h3>
+<pre class="hljs"><code><div>Review this document from two perspectives:
+1. [Persona A name] — what are the critical findings?
+2. [Persona B name] — what would they flag that Persona A missed?
+</div></code></pre>
+<h3 id="template-iterative-fix">Template: Iterative Fix</h3>
+<pre class="hljs"><code><div>I fixed finding #[number] on [slide/section].
+Here's the revised version: [paste revision]
+
+Using [persona name], does this fix work? What else needs attention?
+</div></code></pre>
+<hr>
+<h2 id="what-scout-preserves-never-invents">What Scout Preserves (NEVER Invents)</h2>
+<p>✅ <strong>Always preserved exactly:</strong></p>
+<ul>
+<li>Numbers, metrics, percentages</li>
+<li>Dates, timelines, milestones</li>
+<li>Names (people, products, systems)</li>
+<li>Technical specifications</li>
+<li>Cost figures</li>
+<li>Source citations</li>
+</ul>
+<p>❌ <strong>Never invented:</strong></p>
+<ul>
+<li>Data Scout doesn't have</li>
+<li>Claims not in the source</li>
+<li>Numbers to &quot;make the story better&quot;</li>
+<li>Fake sources or citations</li>
+</ul>
+<p>🔧 <strong>When data is missing:</strong>
+Scout inserts: <code>[NEEDS: specific data description]</code>
+Example: <code>[NEEDS: baseline processing time before automation]</code></p>
+<hr>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="%22the-review-feels-generic%22">&quot;The review feels generic&quot;</h3>
+<p><strong>Fix:</strong> Make sure you attached the <strong>persona file</strong> and <strong>REVIEW-DOCUMENT.md</strong> prompt. Scout needs both to adopt the expert lens.</p>
+<h3 id="%22the-rewrite-changed-my-facts%22">&quot;The rewrite changed my facts&quot;</h3>
+<p><strong>Fix:</strong> Point out the specific fact that changed. Scout will correct it and explain what happened. Facts should never change.</p>
+<h3 id="%22i-only-wanted-slide-3-reviewed-but-got-the-whole-deck%22">&quot;I only wanted slide 3 reviewed, but got the whole deck&quot;</h3>
+<p><strong>Fix:</strong> Be explicit: &quot;Review only slide 3 using [persona]&quot; — Scout will focus there.</p>
+<h3 id="%22the-persona-feels-too-harshsoft%22">&quot;The persona feels too harsh/soft&quot;</h3>
+<p><strong>Fix:</strong> Pick a different persona. Commander Sam is blunt. Empathetic Holistic is gentle. Match persona to your tolerance for directness.</p>
+<h3 id="%22i-dont-know-which-persona-to-use%22">&quot;I don't know which persona to use&quot;</h3>
+<p><strong>Fix:</strong> Describe your audience and goal:
+&quot;I'm presenting to skeptical executives who hate fluff. Which persona?&quot;
+Scout will recommend the right one.</p>
+<hr>
+<h2 id="file-checklist-for-each-session">File Checklist for Each Session</h2>
+<p>When starting a review or rewrite, attach:</p>
+<ul>
+<li><input type="checkbox" id="checkbox0"><label for="checkbox0"></label><strong>The persona file</strong> (e.g., <code>02-COMMANDER-SAM-PERSONA.md</code>)</li>
+<li><input type="checkbox" id="checkbox1"><label for="checkbox1"></label><strong>REVIEW-DOCUMENT.md</strong> or <strong>REWRITE-DOCUMENT.md</strong> (the master prompt)</li>
+<li><input type="checkbox" id="checkbox2"><label for="checkbox2"></label><strong>Your document</strong> (pptx, docx, md, pdf, or paste text directly)</li>
+</ul>
+<p>Optional but helpful:</p>
+<ul>
+<li><input type="checkbox" id="checkbox3"><label for="checkbox3">Context files (background docs, previous versions, audience description)</label></li>
+</ul>
+<hr>
+<h2 id="remember">Remember</h2>
+<ul>
+<li><strong>Reviews</strong> tell you what's wrong and how to fix it</li>
+<li><strong>Rewrites</strong> give you a finished product in the persona's voice</li>
+<li><strong>Personas stay in character</strong> for follow-up questions</li>
+<li><strong>Facts are sacred</strong> — Scout never invents data</li>
+<li><strong>Iterate freely</strong> — &quot;fix this, then review again&quot; workflows are encouraged</li>
+</ul>
+<hr>
+<p><strong>Ready to start?</strong></p>
+<p>Pick a persona. Attach your document. Type &quot;review this&quot; or &quot;rewrite this.&quot; Scout handles the rest.</p>
+
+</body>
+</html>
