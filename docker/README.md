@@ -67,11 +67,24 @@ Or run the image directly:
 docker run --rm -p 3001:3001 sam-studio:latest
 ```
 
-llama3.1:8b runs acceptably on CPU; for faster inference, pass GPUs through to the
-bundled Ollama:
+llama3.1:8b runs acceptably on CPU, so no GPU flag is needed. For faster
+inference you can pass a GPU through to the bundled Ollama:
 
 ```bash
+# NVIDIA only — requires the NVIDIA Container Toolkit on the host.
 docker run --rm --gpus all -p 3001:3001 sam-studio:latest
+```
+
+`--gpus all` is **NVIDIA-specific**; on a host without an NVIDIA GPU + toolkit it
+fails with `failed to discover GPU vendor from CDI: no known GPU vendor found` —
+just drop the flag to run CPU-only. For an **AMD ROCm** GPU you instead pass the
+device nodes (and the image would need the ROCm Ollama build):
+
+```bash
+docker run --rm -p 3001:3001 \
+  --device /dev/kfd --device /dev/dri \
+  --group-add video --group-add render \
+  sam-studio:latest
 ```
 
 ## Configuration
