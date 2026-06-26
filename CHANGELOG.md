@@ -47,6 +47,12 @@ this project is pre-1.0 and not yet versioned, so dated entries are used.
   (keeping the review reports it reads for findings).
 
 ### Added
+- **Optional AMD ROCm GPU support for the Docker image.** Build with
+  `--build-arg OLLAMA_ROCM=true` to overlay AMD's ROCm libraries into the bundled
+  Ollama; run with `--device /dev/kfd --device /dev/dri` and the host's
+  `render`/`video` GIDs to offload inference onto an AMD GPU. Verified on an
+  RX 9070 (gfx1201): all 33 layers of llama3.1:8b load into VRAM. Default builds
+  remain CPU/NVIDIA and are unaffected.
 - **Windows / Azure WSL2 run documentation.** Added instructions to `README.md` for setting up and running the application suite on Windows Azure Virtual Desktop via WSL2.
 - **Prod / Rpod mode shortcuts and auto-build.** Added support for `prod`, `rpod`, and `--rpod` flags to `web/run.sh`. If the production `dist/` directory does not exist, the script automatically triggers a production build. It also provides port-forwarding documentation output on startup for easier external access.
 - **Docker package.** `docker/` ships a single, self-contained image

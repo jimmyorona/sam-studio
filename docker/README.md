@@ -77,15 +77,28 @@ docker run --rm --gpus all -p 3001:3001 sam-studio:latest
 
 `--gpus all` is **NVIDIA-specific**; on a host without an NVIDIA GPU + toolkit it
 fails with `failed to discover GPU vendor from CDI: no known GPU vendor found` —
-just drop the flag to run CPU-only. For an **AMD ROCm** GPU you instead pass the
-device nodes (and the image would need the ROCm Ollama build):
+just drop the flag to run CPU-only.
+
+### AMD GPU (ROCm)
+Build with `--build-arg OLLAMA_ROCM=true` to overlay the AMD ROCm libraries into
+the bundled Ollama, then pass the GPU device nodes at runtime:
 
 ```bash
+docker build --build-arg OLLAMA_ROCM=true -f docker/Dockerfile -t sam-studio:rocm .
+
 docker run --rm -p 3001:3001 \
   --device /dev/kfd --device /dev/dri \
-  --group-add video --group-add render \
-  sam-studio:latest
+  --group-add "$(getent group render | cut -d: -f3)" \
+  --group-add "$(getent group video  | cut -d: -f3)" \
+  sam-studio:rocm
 ```
+
+`--group-add` must use the **host's** numeric `render`/`video` GIDs (shown above)
+so the container's `node` user can reach the devices. Verified on an RX 9070
+(gfx1201 / RDNA4): Ollama's bundled ROCm v7 detects the GPU and offloads all 33
+layers of llama3.1:8b into VRAM. If your GPU's `gfx` target isn't supported by the
+bundled ROCm, set `HSA_OVERRIDE_GFX_VERSION` (e.g. `-e HSA_OVERRIDE_GFX_VERSION=11.0.0`)
+to the nearest supported arch.
 
 ## Configuration
 

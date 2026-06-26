@@ -71,9 +71,20 @@ RUN npm install -g @marp-team/marp-cli
 # Bundle Ollama (the local model backend) into the image. Uses the official
 # linux-amd64 release tarball (zstd-compressed) -> /usr/bin/ollama
 # (+ /usr/lib/ollama for GPU libs). For arm64 hosts swap in ollama-linux-arm64.tar.zst.
+#
+# Set --build-arg OLLAMA_ROCM=true to also overlay the AMD ROCm libraries, for
+# running the bundled Ollama on an AMD GPU (pass --device /dev/kfd --device
+# /dev/dri at runtime). This noticeably enlarges the image; leave false for the
+# default CPU / NVIDIA image.
+ARG OLLAMA_ROCM=false
 RUN curl -fsSL https://ollama.com/download/ollama-linux-amd64.tar.zst -o /tmp/ollama.tar.zst \
     && tar -C /usr --zstd -xf /tmp/ollama.tar.zst \
-    && rm /tmp/ollama.tar.zst
+    && rm /tmp/ollama.tar.zst \
+    && if [ "$OLLAMA_ROCM" = "true" ]; then \
+         curl -fsSL https://ollama.com/download/ollama-linux-amd64-rocm.tar.zst -o /tmp/ollama-rocm.tar.zst \
+         && tar -C /usr --zstd -xf /tmp/ollama-rocm.tar.zst \
+         && rm /tmp/ollama-rocm.tar.zst; \
+       fi
 
 # Bake the default model into the image. Models are stored at a fixed path (not a
 # user home) so the build-time pull and the runtime `node` user agree on the
