@@ -48,7 +48,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       libreoffice-impress libreoffice-writer \
       poppler-utils ffmpeg chromium \
       fonts-liberation fonts-dejavu-core fonts-noto-core \
-      ca-certificates curl \
+      ca-certificates curl zstd \
     && rm -rf /var/lib/apt/lists/*
 
 # Python deps live in an isolated venv that is first on PATH, so the server's
@@ -69,11 +69,11 @@ ENV PUPPETEER_SKIP_DOWNLOAD=true \
 RUN npm install -g @marp-team/marp-cli
 
 # Bundle Ollama (the local model backend) into the image. Uses the official
-# linux-amd64 release tarball -> /usr/bin/ollama (+ /usr/lib/ollama for GPU libs).
-# For arm64 hosts swap the URL for ollama-linux-arm64.tgz.
-RUN curl -fsSL https://ollama.com/download/ollama-linux-amd64.tgz -o /tmp/ollama.tgz \
-    && tar -C /usr -xzf /tmp/ollama.tgz \
-    && rm /tmp/ollama.tgz
+# linux-amd64 release tarball (zstd-compressed) -> /usr/bin/ollama
+# (+ /usr/lib/ollama for GPU libs). For arm64 hosts swap in ollama-linux-arm64.tar.zst.
+RUN curl -fsSL https://ollama.com/download/ollama-linux-amd64.tar.zst -o /tmp/ollama.tar.zst \
+    && tar -C /usr --zstd -xf /tmp/ollama.tar.zst \
+    && rm /tmp/ollama.tar.zst
 
 # Bake the default model into the image. Models are stored at a fixed path (not a
 # user home) so the build-time pull and the runtime `node` user agree on the
