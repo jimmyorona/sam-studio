@@ -114,10 +114,10 @@ function firstSummaryLine(content) {
 export async function loadModels() {
   store.modelError = '';
   if (store.settings.provider === 'gemini') {
-    const geminiModels = ['gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-1.5-flash', 'gemini-1.5-pro'];
+    const geminiModels = ['gemini-3-flash-preview', 'gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-1.5-flash', 'gemini-1.5-pro'];
     store.models = geminiModels;
     if (!geminiModels.includes(store.settings.model)) {
-      store.settings.model = 'gemini-2.5-flash';
+      store.settings.model = 'gemini-3-flash-preview';
     }
     return;
   }

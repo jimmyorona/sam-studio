@@ -7,6 +7,9 @@ this project is pre-1.0 and not yet versioned, so dated entries are used.
 ## [Unreleased]
 
 ### Added
+- **`gemini-3-flash-preview` model option.** Added `gemini-3-flash-preview` to the
+  Gemini model list (and made it the default Gemini selection) so it can be picked
+  from the model dropdown when the provider is Google Gemini.
 - **Google Gemini API support.** Integrated Google Gemini API as a first-class model provider alongside local Ollama. Added Model Provider configuration select and Gemini API Key input to Settings Drawer, updated store and left config panel, and modified Python subprocess bridges (`reviewer_synth.py`, `pptx_to_video.py`) to route requests to Gemini generateContent REST endpoints with stateful role mapping.
 
 ### Fixed
