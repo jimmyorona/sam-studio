@@ -1,0 +1,372 @@
+{
+  ".vscode/settings.json": {
+    "mtime": 1782430987.8243294,
+    "ast_hash": "4b74af670eb37ac993aa50c97ec5cd66",
+    "semantic_hash": "4b74af670eb37ac993aa50c97ec5cd66"
+  },
+  "docker/entrypoint.sh": {
+    "mtime": 1782142642.5782373,
+    "ast_hash": "360e26a90df392551d2728808401fa40",
+    "semantic_hash": "360e26a90df392551d2728808401fa40"
+  },
+  "scripts/extract.py": {
+    "mtime": 1781741394.0829725,
+    "ast_hash": "e26c9e4d1400bf962b9c86e37e1ebf06",
+    "semantic_hash": "e26c9e4d1400bf962b9c86e37e1ebf06"
+  },
+  "scripts/make_video.sh": {
+    "mtime": 1781741394.0836453,
+    "ast_hash": "e5551a32d73f164d29acfdb345c9d707",
+    "semantic_hash": "e5551a32d73f164d29acfdb345c9d707"
+  },
+  "scripts/pptx_to_video.py": {
+    "mtime": 1782142653.419361,
+    "ast_hash": "31bbe902a2aaaefef7c90663e79559c9",
+    "semantic_hash": "31bbe902a2aaaefef7c90663e79559c9"
+  },
+  "scripts/reviewer_synth.py": {
+    "mtime": 1782142653.4195185,
+    "ast_hash": "68b1f0c8a090a4504ed6837fd5fefb85",
+    "semantic_hash": "68b1f0c8a090a4504ed6837fd5fefb85"
+  },
+  "scripts/supertonic_synth.py": {
+    "mtime": 1781741394.0836453,
+    "ast_hash": "5279bb2afdec735b987cfd34888d3bcf",
+    "semantic_hash": "5279bb2afdec735b987cfd34888d3bcf"
+  },
+  "web/package.json": {
+    "mtime": 1781741394.0850747,
+    "ast_hash": "71bc600042714b9b487753b3850debdd",
+    "semantic_hash": "71bc600042714b9b487753b3850debdd"
+  },
+  "web/run.sh": {
+    "mtime": 1782430987.8261516,
+    "ast_hash": "2c1ed8af70ef3b69df00031b5cfcdd0b",
+    "semantic_hash": "2c1ed8af70ef3b69df00031b5cfcdd0b"
+  },
+  "web/server/index.js": {
+    "mtime": 1782142653.4198058,
+    "ast_hash": "4b32a08a5843fe2b9ccdbfd0bca59377",
+    "semantic_hash": "4b32a08a5843fe2b9ccdbfd0bca59377"
+  },
+  "web/setup.sh": {
+    "mtime": 1781741394.0850747,
+    "ast_hash": "ef9aea032fddd9ede2bab953e562ba4f",
+    "semantic_hash": "ef9aea032fddd9ede2bab953e562ba4f"
+  },
+  "web/src/App.vue": {
+    "mtime": 1781834632.498577,
+    "ast_hash": "6cfe35fb4c31ad1568aa64faa0ca02b9",
+    "semantic_hash": "6cfe35fb4c31ad1568aa64faa0ca02b9"
+  },
+  "web/src/components/LeftPanel.vue": {
+    "mtime": 1782142653.4199197,
+    "ast_hash": "536e1893e5c7d0f085f1c01549c9c846",
+    "semantic_hash": "536e1893e5c7d0f085f1c01549c9c846"
+  },
+  "web/src/components/Markdown.vue": {
+    "mtime": 1781741394.0858457,
+    "ast_hash": "3534887014b3f3aca03445fed2c69cd9",
+    "semantic_hash": "3534887014b3f3aca03445fed2c69cd9"
+  },
+  "web/src/components/NarrateOutput.vue": {
+    "mtime": 1781741394.0858457,
+    "ast_hash": "5c3a1b14133f0c3e6f507427a10b4b72",
+    "semantic_hash": "5c3a1b14133f0c3e6f507427a10b4b72"
+  },
+  "web/src/components/ProduceOutput.vue": {
+    "mtime": 1781741394.0858457,
+    "ast_hash": "3f83e7e2895f8c756ce1c0ee9f0061b5",
+    "semantic_hash": "3f83e7e2895f8c756ce1c0ee9f0061b5"
+  },
+  "web/src/components/ReviewOutput.vue": {
+    "mtime": 1781741394.0858457,
+    "ast_hash": "5373152652fb649ed6f808e8c1c7078b",
+    "semantic_hash": "5373152652fb649ed6f808e8c1c7078b"
+  },
+  "web/src/components/RewriteOutput.vue": {
+    "mtime": 1781834632.4987593,
+    "ast_hash": "c07cb776a6bec8e4748c3e9fccbbcea3",
+    "semantic_hash": "c07cb776a6bec8e4748c3e9fccbbcea3"
+  },
+  "web/src/components/SettingsDrawer.vue": {
+    "mtime": 1782142653.4199994,
+    "ast_hash": "7687d25dc98953e871a226abdf048fb7",
+    "semantic_hash": "7687d25dc98953e871a226abdf048fb7"
+  },
+  "web/src/main.js": {
+    "mtime": 1781741394.0858457,
+    "ast_hash": "a4094eb0ecaac3784cc09e7be5788e5c",
+    "semantic_hash": "a4094eb0ecaac3784cc09e7be5788e5c"
+  },
+  "web/src/store.js": {
+    "mtime": 1782684178.2359157,
+    "ast_hash": "f511aa1c63b603ae301876635bcc4772",
+    "semantic_hash": "f511aa1c63b603ae301876635bcc4772"
+  },
+  "web/vite.config.js": {
+    "mtime": 1781741394.0858457,
+    "ast_hash": "6343dbf848d5f4ce09a8ca735b7f0f12",
+    "semantic_hash": "6343dbf848d5f4ce09a8ca735b7f0f12"
+  },
+  ".claude/agents/persona-reviewer.md": {
+    "mtime": 1781741394.0749724,
+    "ast_hash": "535de2d694fc95731664fc78b0d7c63d",
+    "semantic_hash": "535de2d694fc95731664fc78b0d7c63d"
+  },
+  ".claude/skills/review/SKILL.md": {
+    "mtime": 1781741394.0761533,
+    "ast_hash": "761ba5576dab422cb26a23b0216771ec",
+    "semantic_hash": "761ba5576dab422cb26a23b0216771ec"
+  },
+  "CHANGELOG.md": {
+    "mtime": 1782684636.989681,
+    "ast_hash": "80c267b353bfb3786b39f5cd0788b5db",
+    "semantic_hash": "80c267b353bfb3786b39f5cd0788b5db"
+  },
+  "CLAUDE.md": {
+    "mtime": 1781741394.0761533,
+    "ast_hash": "42ff9d633685c954b8c15b5a84ca8c10",
+    "semantic_hash": "42ff9d633685c954b8c15b5a84ca8c10"
+  },
+  "README.md": {
+    "mtime": 1782430987.8246286,
+    "ast_hash": "9f0fdf37953bb20f0b0d4baebf0ea143",
+    "semantic_hash": "9f0fdf37953bb20f0b0d4baebf0ea143"
+  },
+  "SAM-STUDIO-QRG.html": {
+    "mtime": 1782430987.824802,
+    "ast_hash": "256c8b2bee0dd9ebef7bfe6b9e2b67b8",
+    "semantic_hash": "256c8b2bee0dd9ebef7bfe6b9e2b67b8"
+  },
+  "SAM-STUDIO-QRG.md": {
+    "mtime": 1782430987.8249025,
+    "ast_hash": "2060a1bd00768cf78022bcfbe205e7ae",
+    "semantic_hash": "2060a1bd00768cf78022bcfbe205e7ae"
+  },
+  "SAM-STUDIO-SCOUT-SLIDES.html": {
+    "mtime": 1782430987.8255727,
+    "ast_hash": "043fa5714804a8ab3e72eed72af54516",
+    "semantic_hash": "043fa5714804a8ab3e72eed72af54516"
+  },
+  "SAM-STUDIO-SCOUT-SUMMARY.html": {
+    "mtime": 1782430987.8257225,
+    "ast_hash": "d15f8e44aaae933cc5c62a5d6b896cc1",
+    "semantic_hash": "d15f8e44aaae933cc5c62a5d6b896cc1"
+  },
+  "SAM-STUDIO-SCOUT-SUMMARY.md": {
+    "mtime": 1782430987.825823,
+    "ast_hash": "47df707f3b4c46311dfc18536dd59ffd",
+    "semantic_hash": "47df707f3b4c46311dfc18536dd59ffd"
+  },
+  "docker/README.md": {
+    "mtime": 1782445995.906347,
+    "ast_hash": "700d10b4c451028f3adbbdacf6471da8",
+    "semantic_hash": "700d10b4c451028f3adbbdacf6471da8"
+  },
+  "docs/ARCHITECTURE.md": {
+    "mtime": 1781741394.0761533,
+    "ast_hash": "67c59997aaf3e982243a5fc2a06b2e35",
+    "semantic_hash": "67c59997aaf3e982243a5fc2a06b2e35"
+  },
+  "docs/MERGE-PROMPT.md": {
+    "mtime": 1781741394.0765927,
+    "ast_hash": "26a60885a65ecbad645a2ea6342e699c",
+    "semantic_hash": "26a60885a65ecbad645a2ea6342e699c"
+  },
+  "docs/PROMPTS.md": {
+    "mtime": 1781741394.0765927,
+    "ast_hash": "b62c153d8a13ba269dd02b4645f4b1ec",
+    "semantic_hash": "b62c153d8a13ba269dd02b4645f4b1ec"
+  },
+  "docs/SCOUT-MERGE-PLAN.md": {
+    "mtime": 1781741394.0765927,
+    "ast_hash": "1a8c70c52ce408e875e4739e19d2c0ba",
+    "semantic_hash": "1a8c70c52ce408e875e4739e19d2c0ba"
+  },
+  "docs/SCREEN-LAYOUT-PROMPT.md": {
+    "mtime": 1781741394.0765927,
+    "ast_hash": "8df4247a2a8aaa09a79b9b9be66a6698",
+    "semantic_hash": "8df4247a2a8aaa09a79b9b9be66a6698"
+  },
+  "docs/UI-WALKTHROUGH.md": {
+    "mtime": 1781741394.0765927,
+    "ast_hash": "f8721a13b61c411606fc40257d274ef5",
+    "semantic_hash": "f8721a13b61c411606fc40257d274ef5"
+  },
+  "docs/ui-deck.html": {
+    "mtime": 1781741394.0765927,
+    "ast_hash": "4a29fb39fc9d62dd607bb9ae0785d2ef",
+    "semantic_hash": "4a29fb39fc9d62dd607bb9ae0785d2ef"
+  },
+  "personas/01-SAM-PERSONA.md": {
+    "mtime": 1782142653.4173818,
+    "ast_hash": "094807466627731618d4fb9f73e911b5",
+    "semantic_hash": "094807466627731618d4fb9f73e911b5"
+  },
+  "personas/02-COMMANDER-SAM-PERSONA.md": {
+    "mtime": 1782142653.4175026,
+    "ast_hash": "ccaeb60ba4b787cc6afee51e58f6ac79",
+    "semantic_hash": "ccaeb60ba4b787cc6afee51e58f6ac79"
+  },
+  "personas/09-EMPATHETIC-HOLISTIC-PERSONA.md": {
+    "mtime": 1782142653.4176042,
+    "ast_hash": "7fa66309ab9653116a24710579ac8ca2",
+    "semantic_hash": "7fa66309ab9653116a24710579ac8ca2"
+  },
+  "personas/10-ENERGETIC-COLLABORATIVE-PERSONA.md": {
+    "mtime": 1782142653.417705,
+    "ast_hash": "193c60a325549a64c4ecb9b8d5927dcb",
+    "semantic_hash": "193c60a325549a64c4ecb9b8d5927dcb"
+  },
+  "personas/11-SKEPTIC-PROOF-ANALYST-PERSONA.md": {
+    "mtime": 1782142653.4178083,
+    "ast_hash": "df7e628be28d9ec3771c12f2fa0242ad",
+    "semantic_hash": "df7e628be28d9ec3771c12f2fa0242ad"
+  },
+  "personas/12-EXECUTIVE-BRIEFING-PERSONA.md": {
+    "mtime": 1782142653.4179065,
+    "ast_hash": "e99d1133e4620dcb1466d8db9e2e8d37",
+    "semantic_hash": "e99d1133e4620dcb1466d8db9e2e8d37"
+  },
+  "personas/13-DOCUMENTARY-NARRATOR-PERSONA.md": {
+    "mtime": 1782142653.4180036,
+    "ast_hash": "91c6086b0610c560693cec9ea8ec0815",
+    "semantic_hash": "91c6086b0610c560693cec9ea8ec0815"
+  },
+  "personas/14-TEACHER-EXPLAINER-PERSONA.md": {
+    "mtime": 1782142653.4181032,
+    "ast_hash": "ac43c307a65b82bc17ff7c40a8656f4a",
+    "semantic_hash": "ac43c307a65b82bc17ff7c40a8656f4a"
+  },
+  "personas/15-SALES-PITCH-PERSONA.md": {
+    "mtime": 1782142653.4182012,
+    "ast_hash": "aa3a92c74671d64e3b4c0c74eb54d10b",
+    "semantic_hash": "aa3a92c74671d64e3b4c0c74eb54d10b"
+  },
+  "personas/16-JOURNALIST-INVESTIGATIVE-PERSONA.md": {
+    "mtime": 1782142653.4183002,
+    "ast_hash": "3384b9cb552c4cbb72cccee1b6478710",
+    "semantic_hash": "3384b9cb552c4cbb72cccee1b6478710"
+  },
+  "personas/17-WORKSHOP-FACILITATOR-PERSONA.md": {
+    "mtime": 1782142653.4183998,
+    "ast_hash": "7aa01a255e2593f566e77e3a54aeb476",
+    "semantic_hash": "7aa01a255e2593f566e77e3a54aeb476"
+  },
+  "personas/18-LEGAL-COMPLIANCE-PERSONA.md": {
+    "mtime": 1782142653.4185023,
+    "ast_hash": "0e88b890f0aca5e2249e3ad6d6090259",
+    "semantic_hash": "0e88b890f0aca5e2249e3ad6d6090259"
+  },
+  "personas/19-SCRUM-MASTER-PERSONA.md": {
+    "mtime": 1782142653.4185855,
+    "ast_hash": "c44484c15c403056921e10821359697f",
+    "semantic_hash": "c44484c15c403056921e10821359697f"
+  },
+  "personas/20-PRODUCT-MANAGER-PERSONA.md": {
+    "mtime": 1782142653.41867,
+    "ast_hash": "41470432e68b3b9ac52932acb06925b9",
+    "semantic_hash": "41470432e68b3b9ac52932acb06925b9"
+  },
+  "personas/21-SECURITY-AUDITOR-PERSONA.md": {
+    "mtime": 1782142653.41875,
+    "ast_hash": "cacc66abf4d9b09687f841e71c479f54",
+    "semantic_hash": "cacc66abf4d9b09687f841e71c479f54"
+  },
+  "personas/22-DESIGN-CRITIQUE-PERSONA.md": {
+    "mtime": 1782142653.4188335,
+    "ast_hash": "3223545232e66dd441c4ee9370904538",
+    "semantic_hash": "3223545232e66dd441c4ee9370904538"
+  },
+  "personas/23-FINANCIAL-CONTROLLER-PERSONA.md": {
+    "mtime": 1782142653.4189098,
+    "ast_hash": "30f5c12b2747438b21fd630aadaacb68",
+    "semantic_hash": "30f5c12b2747438b21fd630aadaacb68"
+  },
+  "personas/24-CHANGE-MANAGER-PERSONA.md": {
+    "mtime": 1782142653.418988,
+    "ast_hash": "2b29489871bd07d3ed2feec53dd425e0",
+    "semantic_hash": "2b29489871bd07d3ed2feec53dd425e0"
+  },
+  "personas/PERSONA-README.md": {
+    "mtime": 1782142653.4191508,
+    "ast_hash": "ca5601ea40f56f29bb294d24485f261e",
+    "semantic_hash": "ca5601ea40f56f29bb294d24485f261e"
+  },
+  "video-production/02-SCENE-EMOTION-MAP.md": {
+    "mtime": 1781741394.0836453,
+    "ast_hash": "b3bd083a185ad46bce205baf69f12821",
+    "semantic_hash": "b3bd083a185ad46bce205baf69f12821"
+  },
+  "video-production/03-NARRATION-SCRIPT.md": {
+    "mtime": 1781741394.0842862,
+    "ast_hash": "6886fc45287e629aae49f57b72525930",
+    "semantic_hash": "6886fc45287e629aae49f57b72525930"
+  },
+  "video-production/04-TIMESTAMPED-SCRIPT.md": {
+    "mtime": 1781741394.0842862,
+    "ast_hash": "5b9cbef74940692ae6c0a526e220fda9",
+    "semantic_hash": "5b9cbef74940692ae6c0a526e220fda9"
+  },
+  "video-production/05-MUSIC-PROMPT-PACK.md": {
+    "mtime": 1781741394.0842862,
+    "ast_hash": "aca7eb1f14da99e897522edf62aad46d",
+    "semantic_hash": "aca7eb1f14da99e897522edf62aad46d"
+  },
+  "video-production/06-STORYBOARD.md": {
+    "mtime": 1781741394.0842862,
+    "ast_hash": "80dd22aaecc32255a956f5b2c26c570c",
+    "semantic_hash": "80dd22aaecc32255a956f5b2c26c570c"
+  },
+  "video-production/07-ACTOR-DIRECTION-PACING.md": {
+    "mtime": 1781741394.0842862,
+    "ast_hash": "3f908b8b334675c5ffe19c5461dfbb1f",
+    "semantic_hash": "3f908b8b334675c5ffe19c5461dfbb1f"
+  },
+  "video-production/08-PRODUCTION-SETTINGS.md": {
+    "mtime": 1781741394.0842862,
+    "ast_hash": "2757347afbd827178b1b2c4a0d5ebc2f",
+    "semantic_hash": "2757347afbd827178b1b2c4a0d5ebc2f"
+  },
+  "web/README.md": {
+    "mtime": 1781741394.0850747,
+    "ast_hash": "41040a77e98b158f8b532dd1cf8f4af6",
+    "semantic_hash": "41040a77e98b158f8b532dd1cf8f4af6"
+  },
+  "web/index.html": {
+    "mtime": 1781741394.0850747,
+    "ast_hash": "b4022efa84a3217b4afd8cc3ab7bf658",
+    "semantic_hash": "b4022efa84a3217b4afd8cc3ab7bf658"
+  },
+  "SAM-STUDIO-QRG.pdf": {
+    "mtime": 1782430987.825384,
+    "ast_hash": "01e46da567bde96f130cc5f0810740a5",
+    "semantic_hash": "01e46da567bde96f130cc5f0810740a5"
+  },
+  "docs/ARCHITECTURE.pdf": {
+    "mtime": 1781834632.4931035,
+    "ast_hash": "77f9d54e76e462cbd85d830ee773b93d",
+    "semantic_hash": "77f9d54e76e462cbd85d830ee773b93d"
+  },
+  "docs/UI-WALKTHROUGH.pdf": {
+    "mtime": 1781834632.4978843,
+    "ast_hash": "e7f908d8391033bb948a0725fc92be67",
+    "semantic_hash": "e7f908d8391033bb948a0725fc92be67"
+  },
+  "docs/ui/01-review-empty.png": {
+    "mtime": 1781741394.0769725,
+    "ast_hash": "ab9f5ac16fbdf027d3ffc168b085d23f",
+    "semantic_hash": "ab9f5ac16fbdf027d3ffc168b085d23f"
+  },
+  "docs/ui/02-review-config.png": {
+    "mtime": 1781741394.0769725,
+    "ast_hash": "31ccb9cda536f1f461b302bc812e8c3b",
+    "semantic_hash": "31ccb9cda536f1f461b302bc812e8c3b"
+  },
+  "docs/ui/03-review-running.png": {
+    "mtime": 1781741394.0769725,
+    "ast_hash": "f4715e7778c397e60046003d25161b77",
+    "semantic_hash": "f4715e7778c397e60046003d25161b77"
+  }
+}

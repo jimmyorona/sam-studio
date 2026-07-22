@@ -13,6 +13,7 @@ web/outputs/
 outputs/
 reviews/*
 !reviews/.gitkeep
+grahphify-out/*
 
 # OS
 .DS_Store
