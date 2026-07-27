@@ -7,6 +7,13 @@ this project is pre-1.0 and not yet versioned, so dated entries are used.
 ## [Unreleased]
 
 ### Added
+- **HTML upload support for Review/Rewrite.** `.html`/`.htm` files are now
+  accepted alongside PPTX/PDF/DOCX/MD/TXT. A new stdlib-based extractor
+  (`extract.extract_html`) strips scripts/styles, keeps the heading structure,
+  and — when the document contains multiple `<section>` elements (reveal.js /
+  Marp exports) — numbers them as `## Slide N` to match the PPTX/PDF heading
+  convention. Narrate/Produce remain PPTX/MD-only (the video pipeline renders
+  slide images).
 - **`gemini-3-flash-preview` model option.** Added `gemini-3-flash-preview` to the
   Gemini model list (and made it the default Gemini selection) so it can be picked
   from the model dropdown when the provider is Google Gemini.

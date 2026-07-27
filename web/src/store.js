@@ -4,7 +4,7 @@
 import { reactive } from 'vue';
 
 const NARRATE_EXTS = ['.pptx', '.md'];                                   // converter pipeline
-const REVIEW_EXTS = ['.pptx', '.pdf', '.docx', '.md', '.txt'];          // reviewer bridge
+const REVIEW_EXTS = ['.pptx', '.pdf', '.docx', '.html', '.htm', '.md', '.txt'];  // reviewer bridge
 
 function loadSettings() {
   try {

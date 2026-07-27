@@ -45,7 +45,7 @@ PERSONAS_DIR = ROOT / "personas"
 REVIEWS_DIR = ROOT / "reviews"
 DEFAULT_OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://localhost:11434")
 MAX_CONCURRENT_REVIEWS = int(os.environ.get("REVIEW_CONCURRENCY", "3"))
-SUPPORTED_EXTS = {".pptx", ".pdf", ".docx", ".doc", ".odt", ".md", ".markdown", ".txt"}
+SUPPORTED_EXTS = {".pptx", ".pdf", ".docx", ".doc", ".odt", ".html", ".htm", ".md", ".markdown", ".txt"}
 
 sys.path.insert(0, str(ROOT / "scripts"))
 import extract  # noqa: E402  (reuses the CLI extractors)
@@ -207,6 +207,8 @@ def extract_content(path: Path) -> str:
         body = extract.extract_pdf(path)
     elif ext in (".docx", ".doc", ".odt"):
         body = extract.extract_docx(path)
+    elif ext in (".html", ".htm"):
+        body = extract.extract_html(path)
     else:
         body = path.read_text(encoding="utf-8", errors="replace")
     return f"# Extracted content: {path.name}\n\n{body}"

@@ -1304,7 +1304,7 @@ app.post('/api/jobs/:id/synthesize', async (req, res) => {
 // scripts/reviewer_synth.py (subprocess), reusing the same jobs Map + SSE infra.
 // ===========================================================================
 
-const REVIEW_EXTS = ['.pptx', '.pdf', '.docx', '.doc', '.odt', '.md', '.markdown', '.txt'];
+const REVIEW_EXTS = ['.pptx', '.pdf', '.docx', '.doc', '.odt', '.html', '.htm', '.md', '.markdown', '.txt'];
 
 function reviewFileExtension(filename) {
   const lower = (filename || '').toLowerCase();

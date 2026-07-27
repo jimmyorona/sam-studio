@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Extract reviewable text from PPTX, PDF, DOCX, Markdown, or plain-text files.
+"""Extract reviewable text from PPTX, PDF, DOCX, HTML, Markdown, or plain-text files.
 
 Output is markdown on stdout, structured with per-slide / per-page headings so
 reviewers can reference locations precisely.
@@ -11,8 +11,10 @@ Dependencies (all system-level, already present on this machine):
     PPTX -> python-pptx
     PDF  -> pdftotext (poppler-utils)
     DOCX -> libreoffice --headless
+    HTML -> stdlib html.parser
 """
 
+import re
 import subprocess
 import sys
 import tempfile
@@ -72,6 +74,72 @@ def extract_docx(path: Path) -> str:
         return txt.read_text(encoding="utf-8", errors="replace").strip()
 
 
+def extract_html(path: Path) -> str:
+    """HTML slide decks (reveal.js / Marp exports) or plain HTML pages.
+
+    When the document contains multiple <section> elements they are treated as
+    slides and numbered, matching the PPTX/PDF heading convention; otherwise the
+    page's own heading structure is kept.
+    """
+    from html.parser import HTMLParser
+
+    raw = path.read_text(encoding="utf-8", errors="replace")
+    slide_mode = len(re.findall(r"<section\b", raw, re.IGNORECASE)) >= 2
+
+    class TextExtractor(HTMLParser):
+        SKIP = {"script", "style", "head", "template", "noscript", "svg"}
+        BLOCK = {"p", "div", "ul", "ol", "table", "tr", "section", "article",
+                 "header", "footer", "aside", "blockquote", "pre", "br"}
+        HEADINGS = {"h1", "h2", "h3", "h4", "h5", "h6"}
+
+        def __init__(self):
+            super().__init__(convert_charrefs=True)
+            self.parts = []
+            self.skip_depth = 0
+            self.slide_no = 0
+
+        def handle_starttag(self, tag, attrs):
+            if tag in self.SKIP:
+                self.skip_depth += 1
+                return
+            if self.skip_depth:
+                return
+            if slide_mode and tag == "section":
+                self.slide_no += 1
+                self.parts.append(f"\n\n## Slide {self.slide_no}\n\n")
+            elif tag in self.HEADINGS:
+                # In slide mode, demote headings below the "## Slide N" level.
+                level = min(int(tag[1]) + (2 if slide_mode else 0), 6)
+                self.parts.append("\n\n" + "#" * level + " ")
+            elif tag == "li":
+                self.parts.append("\n- ")
+            elif tag in self.BLOCK:
+                self.parts.append("\n")
+
+        def handle_endtag(self, tag):
+            if tag in self.SKIP:
+                if self.skip_depth:
+                    self.skip_depth -= 1
+            elif tag in self.HEADINGS or tag in self.BLOCK or tag == "li":
+                self.parts.append("\n")
+
+        def handle_data(self, data):
+            if self.skip_depth:
+                return
+            text = " ".join(data.split())
+            if text:
+                self.parts.append(text + " ")
+
+    parser = TextExtractor()
+    parser.feed(raw)
+    parser.close()
+    text = "".join(parser.parts)
+    text = re.sub(r"[ \t]+", " ", text)
+    text = re.sub(r" ?\n ?", "\n", text)
+    text = re.sub(r"\n{3,}", "\n\n", text)
+    return text.strip()
+
+
 def main() -> int:
     if len(sys.argv) != 2:
         print(__doc__, file=sys.stderr)
@@ -88,6 +156,8 @@ def main() -> int:
         content = extract_pdf(path)
     elif ext in (".docx", ".doc", ".odt"):
         content = extract_docx(path)
+    elif ext in (".html", ".htm"):
+        content = extract_html(path)
     elif ext in (".md", ".markdown", ".txt"):
         content = path.read_text(encoding="utf-8", errors="replace")
     else:

@@ -10,9 +10,9 @@
           @click="$refs.fileInput.click()"
         >
           <div class="dz-title">Drop file here or click to browse</div>
-          <div class="dz-sub">PPTX · PDF · DOCX · MD · TXT</div>
+          <div class="dz-sub">PPTX · PDF · DOCX · HTML · MD · TXT</div>
           <input ref="fileInput" type="file" hidden
-                 accept=".pptx,.pdf,.docx,.md,.txt" @change="onPick" />
+                 accept=".pptx,.pdf,.docx,.html,.htm,.md,.txt" @change="onPick" />
         </div>
         <div class="or">— OR —</div>
         <textarea v-model="store.pasteText" class="paste" rows="3" placeholder="Paste text…"></textarea>
