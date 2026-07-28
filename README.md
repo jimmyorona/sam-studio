@@ -25,8 +25,8 @@ It merges two former projects into a single Express + Vue web app:
 | **Narrate** | Generates an editable per-slide narration script with directorial cues | `pptx_to_video.py` (phase 1) |
 | **Produce** | Synthesizes TTS and assembles a 1920×1080 H.264/AAC MP4 | `pptx_to_video.py` (phase 2) |
 
-Review/Rewrite accept PPTX, PDF, DOCX, HTML, MD, and TXT. Narrate/Produce require
-PPTX or MD (the video pipeline renders slide images).
+Review/Rewrite accept PPTX, PDF, DOCX, HTML, MD, and TXT. Narrate/Produce accept
+PPTX, MD, or HTML (HTML decks are converted to Markdown and rendered with Marp).
 
 ## Feature highlights
 

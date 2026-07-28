@@ -12,8 +12,13 @@ this project is pre-1.0 and not yet versioned, so dated entries are used.
   (`extract.extract_html`) strips scripts/styles, keeps the heading structure,
   and — when the document contains multiple `<section>` elements (reveal.js /
   Marp exports) — numbers them as `## Slide N` to match the PPTX/PDF heading
-  convention. Narrate/Produce remain PPTX/MD-only (the video pipeline renders
-  slide images).
+  convention.
+- **HTML upload support for Narrate/Produce.** `pptx_to_video.py` now accepts
+  `.html`/`.htm` decks: they are converted to Marp-ready Markdown (one `---`
+  slide break per `<section>`, or per level-1/2 heading otherwise) and then
+  follow the existing Markdown path — Marp renders the slide images and the
+  Marp theme picker applies. Server upload filter and left-panel guards
+  updated to match.
 - **`gemini-3-flash-preview` model option.** Added `gemini-3-flash-preview` to the
   Gemini model list (and made it the default Gemini selection) so it can be picked
   from the model dropdown when the provider is Google Gemini.

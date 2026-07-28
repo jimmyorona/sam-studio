@@ -36,9 +36,10 @@ Generated reports go to top-level `reviews/<doc-slug>/` (gitignored).
 
 ## Format support
 
-Review/Rewrite: PPTX, PDF, DOCX, HTML, MD, TXT. Narrate/Produce: PPTX, MD only (the
-video pipeline renders slide images). The UI disables Narrate/Produce for
-unsupported uploads — keep that guard if you touch the left panel.
+Review/Rewrite: PPTX, PDF, DOCX, HTML, MD, TXT. Narrate/Produce: PPTX, MD, HTML
+(HTML decks are converted to Markdown in `pptx_to_video.py` and rendered with
+Marp). The UI disables Narrate/Produce for unsupported uploads — keep that
+guard if you touch the left panel.
 
 ## Running & verifying
 

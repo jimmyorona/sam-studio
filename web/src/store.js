@@ -3,7 +3,7 @@
 // persists across tab switches. API helpers wrap the Express endpoints.
 import { reactive } from 'vue';
 
-const NARRATE_EXTS = ['.pptx', '.md'];                                   // converter pipeline
+const NARRATE_EXTS = ['.pptx', '.md', '.html', '.htm'];                  // converter pipeline
 const REVIEW_EXTS = ['.pptx', '.pdf', '.docx', '.html', '.htm', '.md', '.txt'];  // reviewer bridge
 
 function loadSettings() {

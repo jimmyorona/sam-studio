@@ -337,7 +337,7 @@ function makeJobId() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 }
 
-const ACCEPTED_EXTENSIONS = ['.pptx', '.md'];
+const ACCEPTED_EXTENSIONS = ['.pptx', '.md', '.html', '.htm'];
 
 function fileExtension(filename) {
   const lower = filename.toLowerCase();
@@ -362,7 +362,7 @@ const upload = multer({
   limits: { fileSize: 500 * 1024 * 1024 },
   fileFilter(req, file, cb) {
     if (fileExtension(file.originalname)) return cb(null, true);
-    cb(new Error('Only .pptx or .md files are accepted'));
+    cb(new Error('Only .pptx, .md, or .html files are accepted'));
   },
 });
 
@@ -373,7 +373,7 @@ app.use(express.json());
 // POST /api/convert  — start a conversion job
 // ---------------------------------------------------------------------------
 app.post('/api/convert', upload.single('file'), (req, res) => {
-  if (!req.file) return res.status(400).json({ error: 'No .pptx or .md file uploaded' });
+  if (!req.file) return res.status(400).json({ error: 'No .pptx, .md, or .html file uploaded' });
 
   const jobId = req._jobId;
   const {
@@ -439,7 +439,9 @@ app.post('/api/convert', upload.single('file'), (req, res) => {
 
   res.json({ jobId });
 
-  const isMarkdown = fileExtension(job.originalName) === '.md';
+  // HTML decks are converted to Markdown inside the Python script, so they
+  // take the Marp rendering path and honor --theme just like .md uploads.
+  const isMarkdown = ['.md', '.html', '.htm'].includes(fileExtension(job.originalName));
 
   function pushLog(line) {
     job.logs.push(line);
@@ -889,7 +891,7 @@ app.get('/api/elevenlabs-voices', (req, res) => {
 // POST /api/generate-music-prompt  — generate a music prompt from slide content
 // ---------------------------------------------------------------------------
 app.post('/api/generate-music-prompt', upload.single('file'), (req, res) => {
-  if (!req.file) return res.status(400).json({ error: 'No .pptx or .md file uploaded' });
+  if (!req.file) return res.status(400).json({ error: 'No .pptx, .md, or .html file uploaded' });
 
   const {
     model = 'llama3.2:3b',
@@ -1042,7 +1044,7 @@ app.post('/api/tts-preview', async (req, res) => {
 // POST /api/narrate  — Phase 1: extract + render + narrate only (no TTS/assembly)
 // ---------------------------------------------------------------------------
 app.post('/api/narrate', upload.single('file'), (req, res) => {
-  if (!req.file) return res.status(400).json({ error: 'No .pptx or .md file uploaded' });
+  if (!req.file) return res.status(400).json({ error: 'No .pptx, .md, or .html file uploaded' });
 
   const jobId = req._jobId;
   const {
@@ -1116,7 +1118,9 @@ app.post('/api/narrate', upload.single('file'), (req, res) => {
     };
   }
 
-  const isMarkdown = fileExtension(job.originalName) === '.md';
+  // HTML decks are converted to Markdown inside the Python script, so they
+  // take the Marp rendering path and honor --theme just like .md uploads.
+  const isMarkdown = ['.md', '.html', '.htm'].includes(fileExtension(job.originalName));
 
   function pushLog(line) {
     job.logs.push(line);

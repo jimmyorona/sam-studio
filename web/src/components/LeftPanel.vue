@@ -21,7 +21,7 @@
       <div v-else class="doc-confirm">
         <span class="ok">✓ {{ store.doc.name }}</span>
         <span v-if="store.doc.ext && !narrateOk && (store.mode === 'narrate' || store.mode === 'produce')" class="warn">
-          Narrate/Produce need PPTX or MD
+          Narrate/Produce need PPTX, MD, or HTML
         </span>
         <button class="x" title="Clear" @click="clearDocument">✕</button>
       </div>
@@ -257,7 +257,7 @@ const runDisabled = computed(() => {
 const runHint = computed(() => {
   if (store.mode === 'narrate' && !providerAvailable.value) return `${providerName.value} isn't installed — choose another voice provider.`;
   if (store.mode === 'narrate' && store.narrateSource === 'rewrite') return hasRewrite.value ? 'Narrating the rewritten deck.' : 'Run a Rewrite first to narrate its output.';
-  if (store.mode === 'narrate' && store.doc && !narrateOk.value) return 'Narrate requires a PPTX or MD file.';
+  if (store.mode === 'narrate' && store.doc && !narrateOk.value) return 'Narrate requires a PPTX, MD, or HTML file.';
   if (store.mode === 'produce' && !store.narrate.script.trim()) return 'Generate a narration script in Narrate first.';
   return '';
 });

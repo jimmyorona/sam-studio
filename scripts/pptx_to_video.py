@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """
-PPTX / Markdown to AI-Narrated Video Converter
+PPTX / Markdown / HTML to AI-Narrated Video Converter
 
-Converts a PowerPoint (.pptx) or Markdown (.md) file into an .mp4 video with
+Converts a PowerPoint (.pptx), Markdown (.md), or HTML slide deck (.html) into
+an .mp4 video with
 AI-enhanced narration per slide, using a local Ollama model for script generation
 and Microsoft Edge TTS (edge-tts) for speech synthesis.
 
@@ -14,6 +15,8 @@ External tools required:
     - pdftoppm  (poppler)      PDF → PNG extraction
     - ffmpeg                     video assembly
     - npx / @marp-team/marp-cli  Markdown → styled PNG slides
+      (HTML decks are converted to Markdown via scripts/extract.py, then
+       rendered with Marp like any .md deck)
 
 Usage:
     python scripts/pptx_to_video.py \\
@@ -282,6 +285,30 @@ def _strip_markdown_formatting(text: str) -> str:
     text = re.sub(r'\[(.+?)\]\(.+?\)', r'\1', text)
     text = re.sub(r'^[-*]\s+', '', text, flags=re.MULTILINE)
     return text.strip()
+
+
+def html_to_marp_markdown(html_path: Path) -> str:
+    """Convert an HTML slide deck to Marp-ready markdown with --- separators.
+
+    Reuses extract.extract_html (scripts/extract.py). When the deck used
+    <section> slides, the extractor's "## Slide N" markers become slide breaks
+    and the headings it demoted are promoted back; otherwise each level-1/2
+    heading starts a new slide.
+    """
+    import extract  # scripts/extract.py, same directory
+
+    md = extract.extract_html(Path(html_path))
+    slide_marker = re.compile(r"^## Slide \d+\s*$", re.MULTILINE)
+    if slide_marker.search(md):
+        chunks = [c.strip() for c in slide_marker.split(md) if c.strip()]
+        chunks = [
+            re.sub(r"^##(#{1,4})(?=\s)", r"\1", c, flags=re.MULTILINE)
+            for c in chunks
+        ]
+    else:
+        parts = re.split(r"(?=^#{1,2}\s)", md, flags=re.MULTILINE)
+        chunks = [p.strip() for p in parts if p.strip()]
+    return "\n\n---\n\n".join(chunks)
 
 
 def parse_markdown_slides(md_path: str) -> List[str]:
@@ -1031,8 +1058,8 @@ def main() -> int:
         raise SystemExit(f"ERROR: Input file not found: {input_path}")
 
     suffix = input_path.suffix.lower()
-    if suffix not in (".pptx", ".md"):
-        raise SystemExit(f"ERROR: Input must be a .pptx or .md file: {input_path}")
+    if suffix not in (".pptx", ".md", ".html", ".htm"):
+        raise SystemExit(f"ERROR: Input must be a .pptx, .md, or .html file: {input_path}")
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -1059,7 +1086,12 @@ def main() -> int:
     try:
         log(f"Working directory: {work_dir}")
 
-        if suffix == ".md":
+        if suffix in (".md", ".html", ".htm"):
+            if suffix != ".md":
+                log("Step 2/5: Converting HTML deck to Markdown ...")
+                md_text = html_to_marp_markdown(input_path)
+                input_path = work_dir / (input_path.stem + ".md")
+                input_path.write_text(md_text, encoding="utf-8")
             log("Step 2/5: Parsing Markdown slides ...")
             slide_texts = parse_markdown_slides(str(input_path))
             log(f"Found {len(slide_texts)} slide(s) in Markdown.")
