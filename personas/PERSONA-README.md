@@ -1,6 +1,6 @@
 # Persona Files — Summary & Selector Guide
 
-Eighteen narrator personas are available. All follow the same structure (character profile, voice personality, hybrid tone rules, ElevenLabs spec, SSML conventions, sample lines, guardrails, rewrite/narration guidelines, and production preferences) so any of them can be dropped into the pipeline with no code changes.
+Nineteen narrator personas are available. All follow the same structure (character profile, voice personality, hybrid tone rules, ElevenLabs spec, SSML conventions, sample lines, guardrails, rewrite/narration guidelines, and production preferences) so any of them can be dropped into the pipeline with no code changes.
 
 **Usage (CLI):**
 ```bash
@@ -382,6 +382,26 @@ python scripts/pptx_to_video.py \
 
 ---
 
+### 19. `25-OXFORD-PROFESSOR-PERSONA.md` — Oxford Professor · Sam Sterling
+
+| Attribute | Description |
+|-----------|-------------|
+| **Archetype** | Distinguished Oxbridge academic and rhetoric scholar who insists on conceptual rigor, precise etymology, and classical argument structure. |
+| **Tone** | Intellectual, refined, incisive, and dryly witty — high-table Oxford conversational style. |
+| **Warmth** | Collegial and respectful; treats the listener as an intellectual peer deserving of elegant prose. |
+| **Authority** | Derived from rhetorical mastery, logical rigor, and etymological clarity — never raised voice or bluster. |
+| **Pacing** | Measured, rhythmical cadence; periodic sentences punctuated by deliberate, landed pauses. |
+| **Best for** | Academic research presentations, thought leadership whitepapers, keynotes, university lectures, complex policy defense, and high-level intellectual reviews. |
+
+**Key distinctions:**
+- Enforces classical rhetorical structure (*ethos, logos, pathos*) and precise Latinate/Germanic diction over corporate buzzwords.
+- Audits documents for logical fallacies, unsupported leaps, and structural sequence errors (*dispositio*).
+- Uses periodic sentence structure and deliberate pauses for scholarly rhythm.
+
+**Recommended voices:** Edge TTS `en-GB-RyanNeural` · ElevenLabs Brian or George
+
+---
+
 ## Quick Selector
 
 | Situation | Recommended Persona |
@@ -411,6 +431,8 @@ python scripts/pptx_to_video.py \
 | Slide visual design, accessibility contrast, grids | `22-DESIGN-CRITIQUE-PERSONA.md` |
 | CFO budget audits, OpEx/CapEx TCO, ROI payback | `23-FINANCIAL-CONTROLLER-PERSONA.md` |
 | Rollout roadmaps, staff training, role changes | `24-CHANGE-MANAGER-PERSONA.md` |
+| Academic lectures, research papers, thought leadership | `25-OXFORD-PROFESSOR-PERSONA.md` |
+| Rhetorical reviews, logic & diction audit | `25-OXFORD-PROFESSOR-PERSONA.md` |
 | Mixed audience — safe default | `01-SAM-PERSONA.md` |
 
 ---
@@ -435,8 +457,9 @@ python scripts/pptx_to_video.py \
 | Product Manager | `en-US-JennyNeural` | 0.60 | 0.35 | 0.96 | Rachel |
 | Security Auditor | `en-US-GuyNeural` | 0.78 | 0.08 | 0.90 | Adam |
 | Design Critique | `en-US-JennyNeural` | 0.65 | 0.30 | 0.94 | Jenny |
-| Financial Controller | `en-US-GuyNeural` | 0.75 | 0.10 | 0.93 | Guy |
+| Financial Controller | `en-GB-GuyNeural` | 0.75 | 0.10 | 0.93 | Guy |
 | Change Manager | `en-US-JennyNeural` | 0.58 | 0.35 | 0.92 | Jenny |
+| Oxford Professor | `en-GB-RyanNeural` | 0.72 | 0.22 | 0.91 | Brian |
 
 ---
 
